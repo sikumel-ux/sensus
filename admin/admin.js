@@ -1,10 +1,12 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import { getDatabase, ref, onValue, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-// 1. FIREBASE CONFIGURATION
+// 1. FIREBASE CONFIGURATION (SUDAH DITAMBAHKAN DATABASE URL REGIONAL ASIA)
 const firebaseConfig = {
   apiKey: "AIzaSyBZ31_bLqBiHY6VqHSza2qMuZqesp9-Cgg",
   authDomain: "sensus04.firebaseapp.com",
+  // Tambahkan baris di bawah ini sesuai dengan subdomain proyekmu di Firebase, bro!
+  databaseURL: "https://sensus04-default-rtdb.asia-southeast1.firebasedatabase.app", 
   projectId: "sensus04",
   storageBucket: "sensus04.firebasestorage.app",
   messagingSenderId: "538090009079",
