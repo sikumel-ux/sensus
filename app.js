@@ -5,12 +5,14 @@ import { getDatabase, ref, set, get, child } from "https://www.gstatic.com/fireb
 const firebaseConfig = {
   apiKey: "AIzaSyBZ31_bLqBiHY6VqHSza2qMuZqesp9-Cgg",
   authDomain: "sensus04.firebaseapp.com",
+  databaseURL: "https://sensus04-default-rtdb.asia-southeast1.firebasedatabase.app", 
   projectId: "sensus04",
   storageBucket: "sensus04.firebasestorage.app",
   messagingSenderId: "538090009079",
   appId: "1:538090009079:web:932a4a812dd6de5fabfef2"
 };
 
+// Inisialisasi Firebase
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 const dbRef = ref(db);
@@ -87,6 +89,7 @@ async function cariStatusSensus() {
                 </tr>`;
         }
     } catch (error) {
+        console.error("Error Firebase Get:", error);
         tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:red; padding:20px;">Gagal memuat data dari Firebase.</td></tr>`;
     }
 }
@@ -162,7 +165,6 @@ function tambahWargaRow() {
 
     container.appendChild(row);
 
-    // Tambah Event Listeners Dinamis untuk Baris Baru Ini
     const selectNode = row.querySelector(".input-status");
     const inputNikNode = row.querySelector(".input-nik");
     const fileZoneNode = row.querySelector(".file-zone");
@@ -268,7 +270,7 @@ async function prosesValidasiDanReview(e) {
                 return;
             }
         } catch(err) {
-            console.error(err);
+            console.error("Error checking NIK lock:", err);
         }
     }
 
@@ -336,10 +338,8 @@ async function simpanFinalKolektif() {
     temporarySubmissionData.jumlahJiwa = temporarySubmissionData.anggota.length;
 
     try {
-        // 1. Kirim Objek Utama Sensus
         await set(ref(db, `sensus_warga/${kodeUnik}`), temporarySubmissionData);
         
-        // 2. Kunci NIK Anggota paralel
         let promisesKunciNik = [];
         temporarySubmissionData.anggota.forEach(warga => {
             let simpanKunci = set(ref(db, `daftar_nik_terkunci/${warga.nik}`), {
@@ -352,6 +352,7 @@ async function simpanFinalKolektif() {
 
         panggilCustomModal("sukses", "Pendaftaran Berhasil!", "Data telah aman disimpan di Firebase cloud. Simpan kode unik melacak status Anda:", kodeUnik, tutupAlertDanReset);
     } catch (error) {
+        console.error("Error saving data:", error);
         btnKirim.disabled = false;
         btnKirim.innerHTML = `<i class="fas fa-cloud-arrow-up"></i> Konfirmasi & Kirim Data`;
         panggilCustomModal("error", "Koneksi Bermasalah", "Gagal mengirim data ke Firebase. Periksa jaringan internet Anda.");
