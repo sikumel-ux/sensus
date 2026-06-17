@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sensus RT 04 Digital App v3.8</title>
+    <title>Sensus RT 04 Digital App v3.9</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -170,7 +170,7 @@
                     </div>
                     <div class="form-grid">
                         <div class="form-group">
-                            <label>Status Hunian Anda di Sini</label>
+                            <label>Status Hunian Properti</label>
                             <select id="status_rumah" class="form-control" onchange="sinkronisasiKategoriWargaAll()">
                                 <option value="Milik Sendiri">Milik Sendiri / Rumah Keluarga Tetap</option>
                                 <option value="Sewa / Kontrak">Sewa / Kontrak Rumah</option>
@@ -298,7 +298,7 @@
             if(pageId === 'pageStatus') renderTabelStatus();
         }
 
-        // FUNGSI UTAMA SINKRONISASI LOGIKA KOS / KONTRAK
+        // FUNGSI UTAMA SINKRONISASI TOTAL LOGIKA KATEGORI
         function sinkronisasiKategoriWargaAll() {
             const statusRumah = document.getElementById("status_rumah").value;
             const infoNote = document.getElementById("infoNoteStatus");
@@ -311,24 +311,22 @@
                 infoNote.style.background = "#fffbeb";
                 infoNote.style.borderLeftColor = "#d97706";
                 
-                // Anak kos mengisi data sendiri (kolektif per kamar), tidak perlu tambah-tambah anggota keluarga banyak
                 container.innerHTML = "";
                 rowCount = 0;
-                tambahWargaRow(true); // Kirim flag untuk mengunci pilihan ke "Anak Kos"
-                btnTambah.style.display = "none"; // Sembunyikan tombol tambah biar gak rancu
+                tambahWargaRow(); 
+                btnTambah.style.display = "none"; 
 
             } else if (statusRumah === "Sewa / Kontrak") {
                 infoNote.innerHTML = `<i class="fas fa-info-circle"></i> <b>Mode Kontrakan:</b> Masukkan seluruh penghuni rumah kontrakan. Seluruh anggota wajib mengunggah KTP.`;
                 infoNote.style.color = "#1e40af";
                 infoNote.style.background = "#f0f6ff";
                 infoNote.style.borderLeftColor = "#0062ff";
-                
                 btnTambah.style.display = "flex";
-                // Update semua baris yang ada menjadi tipe kontrakan wajib KTP
-                document.querySelectorAll(".input-status").forEach(select => {
-                    select.value = "Kontrakan (Warga Tidak Tetap)";
-                    select.dispatchEvent(new Event('change'));
-                });
+                
+                // Rombak ulang semua baris yang sedang aktif agar opsinya berubah jadi versi Kontrakan
+                container.innerHTML = "";
+                rowCount = 0;
+                tambahWargaRow();
             } else {
                 // Milik sendiri
                 infoNote.innerHTML = `<i class="fas fa-info-circle"></i> <b>Mode Rumah Pribadi:</b> Anda bisa memasukkan Kepala Keluarga, Istri, Anak (Warga Tetap), atau ART/Sopir.`;
@@ -336,10 +334,14 @@
                 infoNote.style.background = "#f0f6ff";
                 infoNote.style.borderLeftColor = "#0062ff";
                 btnTambah.style.display = "flex";
+                
+                container.innerHTML = "";
+                rowCount = 0;
+                tambahWargaRow();
             }
         }
 
-        function tambahWargaRow(isKos = false) {
+        function tambahWargaRow() {
             rowCount++;
             const container = document.getElementById("wargaListContainer");
             const statusRumah = document.getElementById("status_rumah").value;
@@ -347,27 +349,28 @@
             row.className = "warga-item-box";
             row.id = `wargaRow_${rowCount}`;
             
-            // Atur isi select option berdasarkan pilihan status rumah induknya
+            // FILTER TOTAL: Opsi dropdown disaring ketat di sini!
             let selectOptionsHtml = "";
-            if (isKos || statusRumah === "Kos") {
+            if (statusRumah === "Kos") {
                 selectOptionsHtml = `<option value="Anak Kos">Anak Kos (Warga Tidak Tetap)</option>`;
             } else if (statusRumah === "Sewa / Kontrak") {
                 selectOptionsHtml = `
                     <option value="Kontrakan">Kontrakan / Penyewa Rumah</option>
-                    <option value="ART / Sopir">ART / Sopir Tinggal Dalam</option>
+                    <option value="ART / Sopir (Kontrak)">ART / Sopir Tinggal Dalam</option>
                 `;
             } else {
+                // Milik Sendiri / Rumah Pribadi
                 selectOptionsHtml = `
                     <option value="Kepala Keluarga">Kepala Keluarga (Warga Tetap)</option>
                     <option value="Istri">Istri (Warga Tetap)</option>
                     <option value="Anak">Anak (Warga Tetap)</option>
                     <option value="Orang Tua">Orang Tua / Mertua (Warga Tetap)</option>
-                    <option value="ART / Sopir">ART / Sopir</option>
+                    <option value="ART / Sopir (Tetap)">ART / Sopir Rumah Pribadi</option>
                 `;
             }
 
             row.innerHTML = `
-                ${(isKos || statusRumah === "Kos") ? '' : `<button type="button" class="btn-delete-row" onclick="hapusWargaRow(${rowCount})"><i class="fas fa-trash"></i> Hapus</button>`}
+                ${(statusRumah === "Kos") ? '' : `<button type="button" class="btn-delete-row" onclick="hapusWargaRow(${rowCount})"><i class="fas fa-trash"></i> Hapus</button>`}
                 <h4 style="font-size:0.9rem; margin-bottom:12px; color:var(--primary)"><i class="fas fa-user-tag"></i> Data Jiwa Penghuni</h4>
                 <div class="form-grid">
                     <div class="form-group">
@@ -396,7 +399,6 @@
             `;
             container.appendChild(row);
             
-            // Trigger awal untuk mengecek apakah status bawaan membutuhkan upload KTP
             const selectElement = row.querySelector(".input-status");
             evaluasiKewajibanKtp(selectElement, rowCount);
         }
@@ -406,14 +408,14 @@
             if (row) row.remove();
         }
 
-        // VALIDASI UNGGAH KTP YANG DISINKRONKAN
+        // EVALUASI KONDISI WAJIB UPLOAD KTP
         function evaluasiKewajibanKtp(select, id) {
             const wrapper = document.getElementById(`uploadWrapper_${id}`);
             const inputNode = document.getElementById(`file_${id}`);
             const statusValue = select.value;
 
-            // Jika statusnya Anak Kos, Kontrakan, ART, atau Sopir, WAJIB upload KTP.
-            if(statusValue === "Anak Kos" || statusValue === "Kontrakan" || statusValue === "ART / Sopir") {
+            // Jika statusnya bernilai non-tetap, WAJIB upload KTP.
+            if(statusValue === "Anak Kos" || statusValue === "Kontrakan" || statusValue.includes("ART / Sopir")) {
                 wrapper.style.display = "block";
                 inputNode.setAttribute("required", "required");
             } else {
@@ -436,7 +438,6 @@
 
         document.getElementById("mainSensusForm").addEventListener("submit", function(e) {
             e.preventDefault();
-            
             const rows = document.querySelectorAll(".warga-item-box");
             if(rows.length === 0) {
                 alert("Mohon isi minimal 1 data penghuni!");
