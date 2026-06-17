@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sensus RT 04 Digital App</title>
+    <title>Sensus RT 04 Digital App v3.8</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -38,7 +38,7 @@
             background-color: var(--bg-app);
             color: var(--text-main);
             min-height: 100vh;
-            padding-bottom: 80px; /* Jarak untuk bottom nav */
+            padding-bottom: 80px;
         }
 
         /* ==========================================
@@ -52,64 +52,37 @@
             border-bottom-right-radius: var(--radius-lg);
             box-shadow: 0 10px 25px rgba(67, 100, 247, 0.15);
             text-align: center;
-            position: relative;
         }
 
         .app-header .header-logo {
-            width: 60px;
-            height: 60px;
-            background: rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(10px);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.8rem;
-            margin: 0 auto 12px auto;
+            width: 60px; height: 60px; background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px); border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.8rem; margin: 0 auto 12px auto;
             border: 1px solid rgba(255,255,255,0.4);
         }
 
         .app-header h1 { font-size: 1.6rem; font-weight: 800; }
         .app-header p { opacity: 0.85; font-size: 0.9rem; margin-top: 2px; }
 
-        /* Container View */
-        .app-container {
-            max-width: 700px;
-            margin: -20px auto 0 auto;
-            padding: 0 16px;
-        }
+        .app-container { max-width: 700px; margin: -20px auto 0 auto; padding: 0 16px; }
 
-        /* Page Section Wrapper */
-        .app-page {
-            display: none;
-            animation: fadeIn 0.4s ease forwards;
-        }
+        .app-page { display: none; animation: fadeIn 0.4s ease forwards; }
         .app-page.active { display: block; }
 
-        /* Card Card Premium */
         .app-card {
-            background: var(--card-bg);
-            border-radius: var(--radius-lg);
-            padding: 25px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.02);
-            border: 1px solid #e2e8f0;
-            margin-bottom: 20px;
+            background: var(--card-bg); border-radius: var(--radius-lg); padding: 25px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.02); border: 1px solid #e2e8f0; margin-bottom: 20px;
         }
 
         .card-title-group {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            border-bottom: 1px solid #f1f5f9;
-            padding-bottom: 12px;
-            margin-bottom: 20px;
+            display: flex; align-items: center; gap: 12px; border-bottom: 1px solid #f1f5f9;
+            padding-bottom: 12px; margin-bottom: 20px;
         }
         .card-title-group .step-icon {
-            background: var(--primary-light);
-            color: var(--primary);
+            background: var(--primary-light); color: var(--primary);
             width: 35px; height: 35px; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            font-weight: 700; font-size: 0.9rem;
+            display: flex; align-items: center; justify-content: center; font-weight: 700;
         }
         .card-title-group h3 { font-size: 1.1rem; font-weight: 700; }
 
@@ -121,127 +94,60 @@
         .form-group label { font-size: 0.8rem; font-weight: 700; color: #475569; text-transform: uppercase; letter-spacing: 0.5px;}
         
         .form-control {
-            width: 100%;
-            padding: 12px 16px;
-            border: 1.5px solid #e2e8f0;
-            border-radius: var(--radius-md);
-            font-size: 0.95rem;
-            background: #f8fafc;
-            outline: none;
-            transition: var(--transition);
+            width: 100%; padding: 12px 16px; border: 1.5px solid #e2e8f0; border-radius: var(--radius-md);
+            font-size: 0.95rem; background: #f8fafc; outline: none; transition: var(--transition);
         }
         .form-control:focus {
-            background: #fff;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 4px rgba(0, 98, 255, 0.1);
+            background: #fff; border-color: var(--primary); box-shadow: 0 0 0 4px rgba(0, 98, 255, 0.1);
+        }
+
+        /* Info Alert Box */
+        .info-note {
+            background: #f0f6ff; border-left: 4px solid var(--primary); padding: 12px;
+            border-radius: 6px; font-size: 0.85rem; color: #1e40af; font-weight: 500; margin-bottom: 15px;
         }
 
         /* Repeater List */
-        .warga-item-box {
-            background: #f8fafc;
-            border: 1px dashed #cbd5e0;
-            border-radius: var(--radius-md);
-            padding: 20px;
-            margin-bottom: 16px;
-            position: relative;
-        }
-        .btn-delete-row {
-            position: absolute; right: 15px; top: 15px;
-            background: #fee2e2; color: #ef4444; border: none;
-            padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; cursor: pointer;
-        }
+        .warga-item-box { background: #f8fafc; border: 1px dashed #cbd5e0; border-radius: var(--radius-md); padding: 20px; margin-bottom: 16px; position: relative; }
+        .btn-delete-row { position: absolute; right: 15px; top: 15px; background: #fee2e2; color: #ef4444; border: none; padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; cursor: pointer; }
 
         /* Upload Zone */
         .upload-box-wrapper { display: none; margin-top: 10px; }
-        .file-zone {
-            border: 2px dashed #cbd5e0; background: #fff; padding: 15px;
-            text-align: center; border-radius: 8px; cursor: pointer;
-        }
+        .file-zone { border: 2px dashed #cbd5e0; background: #fff; padding: 15px; text-align: center; border-radius: 8px; cursor: pointer; }
         .file-zone i { font-size: 1.4rem; color: var(--text-muted); }
 
-        /* Buttons Component */
-        .btn-action {
-            width: 100%; padding: 14px; border: none; border-radius: var(--radius-md);
-            font-size: 1rem; font-weight: 700; cursor: pointer; transition: var(--transition);
-            display: flex; align-items: center; justify-content: center; gap: 10px;
-        }
+        /* Buttons */
+        .btn-action { width: 100%; padding: 14px; border: none; border-radius: var(--radius-md); font-size: 1rem; font-weight: 700; cursor: pointer; transition: var(--transition); display: flex; align-items: center; justify-content: center; gap: 10px; }
         .btn-primary { background: var(--primary-gradient); color: white; box-shadow: 0 4px 12px rgba(67, 100, 247, 0.3); }
         .btn-primary:hover { transform: translateY(-2px); }
         .btn-outline { background: #fff; color: var(--primary); border: 2px dashed var(--primary); margin-top: 10px; }
-        .btn-danger { background: #ef4444; color: white; }
 
-        /* ==========================================
-           REVIEW MODE ACTIVE
-           ========================================== */
-        .review-value {
-            padding: 10px 14px; background: #f1f5f9; border-radius: 8px;
-            font-size: 0.95rem; font-weight: 600; color: #334155; margin-bottom: 5px;
-        }
-        .review-badge {
-            display: inline-block; padding: 3px 8px; background: #e2e8f0;
-            border-radius: 4px; font-size: 0.75rem; font-weight: 700; color: #475569;
-        }
+        .review-value { padding: 10px 14px; background: #f1f5f9; border-radius: 8px; font-size: 0.95rem; font-weight: 600; color: #334155; margin-bottom: 5px; }
+        .review-badge { display: inline-block; padding: 3px 8px; background: #e2e8f0; border-radius: 4px; font-size: 0.75rem; font-weight: 700; color: #475569; }
 
-        /* ==========================================
-           STATUS TABLE & SEARCH
-           ========================================== */
+        /* Status Table */
         .search-container { display: flex; gap: 10px; margin-bottom: 20px; }
-        
         .table-responsive { width: 100%; overflow-x: auto; border-radius: var(--radius-md); border: 1px solid #e2e8f0; }
         .app-table { width: 100%; border-collapse: collapse; background: white; text-align: left; font-size: 0.9rem; }
         .app-table th, .app-table td { padding: 12px 16px; border-bottom: 1px solid #e2e8f0; }
         .app-table th { background: #f1f5f9; font-weight: 700; color: #475569; }
-        
-        .status-badge {
-            padding: 4px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; display: inline-flex; align-items: center; gap: 5px;
-        }
+        .status-badge { padding: 4px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; display: inline-flex; align-items: center; gap: 5px; }
         .status-pending { background: #fef3c7; color: #d97706; }
         .status-approved { background: #dcfce7; color: #15803d; }
 
-        /* ==========================================
-           CUSTOM APP ALERTS (MODAL)
-           ========================================== */
-        .custom-alert-overlay {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(8px); z-index: 9999;
-            justify-content: center; align-items: center; padding: 20px;
-        }
-        .alert-box {
-            background: white; border-radius: var(--radius-lg); padding: 35px 25px;
-            max-width: 420px; width: 100%; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-            animation: scaleUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-        }
-        .alert-icon-box {
-            width: 65px; height: 65px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; margin: 0 auto 20px auto;
-        }
-        .alert-box h3 { font-size: 1.3rem; margin-bottom: 8px; }
-        .alert-box p { color: var(--text-muted); font-size: 0.9rem; line-height: 1.5; margin-bottom: 25px; }
-        .code-display {
-            background: #f0f6ff; border: 2px dashed var(--primary); padding: 12px;
-            font-size: 1.4rem; font-weight: 800; color: var(--primary); letter-spacing: 2px;
-            border-radius: var(--radius-md); margin-bottom: 25px; text-transform: uppercase;
-        }
+        /* Modals */
+        .custom-alert-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(8px); z-index: 9999; justify-content: center; align-items: center; padding: 20px; }
+        .alert-box { background: white; border-radius: var(--radius-lg); padding: 35px 25px; max-width: 420px; width: 100%; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
+        .code-display { background: #f0f6ff; border: 2px dashed var(--primary); padding: 12px; font-size: 1.4rem; font-weight: 800; color: var(--primary); letter-spacing: 2px; border-radius: var(--radius-md); margin-bottom: 25px; text-transform: uppercase; }
+        .btn-modal-close { background: #0b132b; color: white; border: none; padding: 12px 30px; border-radius: 8px; font-weight: 600; cursor: pointer; width: 100%; }
 
-        /* ==========================================
-           BOTTOM NAVIGATION BAR
-           ========================================== */
-        .bottom-nav {
-            position: fixed; bottom: 0; left: 0; width: 100%; height: 65px;
-            background: #ffffff; border-top: 1px solid #e2e8f0;
-            display: flex; justify-content: space-around; align-items: center;
-            z-index: 1000; box-shadow: 0 -4px 10px rgba(0,0,0,0.03);
-        }
-        .nav-link {
-            display: flex; flex-direction: column; align-items: center; gap: 4px;
-            color: var(--text-muted); text-decoration: none; font-size: 0.75rem; font-weight: 600;
-            transition: var(--transition); width: 33.33%; text-align: center;
-        }
+        /* Bottom Nav */
+        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; height: 65px; background: #ffffff; border-top: 1px solid #e2e8f0; display: flex; justify-content: space-around; align-items: center; z-index: 1000; box-shadow: 0 -4px 10px rgba(0,0,0,0.03); }
+        .nav-link { display: flex; flex-direction: column; align-items: center; gap: 4px; color: var(--text-muted); text-decoration: none; font-size: 0.75rem; font-weight: 600; width: 33.33%; text-align: center; }
         .nav-link i { font-size: 1.3rem; }
         .nav-link.active { color: var(--primary); }
 
-        /* Animations */
         @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes scaleUp { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
     </style>
 </head>
 <body>
@@ -264,19 +170,19 @@
                     </div>
                     <div class="form-grid">
                         <div class="form-group">
+                            <label>Status Hunian Anda di Sini</label>
+                            <select id="status_rumah" class="form-control" onchange="sinkronisasiKategoriWargaAll()">
+                                <option value="Milik Sendiri">Milik Sendiri / Rumah Keluarga Tetap</option>
+                                <option value="Sewa / Kontrak">Sewa / Kontrak Rumah</option>
+                                <option value="Kos">Kost Mandiri</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
                             <label>Nomor Rumah</label>
                             <input type="text" id="no_rumah" class="form-control" placeholder="Contoh: No. 12" required>
                         </div>
                         <div class="form-group">
-                            <label>Status Hunian</label>
-                            <select id="status_rumah" class="form-control">
-                                <option>Milik Sendiri</option>
-                                <option>Sewa / Kontrak</option>
-                                <option>Kos</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Nomor WhatsApp Utama (Cukup 1 Nomor per Rumah)</label>
+                            <label>Nomor WhatsApp Utama (Penanggung Jawab)</label>
                             <input type="text" id="wa_utama" class="form-control" placeholder="Contoh: 081234567xxx" required>
                         </div>
                         <div class="form-group">
@@ -292,9 +198,13 @@
                         <h3>Daftar Anggota Penghuni</h3>
                     </div>
                     
+                    <div id="infoNoteStatus" class="info-note">
+                        <i class="fas fa-info-circle"></i> Mengisi sebagai Rumah Pribadi: Anda bisa memasukkan Kepala Keluarga & Anggota inti.
+                    </div>
+                    
                     <div id="wargaListContainer"></div>
                     
-                    <button type="button" class="btn-action btn-outline" onclick="tambahWargaRow()">
+                    <button type="button" id="btnTambahAnggota" class="btn-action btn-outline" onclick="tambahWargaRow()">
                         <i class="fas fa-user-plus"></i> Tambah Anggota
                     </button>
                 </div>
@@ -311,7 +221,6 @@
                     <div class="step-icon" style="background: #fff0f6; color: #ff4d4f;"><i class="fas fa-file-invoice"></i></div>
                     <h3>Review Ringkasan Sensus</h3>
                 </div>
-                <p style="font-size:0.85rem; color: var(--text-muted); margin-bottom: 20px;">Silakan periksa kembali berkas administrasi Anda sebelum dikirim ke sistem database pengurus RT.</p>
                 
                 <div id="reviewContentHtml" class="form-grid"></div>
 
@@ -334,7 +243,7 @@
                 </div>
                 
                 <div class="search-container">
-                    <input type="text" id="inputCariKode" class="form-control" placeholder="Masukkan Kode Unik (Contoh: RT04-XXXX)">
+                    <input type="text" id="inputCariKode" class="form-control" placeholder="Masukkan Kode Unik">
                     <button class="btn-action btn-primary" style="width: auto; padding: 0 20px;" onclick="cariStatusSensus()">Cari</button>
                 </div>
 
@@ -345,11 +254,10 @@
                                 <th>Kode Unik</th>
                                 <th>No. Rumah</th>
                                 <th>Jumlah Jiwa</th>
-                                <th>Status Admin</th>
+                                <th>Status</th>
                             </tr>
                         </thead>
-                        <tbody id="tabelStatusSensus">
-                            </tbody>
+                        <tbody id="tabelStatusSensus"></tbody>
                     </table>
                 </div>
             </div>
@@ -370,7 +278,7 @@
         <div class="alert-box">
             <div class="alert-icon-box" style="background: #e6f7ed; color: #24b47e;"><i class="fas fa-circle-check"></i></div>
             <h3>Pendaftaran Berhasil!</h3>
-            <p>Data sensus rumah tangga sukses disimpan. Catat dan gunakan Kode Unik di bawah ini untuk mengecek status validasi admin:</p>
+            <p>Kode Unik Anda:</p>
             <div id="displayGeneratedCode" class="code-display">RT04-ABCD</div>
             <button class="btn-modal-close" onclick="tutupAlertDanReset()">Ke Menu Validasi Status</button>
         </div>
@@ -378,35 +286,89 @@
 
     <script>
         let rowCount = 0;
-        
-        // Mock Database Lokal agar data tidak hilang saat simulasi di browser
         let databaseSensus = [
-            { kode: "RT04-A92B", noRumah: "10", jumlahJiwa: 3, status: "Disetujui" },
-            { kode: "RT04-X81C", noRumah: "15B", jumlahJiwa: 1, status: "Pending" }
+            { kode: "RT04-A92B", noRumah: "10", jumlahJiwa: 3, status: "Disetujui" }
         ];
 
-        // Navigasi Halaman Sistem
         function switchPage(pageId, element) {
             document.querySelectorAll('.app-page').forEach(p => p.classList.remove('active'));
             document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active'));
-            
             document.getElementById(pageId).classList.add('active');
             if(element) element.classList.add('active');
-            
             if(pageId === 'pageStatus') renderTabelStatus();
         }
 
-        // Tambah Baris Anggota Keluarga Dinamis
-        function tambahWargaRow() {
+        // FUNGSI UTAMA SINKRONISASI LOGIKA KOS / KONTRAK
+        function sinkronisasiKategoriWargaAll() {
+            const statusRumah = document.getElementById("status_rumah").value;
+            const infoNote = document.getElementById("infoNoteStatus");
+            const btnTambah = document.getElementById("btnTambahAnggota");
+            const container = document.getElementById("wargaListContainer");
+
+            if (statusRumah === "Kos") {
+                infoNote.innerHTML = `<i class="fas fa-exclamation-triangle" style="color:#d97706"></i> <b>Mode Kost Mandiri:</b> Form dikunci untuk 1 pengisi kost. Anda wajib mengunggah KTP asli.`;
+                infoNote.style.color = "#b45309";
+                infoNote.style.background = "#fffbeb";
+                infoNote.style.borderLeftColor = "#d97706";
+                
+                // Anak kos mengisi data sendiri (kolektif per kamar), tidak perlu tambah-tambah anggota keluarga banyak
+                container.innerHTML = "";
+                rowCount = 0;
+                tambahWargaRow(true); // Kirim flag untuk mengunci pilihan ke "Anak Kos"
+                btnTambah.style.display = "none"; // Sembunyikan tombol tambah biar gak rancu
+
+            } else if (statusRumah === "Sewa / Kontrak") {
+                infoNote.innerHTML = `<i class="fas fa-info-circle"></i> <b>Mode Kontrakan:</b> Masukkan seluruh penghuni rumah kontrakan. Seluruh anggota wajib mengunggah KTP.`;
+                infoNote.style.color = "#1e40af";
+                infoNote.style.background = "#f0f6ff";
+                infoNote.style.borderLeftColor = "#0062ff";
+                
+                btnTambah.style.display = "flex";
+                // Update semua baris yang ada menjadi tipe kontrakan wajib KTP
+                document.querySelectorAll(".input-status").forEach(select => {
+                    select.value = "Kontrakan (Warga Tidak Tetap)";
+                    select.dispatchEvent(new Event('change'));
+                });
+            } else {
+                // Milik sendiri
+                infoNote.innerHTML = `<i class="fas fa-info-circle"></i> <b>Mode Rumah Pribadi:</b> Anda bisa memasukkan Kepala Keluarga, Istri, Anak (Warga Tetap), atau ART/Sopir.`;
+                infoNote.style.color = "#1e40af";
+                infoNote.style.background = "#f0f6ff";
+                infoNote.style.borderLeftColor = "#0062ff";
+                btnTambah.style.display = "flex";
+            }
+        }
+
+        function tambahWargaRow(isKos = false) {
             rowCount++;
             const container = document.getElementById("wargaListContainer");
+            const statusRumah = document.getElementById("status_rumah").value;
             const row = document.createElement("div");
             row.className = "warga-item-box";
             row.id = `wargaRow_${rowCount}`;
             
+            // Atur isi select option berdasarkan pilihan status rumah induknya
+            let selectOptionsHtml = "";
+            if (isKos || statusRumah === "Kos") {
+                selectOptionsHtml = `<option value="Anak Kos">Anak Kos (Warga Tidak Tetap)</option>`;
+            } else if (statusRumah === "Sewa / Kontrak") {
+                selectOptionsHtml = `
+                    <option value="Kontrakan">Kontrakan / Penyewa Rumah</option>
+                    <option value="ART / Sopir">ART / Sopir Tinggal Dalam</option>
+                `;
+            } else {
+                selectOptionsHtml = `
+                    <option value="Kepala Keluarga">Kepala Keluarga (Warga Tetap)</option>
+                    <option value="Istri">Istri (Warga Tetap)</option>
+                    <option value="Anak">Anak (Warga Tetap)</option>
+                    <option value="Orang Tua">Orang Tua / Mertua (Warga Tetap)</option>
+                    <option value="ART / Sopir">ART / Sopir</option>
+                `;
+            }
+
             row.innerHTML = `
-                <button type="button" class="btn-delete-row" onclick="hapusWargaRow(${rowCount})"><i class="fas fa-trash"></i> Hapus</button>
-                <h4 style="font-size:0.9rem; margin-bottom:12px; color:var(--primary)"><i class="fas fa-user-tag"></i> Anggota #${rowCount}</h4>
+                ${(isKos || statusRumah === "Kos") ? '' : `<button type="button" class="btn-delete-row" onclick="hapusWargaRow(${rowCount})"><i class="fas fa-trash"></i> Hapus</button>`}
+                <h4 style="font-size:0.9rem; margin-bottom:12px; color:var(--primary)"><i class="fas fa-user-tag"></i> Data Jiwa Penghuni</h4>
                 <div class="form-grid">
                     <div class="form-group">
                         <label>Nama Lengkap</label>
@@ -417,24 +379,26 @@
                         <input type="text" class="form-control input-nik" placeholder="16 Digit NIK" required>
                     </div>
                     <div class="form-group">
-                        <label>Status Hubungan / Kategori</label>
-                        <select class="form-control input-status" onchange="toggleKtpUpload(this, ${rowCount})">
-                            <option value="Tetap">Kepala Keluarga / Anggota Tetap</option>
-                            <option value="Tidak Tetap">Kontrakan / Anak Kost (Tidak Tetap)</option>
-                            <option value="Tidak Tetap">ART / Sopir Harian</option>
+                        <label>Status Hubungan di Rumah Ini</label>
+                        <select class="form-control input-status" onchange="evaluasiKewajibanKtp(this, ${rowCount})">
+                            ${selectOptionsHtml}
                         </select>
                     </div>
                     <div class="form-group upload-box-wrapper" id="uploadWrapper_${rowCount}">
                         <label style="color:#ef4444"><i class="fas fa-id-card"></i> Dokumen Wajib KTP / Domisili</label>
                         <div class="file-zone" onclick="document.getElementById('file_${rowCount}').click()">
                             <i class="fas fa-cloud-arrow-up"></i>
-                            <p id="fileNameLabel_${rowCount}" style="font-size:0.8rem; margin-top:4px;">Klik upload berkas</p>
+                            <p id="fileNameLabel_${rowCount}" style="font-size:0.8rem; margin-top:4px;">Klik upload berkas KTP</p>
                             <input type="file" id="file_${rowCount}" class="input-file" accept="image/*" style="display:none;" onchange="fileChanged(this, ${rowCount})">
                         </div>
                     </div>
                 </div>
             `;
             container.appendChild(row);
+            
+            // Trigger awal untuk mengecek apakah status bawaan membutuhkan upload KTP
+            const selectElement = row.querySelector(".input-status");
+            evaluasiKewajibanKtp(selectElement, rowCount);
         }
 
         function hapusWargaRow(id) {
@@ -442,27 +406,31 @@
             if (row) row.remove();
         }
 
-        function toggleKtpUpload(select, id) {
+        // VALIDASI UNGGAH KTP YANG DISINKRONKAN
+        function evaluasiKewajibanKtp(select, id) {
             const wrapper = document.getElementById(`uploadWrapper_${id}`);
             const inputNode = document.getElementById(`file_${id}`);
-            if(select.value === "Tidak Tetap") {
+            const statusValue = select.value;
+
+            // Jika statusnya Anak Kos, Kontrakan, ART, atau Sopir, WAJIB upload KTP.
+            if(statusValue === "Anak Kos" || statusValue === "Kontrakan" || statusValue === "ART / Sopir") {
                 wrapper.style.display = "block";
                 inputNode.setAttribute("required", "required");
             } else {
                 wrapper.style.display = "none";
                 inputNode.removeAttribute("required");
                 inputNode.value = "";
-                document.getElementById(`fileNameLabel_${id}`).innerText = "Klik upload berkas";
+                document.getElementById(`fileNameLabel_${id}`).innerText = "Klik upload berkas KTP";
             }
         }
 
         function fileChanged(input, id) {
             const label = document.getElementById(`fileNameLabel_${id}`);
-            label.innerText = input.files[0] ? `📄 ${input.files[0].name}` : "Klik upload berkas";
+            label.innerText = input.files[0] ? `📄 ${input.files[0].name}` : "Klik upload berkas KTP";
         }
 
         /* ==========================================
-           INTERACTIVE REVIEW SYSTEM
+           REVIEW SYSTEM
            ========================================== */
         let temporarySubmissionData = null;
 
@@ -471,11 +439,10 @@
             
             const rows = document.querySelectorAll(".warga-item-box");
             if(rows.length === 0) {
-                alert("Mohon isi minimal 1 data anggota keluarga!");
+                alert("Mohon isi minimal 1 data penghuni!");
                 return;
             }
 
-            // Ambil semua data form untuk ditaruh di objek peninjauan
             temporarySubmissionData = {
                 noRumah: document.getElementById("no_rumah").value,
                 statusRumah: document.getElementById("status_rumah").value,
@@ -493,37 +460,34 @@
                 });
             });
 
-            // Bangun tampilan HTML review
             let htmlReview = `
                 <div class="form-group">
-                    <label>No. Rumah / Status Kepemilikan</label>
-                    <div class="review-value">${temporarySubmissionData.noRumah} (${temporarySubmissionData.statusRumah})</div>
+                    <label>Status Hunian Properti</label>
+                    <div class="review-value" style="color:var(--primary); font-weight:700;">${temporarySubmissionData.statusRumah}</div>
                 </div>
                 <div class="form-group">
-                    <label>WhatsApp Utama</label>
-                    <div class="review-value">${temporarySubmissionData.waUtama}</div>
+                    <label>No. Rumah & Kontak WA</label>
+                    <div class="review-value">Rumah ${temporarySubmissionData.noRumah} / WA: ${temporarySubmissionData.waUtama}</div>
                 </div>
                 <div class="form-group">
-                    <label>Alamat Domisili Rumah</label>
+                    <label>Alamat Domisili</label>
                     <div class="review-value">${temporarySubmissionData.alamat}</div>
                 </div>
-                <div class="full-width" style="margin-top:10px;"><h4 style="font-size:0.95rem; border-bottom:1px solid #cbd5e0; padding-bottom:5px;">Daftar Jiwa Terdata:</h4></div>
+                <div class="full-width" style="margin-top:10px;"><h4 style="font-size:0.95rem; border-bottom:1px solid #cbd5e0; padding-bottom:5px;">Data Penghuni Terdaftar:</h4></div>
             `;
 
             temporarySubmissionData.anggota.forEach((w, index) => {
                 htmlReview += `
                     <div class="warga-item-box" style="background:#fff; border-style:solid; border-color:#e2e8f0;">
-                        <div style="font-weight:700; color:var(--primary); font-size:0.9rem; margin-bottom:8px;">Anggota #${index + 1} <span class="review-badge">${w.status}</span></div>
+                        <div style="font-weight:700; color:var(--primary); font-size:0.9rem; margin-bottom:8px;">Penghuni #${index + 1} <span class="review-badge">${w.status}</span></div>
                         <p style="font-size:0.85rem; margin-bottom:3px;"><b>Nama:</b> ${w.nama}</p>
                         <p style="font-size:0.85rem; margin-bottom:3px;"><b>NIK:</b> ${w.nik}</p>
-                        <p style="font-size:0.85rem;"><b>Lampiran KTP:</b> ${w.fileUploaded}</p>
+                        <p style="font-size:0.85rem; color:${w.fileUploaded !== '-' ? '#16a34a' : '#475569'}"><b>Lampiran KTP:</b> ${w.fileUploaded}</p>
                     </div>
                 `;
             });
 
             document.getElementById("reviewContentHtml").innerHTML = htmlReview;
-            
-            // Pindah halaman ke tampilan review
             document.getElementById("pageForm").style.display = "none";
             document.getElementById("pageReview").style.display = "block";
             window.scrollTo({ top: 0, behavior: "smooth" });
@@ -535,30 +499,21 @@
             window.scrollTo({ top: 0, behavior: "smooth" });
         }
 
-        /* ==========================================
-           FINAL SUBMIT & KODE ACAK LOGIC
-           ========================================== */
         function generateRandomCode() {
-            const karakter = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; // Tanpa O/I/0/1 supaya tidak typo
+            const karakter = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
             let hasil = "";
-            for (let i = 0; i < 4; i++) {
-                hasil += karakter.charAt(Math.floor(Math.random() * karakter.length));
-            }
+            for (let i = 0; i < 4; i++) { hasil += karakter.charAt(Math.floor(Math.random() * karakter.length)); }
             return `RT04-${hasil}`;
         }
 
         function simpanFinalKolektif() {
             const kodeUnik = generateRandomCode();
-            
-            // Simpan objek ke array global data lokal database
             databaseSensus.push({
                 kode: kodeUnik,
                 noRumah: temporarySubmissionData.noRumah,
                 jumlahJiwa: temporarySubmissionData.anggota.length,
-                status: "Pending" // Default status baru masuk
+                status: "Pending"
             });
-
-            // Tampilkan custom modal pop-up alert
             document.getElementById("displayGeneratedCode").innerText = kodeUnik;
             document.getElementById("customAlertOverlay").style.display = "flex";
         }
@@ -568,42 +523,29 @@
             document.getElementById("mainSensusForm").reset();
             document.getElementById("wargaListContainer").innerHTML = "";
             document.getElementById("pageReview").style.display = "none";
-            
-            // Reset state & baris awal
             rowCount = 0;
             tambahWargaRow();
-            
-            // Buka tab status validasi untuk ngecek hasil data barunya
             switchPage('pageStatus', document.getElementById("navStatus"));
         }
 
-        /* ==========================================
-           TABEL RENDER & TRACKING PENCARIAN
-           ========================================== */
         function renderTabelStatus(filterData = null) {
             const dataToRender = filterData ? filterData : databaseSensus;
             const tbody = document.getElementById("tabelStatusSensus");
             tbody.innerHTML = "";
 
             if(dataToRender.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:var(--text-muted);">Data tidak ditemukan atau kode salah.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:var(--text-muted);">Data tidak ditemukan.</td></tr>`;
                 return;
             }
 
             dataToRender.forEach(item => {
                 const badgeClass = item.status === "Pending" ? "status-pending" : "status-approved";
-                const iconClass = item.status === "Pending" ? "fa-clock" : "fa-circle-check";
-                
                 tbody.innerHTML += `
                     <tr>
-                        <td style="font-weight:700; color:var(--primary); font-size:0.85rem; letter-spacing:0.5px;">${item.kode}</td>
-                        <td>Rumah ${item.noRumah}</td>
-                        <td>${item.jumlahJiwa} Orang</td>
-                        <td>
-                            <span class="status-badge ${badgeClass}">
-                                <i class="fas ${iconClass}"></i> ${item.status}
-                            </span>
-                        </td>
+                        <td style="font-weight:700; color:var(--primary); font-size:0.85rem;">${item.kode}</td>
+                        <td>No. ${item.noRumah}</td>
+                        <td>${item.jumlahJiwa} Jiwa</td>
+                        <td><span class="status-badge ${badgeClass}">${item.status}</span></td>
                     </tr>
                 `;
             });
@@ -611,15 +553,11 @@
 
         function cariStatusSensus() {
             const kataKunci = document.getElementById("inputCariKode").value.trim().toUpperCase();
-            if(kataKunci === "") {
-                renderTabelStatus();
-                return;
-            }
+            if(kataKunci === "") { renderTabelStatus(); return; }
             const hasilCari = databaseSensus.filter(d => d.kode.includes(kataKunci));
             renderTabelStatus(hasilCari);
         }
 
-        // Jalankan 1 baris formulir otomatis pas buka aplikasi pertama kali
         window.onload = function() {
             tambahWargaRow();
         };
