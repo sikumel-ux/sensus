@@ -1,11 +1,10 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import { getDatabase, ref, onValue, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-// 1. FIREBASE CONFIGURATION (SUDAH DITAMBAHKAN DATABASE URL REGIONAL ASIA)
+// 1. FIREBASE CONFIGURATION
 const firebaseConfig = {
   apiKey: "AIzaSyBZ31_bLqBiHY6VqHSza2qMuZqesp9-Cgg",
   authDomain: "sensus04.firebaseapp.com",
-  // Tambahkan baris di bawah ini sesuai dengan subdomain proyekmu di Firebase, bro!
   databaseURL: "https://sensus04-default-rtdb.asia-southeast1.firebasedatabase.app", 
   projectId: "sensus04",
   storageBucket: "sensus04.firebasestorage.app",
@@ -13,6 +12,7 @@ const firebaseConfig = {
   appId: "1:538090009079:web:932a4a812dd6de5fabfef2"
 };
 
+// Inisialisasi Firebase
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 const sensusRef = ref(db, 'sensus_warga');
@@ -56,6 +56,8 @@ onValue(sensusRef, (snapshot) => {
     });
 
     updateStatistik(total, pending, approved);
+}, (error) => {
+    console.error("Firebase Realtime Error Listen:", error);
 });
 
 function updateStatistik(t, p, a) {
@@ -72,7 +74,7 @@ function bukaDetailBerkas(kode) {
     let htmlAnggota = "";
     data.anggota.forEach((w, idx) => {
         htmlAnggota += `
-            <div style="border-bottom: 1px dashed #cbd5e1; padding: 8px 0; font-size:0.85rem;">
+            <div class="warga-item-box" style="border-bottom: 1px dashed #cbd5e1; padding: 8px 0; font-size:0.85rem;">
                 <p><b>#${idx+1} ${w.nama}</b> <span class="review-badge">${w.status}</span></p>
                 <p style="color:var(--text-muted); font-size:0.8rem;">NIK: ${w.nik} | File KTP: <span style="color:var(--accent-warn)">${w.fileUploaded}</span></p>
             </div>`;
@@ -96,7 +98,6 @@ function bukaDetailBerkas(kode) {
         <button class="btn-action" style="margin-top:10px; background:#e2e8f0; color:#334155;" id="btnTutupModalAdmin"><i class="fas fa-arrow-left"></i> Tutup Detail</button>
     `;
 
-    // Render tombol aksi dinamis tanpa inline onclick
     const actionZone = document.getElementById("actionZoneButtons");
     if (data.status === "Pending") {
         actionZone.innerHTML = `
@@ -121,6 +122,7 @@ function ubahStatusKependudukan(kode, statusBaru) {
     update(ref(db), updates).then(() => {
         tutupModalAdmin();
     }).catch(err => {
+        console.error("Error updating status:", err);
         alert("Gagal merubah status data!");
     });
 }
