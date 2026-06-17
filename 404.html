@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Halaman Tidak Ditemukan - Sensus RT 04 Digital</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="style.css">
+    
+    <style>
+        /* Style Spesifik Khusus Halaman 404 */
+        .error-container {
+            min-height: 85vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+        }
+        .error-code {
+            font-size: 6rem;
+            font-weight: 800;
+            color: var(--primary);
+            line-height: 1;
+            margin-bottom: 10px;
+            letter-spacing: -2px;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: floating 3s ease-in-out infinite;
+        }
+        .error-icon {
+            font-size: 4rem;
+            color: var(--accent-warn);
+            margin-bottom: 20px;
+        }
+        .error-title {
+            font-size: 1.4rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            color: var(--text-main);
+        }
+        .error-desc {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            max-width: 400px;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        .btn-group-404 {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: 100%;
+            max-width: 280px;
+        }
+        
+        @keyframes floating {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="error-container">
+        <div class="error-icon"><i class="fas fa-map-location-dot"></i></div>
+        <div class="error-code">404</div>
+        <h2 class="error-title">Waduh, Nyasar ke Mana, Bro?</h2>
+        <p class="error-desc">Halaman yang kamu cari tidak terdaftar di sistem Sensus RT 04 atau mungkin jalannya sudah ditutup.</p>
+        
+        <div class="btn-group-404">
+            <button class="btn-action btn-primary" id="btnHome"><i class="fas fa-house"></i> Kembali ke Form Sensus</button>
+            <button class="btn-action" style="background:#e2e8f0; color:#334155;" id="btnAdmin"><i class="fas fa-shield-halved"></i> Panel Pengurus</button>
+        </div>
+    </div>
+
+    <script type="module" src="404.js"></script>
+</body>
+</html>
