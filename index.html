@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sensus RT 04 Digital App v4.0</title>
+    <title>Sensus RT 04 Digital App v4.2</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -84,6 +84,8 @@
         .upload-box-wrapper { display: none; margin-top: 10px; }
         .file-zone { border: 2px dashed #cbd5e0; background: #fff; padding: 15px; text-align: center; border-radius: 8px; cursor: pointer; }
         .file-zone i { font-size: 1.4rem; color: var(--text-muted); }
+
+        .error-hint { color: #ef4444; font-size: 0.75rem; font-weight: 600; display: none; margin-top: 2px; }
 
         /* Buttons */
         .btn-action { width: 100%; padding: 14px; border: none; border-radius: var(--radius-md); font-size: 1rem; font-weight: 700; cursor: pointer; transition: var(--transition); display: flex; align-items: center; justify-content: center; gap: 10px; }
@@ -213,8 +215,7 @@
                                 <th>Status</th>
                             </tr>
                         </thead>
-                        <tbody id="tabelStatusSensus">
-                            </tbody>
+                        <tbody id="tabelStatusSensus"></tbody>
                     </table>
                 </div>
             </div>
@@ -240,27 +241,30 @@
     <script>
         let rowCount = 0;
         
-        // Database internal penampung data sensus RT
+        // MOCKUP DATABASE: Ditambahkan data NIK yang sudah terdaftar untuk bahan evaluasi
         let databaseSensus = [
-            { kode: "RT04-A92B", noRumah: "10", jumlahJiwa: 3, status: "Disetujui" },
-            { kode: "RT04-K78D", noRumah: "04", jumlahJiwa: 4, status: "Pending" }
+            { 
+                kode: "RT04-A92B", 
+                noRumah: "10", 
+                jumlahJiwa: 1, 
+                status: "Disetujui",
+                anggotaDetail: [
+                    { nama: "Budi Santoso", nik: "3402111122223333" } // NIK ini sudah terkunci di sistem
+                ]
+            }
         ];
 
-        // Navigasi Halaman Utama
         function switchPage(pageId, element) {
             document.querySelectorAll('.app-page').forEach(p => p.classList.remove('active'));
             document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active'));
             document.getElementById(pageId).classList.add('active');
             if(element) element.classList.add('active');
-            
-            // Pas pindah ke halaman status, kosongkan tabel & paksa user input kode dulu
             if(pageId === 'pageStatus') {
-                document.getElementById("inputCariKode").value = ""; // Bersihkan kolom pencarian
+                document.getElementById("inputCariKode").value = "";
                 resetTabelKeKeadaanAwal();
             }
         }
 
-        // RESET TABEL KE ATURAN PRIVASI (KOSONG DI AWAL)
         function resetTabelKeKeadaanAwal() {
             const tbody = document.getElementById("tabelStatusSensus");
             tbody.innerHTML = `
@@ -272,18 +276,11 @@
                 </tr>`;
         }
 
-        // PROSES LOOKUP / PENCARIAN STRICT MATCH
         function cariStatusSensus() {
             const kataKunci = document.getElementById("inputCariKode").value.trim().toUpperCase();
             const tbody = document.getElementById("tabelStatusSensus");
-            
-            // Jaga-jaga kalau input kosong tapi asal klik cari
-            if(kataKunci === "") {
-                resetTabelKeKeadaanAwal();
-                return;
-            }
+            if(kataKunci === "") { resetTabelKeKeadaanAwal(); return; }
 
-            // Aturan Strict Match: Kode unik harus sama persis!
             const hasilCari = databaseSensus.filter(d => d.kode === kataKunci);
             tbody.innerHTML = "";
 
@@ -298,7 +295,6 @@
                 return;
             }
 
-            // Jika kode cocok, baru data rahasia tersebut dibongkar ke tabel
             hasilCari.forEach(item => {
                 const badgeClass = item.status === "Pending" ? "status-pending" : "status-approved";
                 tbody.innerHTML += `
@@ -312,7 +308,6 @@
             });
         }
 
-        // FORMULIR LOGIKA & SINKRONISASI DROP DOWN (Tetap Aman)
         function sinkronisasiKategoriWargaAll() {
             const statusRumah = document.getElementById("status_rumah").value;
             const infoNote = document.getElementById("infoNoteStatus");
@@ -364,13 +359,22 @@
                 ${(statusRumah === "Kos") ? '' : `<button type="button" class="btn-delete-row" onclick="hapusWargaRow(${rowCount})"><i class="fas fa-trash"></i> Hapus</button>`}
                 <h4 style="font-size:0.9rem; margin-bottom:12px; color:var(--primary)"><i class="fas fa-user-tag"></i> Data Jiwa Penghuni</h4>
                 <div class="form-grid">
+                    <div class="form-grid">
                     <div class="form-group">
                         <label>Nama Lengkap</label>
                         <input type="text" class="form-control input-nama" placeholder="Sesuai dokumen KTP" required>
                     </div>
                     <div class="form-group">
-                        <label>NIK</label>
-                        <input type="text" class="form-control input-nik" placeholder="16 Digit NIK" required>
+                        <label>NIK (Nomor Induk Kependudukan)</label>
+                        <input type="text" 
+                               class="form-control input-nik" 
+                               placeholder="Harus 16 digit angka" 
+                               inputmode="numeric" 
+                               pattern="[0-9]{16}" 
+                               maxlength="16" 
+                               oninput="this.value = this.value.replace(/[^0-9]/g, ''); cekPanjangNikLive(this, ${rowCount});"
+                               required>
+                        <div id="errorNik_${rowCount}" class="error-hint">⚠️ NIK harus tepat 16 digit angka!</div>
                     </div>
                     <div class="form-group">
                         <label>Status Hubungan di Rumah Ini</label>
@@ -391,6 +395,17 @@
             container.appendChild(row);
             const selectElement = row.querySelector(".input-status");
             evaluasiKewajibanKtp(selectElement, rowCount);
+        }
+
+        function cekPanjangNikLive(input, id) {
+            const errorHint = document.getElementById(`errorNik_${id}`);
+            if(input.value.length > 0 && input.value.length < 16) {
+                errorHint.style.display = "block";
+                input.style.borderColor = "#ef4444";
+            } else {
+                errorHint.style.display = "none";
+                input.style.borderColor = "";
+            }
         }
 
         function hapusWargaRow(id) {
@@ -417,15 +432,65 @@
         }
 
         /* ==========================================
-           REVIEW & ACTIONS CODE SYSTEM
+           VALIDASI FORM: DOUBLE ENTRY CHECK SYSTEM
            ========================================== */
-        let temporarySubmissionData = null;
-
         document.getElementById("mainSensusForm").addEventListener("submit", function(e) {
             e.preventDefault();
             const rows = document.querySelectorAll(".warga-item-box");
             if(rows.length === 0) { alert("Mohon isi minimal 1 data penghuni!"); return; }
 
+            let validasiLolos = true;
+            const regexNik = /^[0-9]{16}$/;
+            
+            // Array untuk memantau NIK ganda di internal form saat ini
+            let kumpulanNikInputForm = [];
+
+            // Looping validasi utama
+            for (let row of rows) {
+                const inputNik = row.querySelector(".input-nik");
+                const valueNik = inputNik.value.trim();
+                const namaWarga = row.querySelector(".input-nama").value.trim();
+
+                // 1. Validasi Panjang Digit NIK
+                if (!regexNik.test(valueNik)) {
+                    alert(`Gagal memproses data!\nNIK untuk warga atas nama "${namaWarga || 'Tanpa Nama'}" tidak valid. Harus berisi tepat 16 digit angka!`);
+                    inputNik.focus(); inputNik.style.borderColor = "#ef4444";
+                    validasiLolos = false;
+                    break;
+                }
+
+                // 2. PROTEKSI INTERNAL: Cek apakah NIK yang sama diinput dua kali di form ini
+                if (kumpulanNikInputForm.includes(valueNik)) {
+                    alert(`Gagal memproses data!\nTerjadi duplikasi data input. NIK "${valueNik}" atas nama "${namaWarga}" dimasukkan lebih dari satu kali di dalam form ini!`);
+                    inputNik.focus(); inputNik.style.borderColor = "#ef4444";
+                    validasiLolos = false;
+                    break;
+                }
+                kumpulanNikInputForm.push(valueNik);
+
+                // 3. PROTEKSI EKSTERNAL: Cek apakah NIK sudah pernah dikirim warga sebelumnya di database global
+                let nikSudahAdaDiDb = false;
+                for (let dataSensus of databaseSensus) {
+                    if (dataSensus.anggotaDetail) {
+                        let cocok = dataSensus.anggotaDetail.find(warga => warga.nik === valueNik);
+                        if (cocok) {
+                            nikSudahAdaDiDb = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (nikSudahAdaDiDb) {
+                    alert(`Blokir Sensus Ganda!\nWarga dengan NIK "${valueNik}" atas nama "${namaWarga}" SUDAH PERNAH mengisi sensus sebelumnya.\n\nSatu NIK hanya diperbolehkan melakukan pendaftaran satu kali.`);
+                    inputNik.focus(); inputNik.style.borderColor = "#ef4444";
+                    validasiLolos = false;
+                    break;
+                }
+            }
+
+            if(!validasiLolos) return;
+
+            // Jika semua lapis filter lolos, kumpulkan data untuk direview
             temporarySubmissionData = {
                 noRumah: document.getElementById("no_rumah").value,
                 statusRumah: document.getElementById("status_rumah").value,
@@ -482,12 +547,16 @@
 
         function simpanFinalKolektif() {
             const kodeUnik = generateRandomCode();
+            
+            // Masukkan data struktur lengkap anggotaDetail ke database utama agar filter NIK bekerja di next input
             databaseSensus.push({
                 kode: kodeUnik,
                 noRumah: temporarySubmissionData.noRumah,
                 jumlahJiwa: temporarySubmissionData.anggota.length,
-                status: "Pending"
+                status: "Pending",
+                anggotaDetail: temporarySubmissionData.anggota // Menyimpan objek nama & nik untuk divalidasi silang nanti
             });
+            
             document.getElementById("displayGeneratedCode").innerText = kodeUnik;
             document.getElementById("customAlertOverlay").style.display = "flex";
         }
@@ -499,8 +568,6 @@
             document.getElementById("pageReview").style.display = "none";
             rowCount = 0;
             tambahWargaRow();
-            
-            // Redirect otomatis setelah tutup modal
             switchPage('pageStatus', document.getElementById("navStatus"));
         }
 
