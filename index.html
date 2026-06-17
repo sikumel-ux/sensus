@@ -1,8 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
-
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -14,7 +12,6 @@
 href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 
 </head>
-
 <body>
 
 <div class="bg1"></div>
@@ -22,81 +19,79 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
 
 <header>
 
-    <div class="logo">
+<div class="logo">
+<i class="fas fa-users"></i>
+</div>
 
-        <i class="fas fa-users"></i>
+<h1>Sensus Warga</h1>
 
-    </div>
-
-    <h1>Sensus Warga</h1>
-
-    <p>
-        RT 04 RW 02
-    </p>
+<p>RT 04 RW 02</p>
 
 </header>
 
 <section class="hero">
 
-    <h2>
-        Selamat Datang
-    </h2>
+<h2>Selamat Datang</h2>
 
-    <p>
-        Silakan pilih kategori Anda
-    </p>
+<p>
+Silakan pilih kategori penghuni
+</p>
 
 </section>
 
 <section class="kategori">
 
-    <div
-    class="card-kategori"
-    onclick="pilihKategori('tetap')">
+<div
+class="card-kategori"
+onclick="pilihKategori('tetap')">
 
-        <i class="fas fa-house-user"></i>
+<i class="fas fa-house-user"></i>
 
-        <h3>Warga Tetap</h3>
+<h3>Warga Tetap</h3>
 
-        <p>
-            Pemilik rumah atau penghuni tetap
-        </p>
+<p>
+Pemilik rumah atau penghuni tetap
+</p>
 
-    </div>
+</div>
 
-    <div
-    class="card-kategori"
-    onclick="pilihKategori('pendatang')">
+<div
+class="card-kategori"
+onclick="pilihKategori('pendatang')">
 
-        <i class="fas fa-suitcase"></i>
+<i class="fas fa-suitcase"></i>
 
-        <h3>Pendatang</h3>
+<h3>Pendatang</h3>
 
-        <p>
-            Kos atau kontrakan
-        </p>
+<p>
+Kos atau Kontrakan
+</p>
 
-    </div>
+</div>
 
-    <div
-    class="card-kategori"
-    onclick="pilihKategori('menumpang')">
+<div
+class="card-kategori"
+onclick="pilihKategori('menumpang')">
 
-        <i class="fas fa-user-friends"></i>
+<i class="fas fa-user-friends"></i>
 
-        <h3>Menumpang</h3>
+<h3>Menumpang</h3>
 
-        <p>
-            ART, Sopir, Saudara dll
-        </p>
+<p>
+ART, Sopir, Saudara dll
+</p>
 
-    </div>
+</div>
 
 </section>
 
 <section
 id="formSection"
 class="form-section">
+
+<h2 id="judulForm">
+Form Pendaftaran
+</h2>
 
 <form id="formWarga">
 
@@ -118,19 +113,69 @@ required>
 
 <input
 type="text"
+id="kk"
+placeholder="Nomor KK">
+
+<select id="jk">
+
+<option value="">
+Jenis Kelamin
+</option>
+
+<option>
+Laki-laki
+</option>
+
+<option>
+Perempuan
+</option>
+
+</select>
+
+<input
+type="text"
+id="tempat_lahir"
+placeholder="Tempat Lahir">
+
+<input
+type="date"
+id="tgl_lahir">
+
+<input
+type="text"
 id="hp"
 placeholder="Nomor HP">
 
 <div id="dynamicFields"></div>
 
-<button
-type="submit">
+<label>
+Foto KTP
+</label>
 
-Kirim Data
+<input
+type="file"
+id="foto_ktp"
+accept="image/*">
+
+<button type="submit">
+
+Kirim Pendaftaran
 
 </button>
 
 </form>
+
+<div id="successBox">
+
+<h3>
+✅ Data Berhasil Dikirim
+</h3>
+
+<p>
+Silakan menunggu verifikasi RT.
+</p>
+
+</div>
 
 </section>
 
@@ -145,30 +190,60 @@ Tuntas
 
 function pilihKategori(kategori){
 
+const form =
 document.getElementById(
 "formSection"
-).style.display="block";
-
-document.getElementById(
-"kategori"
-).value=kategori;
+);
 
 const dynamic =
 document.getElementById(
 "dynamicFields"
 );
 
+const judul =
+document.getElementById(
+"judulForm"
+);
+
+document.getElementById(
+"kategori"
+).value = kategori;
+
+form.style.display="block";
+
 if(kategori==="tetap"){
+
+judul.innerText =
+"Form Warga Tetap";
 
 dynamic.innerHTML=`
 
 <input
 type="text"
+id="pekerjaan"
 placeholder="Pekerjaan">
 
 <textarea
+id="alamat"
 placeholder="Alamat Rumah">
 </textarea>
+
+<select
+id="status_rumah">
+
+<option>
+Milik Sendiri
+</option>
+
+<option>
+Keluarga
+</option>
+
+<option>
+Lainnya
+</option>
+
+</select>
 
 `;
 
@@ -176,9 +251,12 @@ placeholder="Alamat Rumah">
 
 if(kategori==="pendatang"){
 
+judul.innerText =
+"Form Pendatang";
+
 dynamic.innerHTML=`
 
-<select>
+<select id="jenis_tinggal">
 
 <option>
 Kos
@@ -192,10 +270,27 @@ Kontrakan
 
 <input
 type="text"
+id="alamat_asal"
 placeholder="Alamat Asal">
 
 <input
-type="date">
+type="text"
+id="alamat_tinggal"
+placeholder="Alamat Tinggal Saat Ini">
+
+<input
+type="text"
+id="pemilik"
+placeholder="Nama Pemilik Kos/Kontrakan">
+
+<input
+type="date"
+id="tgl_masuk">
+
+<input
+type="text"
+id="pekerjaan"
+placeholder="Pekerjaan">
 
 `;
 
@@ -203,9 +298,12 @@ type="date">
 
 if(kategori==="menumpang"){
 
+judul.innerText =
+"Form Menumpang";
+
 dynamic.innerHTML=`
 
-<select>
+<select id="jenis_menumpang">
 
 <option>
 ART
@@ -227,10 +325,17 @@ Lainnya
 
 <input
 type="text"
+id="penanggung_jawab"
 placeholder="Nama Penanggung Jawab">
 
 <input
-type="date">
+type="text"
+id="alamat_asal"
+placeholder="Alamat Asal">
+
+<input
+type="date"
+id="tgl_masuk">
 
 `;
 
@@ -238,13 +343,34 @@ type="date">
 
 window.scrollTo({
 
-top:document.body.scrollHeight,
+top:
+document.body.scrollHeight,
 
-behavior:"smooth"
+behavior:
+"smooth"
 
 });
 
 }
+
+document
+.getElementById("formWarga")
+.addEventListener(
+"submit",
+function(e){
+
+e.preventDefault();
+
+document
+.getElementById(
+"successBox"
+)
+.style.display =
+"block";
+
+this.reset();
+
+});
 
 </script>
 
