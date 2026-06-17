@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sensus RT 04 Digital App v5.0 - Firebase</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header class="app-header">
+        <div class="header-logo"><i class="fas fa-users-viewfinder"></i></div>
+        <h1>Sensus RT 04 Digital</h1>
+        <p>Sistem Data Kependudukan Terintegrasi Firebase</p>
+    </header>
+
+    <div class="app-container">
+
+        <div id="pageForm" class="app-page active">
+            <form id="mainSensusForm">
+                <div class="app-card">
+                    <div class="card-title-group">
+                        <div class="step-icon">1</div>
+                        <h3>Data Rumah & Kontak</h3>
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Status Hunian Properti</label>
+                            <select id="status_rumah" class="form-control">
+                                <option value="Milik Sendiri">Milik Sendiri / Rumah Keluarga Tetap</option>
+                                <option value="Sewa / Kontrak">Sewa / Kontrak Rumah</option>
+                                <option value="Kos">Kost Mandiri</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Nomor Rumah</label>
+                            <input type="text" id="no_rumah" class="form-control" placeholder="Contoh: No. 12" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Nomor WhatsApp Utama (Penanggung Jawab)</label>
+                            <input type="text" id="wa_utama" class="form-control" placeholder="Contoh: 081234567xxx" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Alamat Rumah / Detail Gang</label>
+                            <input type="text" id="alamat_rumah" class="form-control" placeholder="Nama gang atau jalan detail" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="app-card">
+                    <div class="card-title-group">
+                        <div class="step-icon">2</div>
+                        <h3>Daftar Anggota Penghuni</h3>
+                    </div>
+                    <div id="infoNoteStatus" class="info-note">
+                        <i class="fas fa-info-circle"></i> Mengisi sebagai Rumah Pribadi: Anda bisa memasukkan Kepala Keluarga & Anggota inti.
+                    </div>
+                    <div id="wargaListContainer"></div>
+                    <button type="button" id="btnTambahAnggota" class="btn-action btn-outline">
+                        <i class="fas fa-user-plus"></i> Tambah Anggota
+                    </button>
+                </div>
+                <button type="submit" class="btn-action btn-primary"><i class="fas fa-eye"></i> Review Data Sensus</button>
+            </form>
+        </div>
+
+        <div id="pageReview" class="app-page">
+            <div class="app-card" style="border-top: 5px solid var(--primary);">
+                <div class="card-title-group">
+                    <div class="step-icon" style="background: var(--primary-light); color: var(--primary);"><i class="fas fa-file-invoice"></i></div>
+                    <h3>Review Ringkasan Sensus</h3>
+                </div>
+                <div id="reviewContentHtml" class="form-grid"></div>
+                <div style="margin-top: 30px; display: flex; flex-direction: column; gap: 10px;">
+                    <button class="btn-action btn-primary" id="btnKirimFinal"><i class="fas fa-cloud-arrow-up"></i> Konfirmasi & Kirim Data</button>
+                    <button class="btn-action" style="background:#e2e8f0; color:#334155;" id="btnKembaliEdit"><i class="fas fa-pen-to-square"></i> Edit Kembali Data</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="pageStatus" class="app-page">
+            <div class="app-card">
+                <div class="card-title-group">
+                    <div class="step-icon"><i class="fas fa-magnifying-glass"></i></div>
+                    <h3>Cek Status Validasi Sensus</h3>
+                </div>
+                
+                <div class="search-container">
+                    <input type="text" id="inputCariKode" class="form-control" placeholder="Masukkan Kode Unik (Contoh: RT04-ABCD)">
+                    <button class="btn-action btn-primary" style="width: auto; padding: 0 20px;" id="btnCariStatus">Cari Berkas</button>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="app-table">
+                        <thead>
+                            <tr>
+                                <th>Kode Unik</th>
+                                <th>No. Rumah</th>
+                                <th>Jumlah Jiwa</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabelStatusSensus"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <nav class="bottom-nav">
+        <a href="#" class="nav-link active" id="navForm"><i class="fas fa-file-signature"></i>Isi Sensus</a>
+        <a href="#" class="nav-link" id="navStatus"><i class="fas fa-square-poll-horizontal"></i>Cek Validasi</a>
+    </nav>
+
+    <div id="customAlertOverlay" class="custom-alert-overlay">
+        <div class="alert-box" id="alertBoxContent"></div>
+    </div>
+
+    <script type="module" src="app.js"></script>
+</body>
+</html>
