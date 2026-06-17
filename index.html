@@ -1,15 +1,12 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
 
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Tuntas Warga</title>
-
-<meta name="theme-color" content="#6EC1E4">
-
-<link rel="manifest" href="manifest.json">
+<title>Sensus Warga RT 04</title>
 
 <link rel="stylesheet" href="css/style.css">
 
@@ -20,294 +17,236 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
 
 <body>
 
-<!-- BACKGROUND -->
-<div class="bg-circle bg1"></div>
-<div class="bg-circle bg2"></div>
-<div class="bg-circle bg3"></div>
+<div class="bg1"></div>
+<div class="bg2"></div>
 
-<!-- HEADER -->
-<header class="header">
+<header>
 
-    <div class="logo-box">
+    <div class="logo">
+
         <i class="fas fa-users"></i>
+
     </div>
 
-    <h1>Tuntas Warga</h1>
+    <h1>Sensus Warga</h1>
 
     <p>
-        Pendataan Penghuni Lingkungan
+        RT 04 RW 02
     </p>
 
 </header>
 
-<!-- DASHBOARD -->
-<section class="dashboard">
+<section class="hero">
 
-    <div class="glass-card stat-card">
-        <h2 id="totalWarga">0</h2>
-        <span>Total Penghuni</span>
-    </div>
+    <h2>
+        Selamat Datang
+    </h2>
 
-    <div class="glass-card stat-card">
-        <h2 id="totalTetap">0</h2>
-        <span>Warga Tetap</span>
-    </div>
-
-    <div class="glass-card stat-card">
-        <h2 id="totalKos">0</h2>
-        <span>Kos</span>
-    </div>
-
-    <div class="glass-card stat-card">
-        <h2 id="totalArt">0</h2>
-        <span>ART</span>
-    </div>
+    <p>
+        Silakan pilih kategori Anda
+    </p>
 
 </section>
 
-<!-- SEARCH -->
-<section class="search-section">
+<section class="kategori">
 
-    <div class="search-box">
+    <div
+    class="card-kategori"
+    onclick="pilihKategori('tetap')">
 
-        <i class="fas fa-search"></i>
+        <i class="fas fa-house-user"></i>
 
-        <input
-        type="text"
-        id="searchInput"
-        placeholder="Cari nama atau NIK...">
+        <h3>Warga Tetap</h3>
+
+        <p>
+            Pemilik rumah atau penghuni tetap
+        </p>
 
     </div>
 
-</section>
+    <div
+    class="card-kategori"
+    onclick="pilihKategori('pendatang')">
 
-<!-- FILTER -->
-<section class="filter-section">
+        <i class="fas fa-suitcase"></i>
 
-    <button class="filter-btn active">
-        Semua
-    </button>
+        <h3>Pendatang</h3>
 
-    <button class="filter-btn">
-        Tetap
-    </button>
+        <p>
+            Kos atau kontrakan
+        </p>
 
-    <button class="filter-btn">
-        Kos
-    </button>
+    </div>
 
-    <button class="filter-btn">
-        Kontrakan
-    </button>
+    <div
+    class="card-kategori"
+    onclick="pilihKategori('menumpang')">
 
-    <button class="filter-btn">
-        ART
-    </button>
+        <i class="fas fa-user-friends"></i>
 
-</section>
+        <h3>Menumpang</h3>
 
-<!-- LIST WARGA -->
-<section class="list-section">
-
-    <div id="listWarga">
-
-        <!-- DATA FIREBASE -->
-
-        <div class="glass-card warga-card">
-
-            <div class="avatar">
-
-                <i class="fas fa-user"></i>
-
-            </div>
-
-            <div class="warga-info">
-
-                <h3>Budi Santoso</h3>
-
-                <p>NIK : 3273XXXXXXXXXX</p>
-
-                <span class="badge tetap">
-                    Warga Tetap
-                </span>
-
-            </div>
-
-            <div class="aksi">
-
-                <i class="fas fa-chevron-right"></i>
-
-            </div>
-
-        </div>
+        <p>
+            ART, Sopir, Saudara dll
+        </p>
 
     </div>
 
 </section>
 
-<!-- FAB -->
-<button class="fab" id="btnTambah">
+<section
+id="formSection"
+class="form-section">
 
-    <i class="fas fa-plus"></i>
+<form id="formWarga">
+
+<input
+type="hidden"
+id="kategori">
+
+<input
+type="text"
+id="nama"
+placeholder="Nama Lengkap"
+required>
+
+<input
+type="text"
+id="nik"
+placeholder="NIK"
+required>
+
+<input
+type="text"
+id="hp"
+placeholder="Nomor HP">
+
+<div id="dynamicFields"></div>
+
+<button
+type="submit">
+
+Kirim Data
 
 </button>
 
-<!-- MODAL TAMBAH -->
-<div class="modal" id="modalTambah">
+</form>
 
-    <div class="modal-content">
+</section>
 
-        <div class="modal-header">
+<footer>
 
-            <h2>Tambah Penghuni</h2>
+Copyright © 2026
+Tuntas
 
-            <button id="btnClose">
+</footer>
 
-                <i class="fas fa-times"></i>
+<script>
 
-            </button>
+function pilihKategori(kategori){
 
-        </div>
+document.getElementById(
+"formSection"
+).style.display="block";
 
-        <form id="formWarga">
+document.getElementById(
+"kategori"
+).value=kategori;
 
-            <input
-            type="text"
-            id="nik"
-            placeholder="NIK"
-            required>
+const dynamic =
+document.getElementById(
+"dynamicFields"
+);
 
-            <input
-            type="text"
-            id="nama"
-            placeholder="Nama Lengkap"
-            required>
+if(kategori==="tetap"){
 
-            <select id="jk">
+dynamic.innerHTML=`
 
-                <option value="">
-                    Jenis Kelamin
-                </option>
+<input
+type="text"
+placeholder="Pekerjaan">
 
-                <option>
-                    Laki-laki
-                </option>
+<textarea
+placeholder="Alamat Rumah">
+</textarea>
 
-                <option>
-                    Perempuan
-                </option>
+`;
 
-            </select>
+}
 
-            <input
-            type="date"
-            id="tgl_lahir">
+if(kategori==="pendatang"){
 
-            <input
-            type="text"
-            id="hp"
-            placeholder="Nomor HP">
+dynamic.innerHTML=`
 
-            <input
-            type="text"
-            id="pekerjaan"
-            placeholder="Pekerjaan">
+<select>
 
-            <textarea
-            id="alamat_ktp"
-            placeholder="Alamat KTP"></textarea>
+<option>
+Kos
+</option>
 
-            <textarea
-            id="alamat_domisili"
-            placeholder="Alamat Domisili"></textarea>
+<option>
+Kontrakan
+</option>
 
-            <select id="status">
+</select>
 
-                <option>
-                    Warga Tetap
-                </option>
+<input
+type="text"
+placeholder="Alamat Asal">
 
-                <option>
-                    Kos
-                </option>
+<input
+type="date">
 
-                <option>
-                    Kontrakan
-                </option>
+`;
 
-                <option>
-                    ART
-                </option>
+}
 
-            </select>
+if(kategori==="menumpang"){
 
-            <input
-            type="text"
-            id="penanggung_jawab"
-            placeholder="Penanggung Jawab">
+dynamic.innerHTML=`
 
-            <input
-            type="date"
-            id="tgl_masuk">
+<select>
 
-            <textarea
-            id="keterangan"
-            placeholder="Keterangan"></textarea>
+<option>
+ART
+</option>
 
-            <button
-            type="submit"
-            class="btn-simpan">
+<option>
+Sopir
+</option>
 
-                Simpan Data
+<option>
+Saudara
+</option>
 
-            </button>
+<option>
+Lainnya
+</option>
 
-        </form>
+</select>
 
-    </div>
+<input
+type="text"
+placeholder="Nama Penanggung Jawab">
 
-</div>
+<input
+type="date">
 
-<!-- BOTTOM NAV -->
-<nav class="bottom-nav">
+`;
 
-    <a href="#" class="active">
+}
 
-        <i class="fas fa-house"></i>
+window.scrollTo({
 
-        <span>Home</span>
+top:document.body.scrollHeight,
 
-    </a>
+behavior:"smooth"
 
-    <a href="#">
+});
 
-        <i class="fas fa-users"></i>
+}
 
-        <span>Data</span>
-
-    </a>
-
-    <a href="#">
-
-        <i class="fas fa-chart-pie"></i>
-
-        <span>Statistik</span>
-
-    </a>
-
-    <a href="#">
-
-        <i class="fas fa-gear"></i>
-
-        <span>Setting</span>
-
-    </a>
-
-</nav>
-
-<script type="module" src="js/config.js"></script>
-<script type="module" src="js/auth.js"></script>
-<script type="module" src="js/app.js"></script>
+</script>
 
 </body>
 </html>
