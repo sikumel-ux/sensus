@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Sensus RT 04 Digital App v4.3</title>
+    
+    <!-- Google Fonts & Font Awesome Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    
+    <style>
+        /* ==========================================
+           VARIABLES & PALET WARNA BARU ORANGE & TEAL
+           ========================================== */
+        :root {
+            --bg-app: #1A1714;
+            --card-bg: #24201D;
+            --bg-input: #2D2824;
+            --border: #38322D;
+            
+            --primary: #FF6B35; /* Vibrant Orange */
+            --primary-light: rgba(255, 107, 53, 0.12);
+            --primary-gradient: linear-gradient(135deg, #E0531F 0%, #FF6B35 60%, #FF8557 100%);
+            
+            --teal: #14B8A6; /* Clean Teal */
+            --teal-light: rgba(20, 184, 166, 0.12);
+            
+            --accent-warn: #ef4444; /* Rose Red untuk error */
+            --accent-warn-light: rgba(239, 68, 68, 0.12);
+            
+            --text-main: #F4F2F0;
+            --text-muted: #9E968F;
+            --radius-lg: 20px;
+            --radius-md: 12px;
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background-color: var(--bg-app); color: var(--text-main); min-height: 100vh; padding-bottom: 80px; }
+
+        /* ==========================================
+           HEADER COMPONENT
+           ========================================== */
+        .app-header {
+            background: rgba(36, 32, 29, 0.9); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+            color: white; padding: 30px 20px 35px 20px;
+            border-bottom-left-radius: var(--radius-lg); border-bottom-right-radius: var(--radius-lg);
+            border-bottom: 1px solid var(--border); text-align: center;
+        }
+        .app-header .header-logo {
+            width: 60px; height: 60px; background: var(--primary-light); 
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-size: 1.6rem; margin: 0 auto 12px auto; border: 1px solid var(--border); color: var(--primary);
+        }
+        .app-header h1 { font-size: 1.4rem; font-weight: 800; letter-spacing: -0.5px; color: #fff; }
+        .app-header p { color: var(--text-muted); font-size: 0.85rem; margin-top: 2px; }
+
+        .app-container { max-width: 700px; margin: -15px auto 0 auto; padding: 0 16px; }
+        .app-page { display: none; animation: fadeIn 0.4s ease forwards; }
+        .app-page.active { display: block; }
+
+        .app-card {
+            background: var(--card-bg); border-radius: var(--radius-lg); padding: 25px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15); border: 1px solid var(--border); margin-bottom: 20px;
+        }
+
+        .card-title-group {
+            display: flex; align-items: center; gap: 12px; border-bottom: 1px solid var(--border); padding-bottom: 12px; margin-bottom: 20px;
+        }
+        .card-title-group .step-icon {
+            background: var(--primary-light); color: var(--primary); width: 35px; height: 35px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; font-weight: 700;
+        }
+        .card-title-group h3 { font-size: 1.05rem; font-weight: 700; color: #fff; }
+
+        /* ==========================================
+           FORM ELEMENTS
+           ========================================== */
+        .form-grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
+        .form-group { display: flex; flex-direction: column; gap: 6px; }
+        .form-group label { font-size: 0.72rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;}
+        
+        .form-control {
+            width: 100%; padding: 12px 16px; border: 1.5px solid var(--border); border-radius: var(--radius-md);
+            font-size: 0.95rem; background: var(--bg-input); outline: none; transition: var(--transition); color: var(--text-main);
+        }
+        .form-control:focus { background: var(--bg-input); border-color: var(--primary); }
+
+        .info-note { background: var(--primary-light); border-left: 4px solid var(--primary); padding: 12px; border-radius: 6px; font-size: 0.82rem; color: var(--text-main); font-weight: 500; margin-bottom: 15px; }
+        .warga-item-box { background: rgba(0,0,0,0.15); border: 1px dashed var(--border); border-radius: var(--radius-md); padding: 20px; margin-bottom: 16px; position: relative; }
+        .btn-delete-row { position: absolute; right: 15px; top: 15px; background: var(--accent-warn-light); color: var(--accent-warn); border: none; padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; cursor: pointer; }
+
+        .upload-box-wrapper { display: none; margin-top: 10px; }
+        .file-zone { border: 2px dashed var(--border); background: var(--bg-input); padding: 15px; text-align: center; border-radius: 8px; cursor: pointer; }
+        .file-zone i { font-size: 1.4rem; color: var(--text-muted); }
+
+        .error-hint { color: var(--accent-warn); font-size: 0.75rem; font-weight: 600; display: none; margin-top: 2px; }
+
+        /* Buttons */
+        .btn-action { width: 100%; padding: 14px; border: none; border-radius: var(--radius-md); font-size: 0.95rem; font-weight: 700; cursor: pointer; transition: var(--transition); display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .btn-primary { background: var(--primary-gradient); color: white; box-shadow: 0 4px 12px rgba(255, 107, 53, 0.2); }
+        .btn-primary:hover { opacity: 0.95; }
+        .btn-outline { background: transparent; color: var(--primary); border: 2px dashed var(--primary); margin-top: 10px; }
+
+        .review-value { padding: 10px 14px; background: var(--bg-input); border: 1px solid var(--border); border-radius: 8px; font-size: 0.95rem; font-weight: 600; color: #fff; margin-bottom: 5px; }
+        .review-badge { display: inline-block; padding: 3px 8px; background: var(--primary-light); border-radius: 4px; font-size: 0.72rem; font-weight: 700; color: var(--primary); }
+
+        /* Status Table */
+        .search-container { display: flex; gap: 10px; margin-bottom: 20px; }
+        .table-responsive { width: 100%; overflow-x: auto; border-radius: var(--radius-md); border: 1px solid var(--border); }
+        .app-table { width: 100%; border-collapse: collapse; background: var(--bg-card); text-align: left; font-size: 0.9rem; }
+        .app-table th, .app-table td { padding: 12px 16px; border-bottom: 1px solid var(--border); }
+        .app-table th { background: var(--bg-input); font-weight: 700; color: var(--text-muted); }
+        .status-badge { padding: 4px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; display: inline-flex; align-items: center; gap: 5px; }
+        .status-pending { background: var(--primary-light); color: var(--primary); }
+        .status-approved { background: var(--teal-light); color: var(--teal); }
+
+        /* ==========================================
+           DYNAMIC CUSTOM MODAL SYSTEM
+           ========================================== */
+        .custom-alert-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 9999; justify-content: center; align-items: center; padding: 20px; }
+        .alert-box { background: var(--card-bg); border-radius: var(--radius-lg); padding: 35px 25px; max-width: 440px; width: 100%; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.3); border: 1px solid var(--border); animation: modalPop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        
+        .alert-icon-box { width: 70px; height: 70px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; margin: 0 auto 20px auto; }
+        .alert-icon-success { background: var(--teal-light); color: var(--teal); }
+        .alert-icon-error { background: var(--accent-warn-light); color: var(--accent-warn); }
+
+        .alert-box h3 { font-size: 1.25rem; font-weight: 800; margin-bottom: 10px; color: #fff; }
+        .alert-box p { font-size: 0.88rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 20px; }
+        
+        .code-display { background: var(--primary-light); border: 2px dashed var(--primary); padding: 12px; font-size: 1.4rem; font-weight: 800; color: var(--primary); letter-spacing: 2px; border-radius: var(--radius-md); margin-bottom: 25px; text-transform: uppercase; }
+        .btn-modal-close { background: var(--bg-input); color: white; border: 1px solid var(--border); padding: 14px 30px; border-radius: var(--radius-md); font-weight: 700; cursor: pointer; width: 100%; transition: var(--transition); }
+        .btn-modal-close:hover { background: var(--border); }
+
+        /* Bottom Nav */
+        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; height: 65px; background: var(--card-bg); border-top: 1px solid var(--border); display: flex; justify-content: space-around; align-items: center; z-index: 1000; box-shadow: 0 -4px 10px rgba(0,0,0,0.1); }
+        .nav-link { display: flex; flex-direction: column; align-items: center; gap: 4px; color: var(--text-muted); text-decoration: none; font-size: 0.75rem; font-weight: 600; width: 50%; text-align: center; }
+        .nav-link i { font-size: 1.25rem; }
+        .nav-link.active { color: var(--primary); }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes modalPop { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+    </style>
+</head>
+<body>
+
+    <header class="app-header">
+        <div class="header-logo"><i class="fas fa-users-viewfinder"></i></div>
+        <h1>Sensus RT 04 Digital</h1>
+        <p>Sistem Data Kependudukan Terintegrasi</p>
+    </header>
+
+    <div class="app-container">
+
+        <!-- PAGE 1: FORM PENGISIAN DATA -->
+        <div id="pageForm" class="app-page active">
+            <form id="mainSensusForm">
+                <div class="app-card">
+                    <div class="card-title-group">
+                        <div class="step-icon">1</div>
+                        <h3>Data Rumah & Kontak</h3>
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Status Hunian Properti</label>
+                            <select id="status_rumah" class="form-control" onchange="sinkronisasiKategoriWargaAll()">
+                                <option value="Milik Sendiri">Milik Sendiri / Rumah Keluarga Tetap</option>
+                                <option value="Sewa / Kontrak">Sewa / Kontrak Rumah</option>
+                                <option value="Kos">Kost Mandiri</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Nomor Rumah</label>
+                            <input type="text" id="no_rumah" class="form-control" placeholder="Contoh: No. 12" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Nomor WhatsApp Utama (Penanggung Jawab)</label>
+                            <input type="number" id="wa_utama" class="form-control" placeholder="Contoh: 081234567xxx" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Alamat Rumah / Detail Gang</label>
+                            <input type="text" id="alamat_rumah" class="form-control" placeholder="Nama gang atau jalan detail (Contoh: Dongkelan)" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="app-card">
+                    <div class="card-title-group">
+                        <div class="step-icon">2</div>
+                        <h3>Daftar Anggota Penghuni</h3>
+                    </div>
+                    <div id="infoNoteStatus" class="info-note">
+                        <i class="fas fa-info-circle"></i> Mengisi sebagai Rumah Pribadi: Anda bisa memasukkan Kepala Keluarga & Anggota inti.
+                    </div>
+                    <div id="wargaListContainer"></div>
+                    <button type="button" id="btnTambahAnggota" class="btn-action btn-outline" onclick="tambahWargaRow()">
+                        <i class="fas fa-user-plus"></i> Tambah Anggota
+                    </button>
+                </div>
+                <button type="submit" class="btn-action btn-primary"><i class="fas fa-eye"></i> Review Data Sensus</button>
+            </form>
+        </div>
+
+        <!-- PAGE 2: REVIEW MODE -->
+        <div id="pageReview" class="app-page">
+            <div class="app-card" style="border-top: 5px solid var(--primary);">
+                <div class="card-title-group">
+                    <div class="step-icon" style="background: var(--primary-light); color: var(--primary);"><i class="fas fa-file-invoice"></i></div>
+                    <h3>Review Ringkasan Sensus</h3>
+                </div>
+                <div id="reviewContentHtml" class="form-grid"></div>
+                <div style="margin-top: 30px; display: flex; flex-direction: column; gap: 10px;">
+                    <button class="btn-action btn-primary" onclick="simpanFinalKolektif()"><i class="fas fa-cloud-arrow-up"></i> Konfirmasi & Kirim Data</button>
+                    <button class="btn-action" style="background:var(--bg-input); color:#fff; border: 1px solid var(--border);" onclick="kembaliEditForm()"><i class="fas fa-pen-to-square"></i> Edit Kembali Data</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- PAGE 3: STATUS VALIDASI -->
+        <div id="pageStatus" class="app-page">
+            <div class="app-card">
+                <div class="card-title-group">
+                    <div class="step-icon"><i class="fas fa-magnifying-glass"></i></div>
+                    <h3>Cek Status Validasi Sensus</h3>
+                </div>
+                
+                <div class="search-container">
+                    <input type="text" id="inputCariKode" class="form-control" placeholder="Masukkan Kode Unik (Contoh: RT04-ABCD)">
+                    <button class="btn-action btn-primary" style="width: auto; padding: 0 20px;" onclick="cariStatusSensus()">Cari</button>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="app-table">
+                        <thead>
+                            <tr>
+                                <th>Kode Unik</th>
+                                <th>No. Rumah</th>
+                                <th>Jumlah Jiwa</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabelStatusSensus"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- BOTTOM NAV -->
+    <nav class="bottom-nav">
+        <a href="#" class="nav-link active" id="navForm" onclick="switchPage('pageForm', this)"><i class="fas fa-file-signature"></i>Isi Sensus</a>
+        <a href="#" class="nav-link" id="navStatus" onclick="switchPage('pageStatus', this)"><i class="fas fa-square-poll-horizontal"></i>Cek Validasi</a>
+    </nav>
+
+    <!-- UNIFIED CUSTOM ALERT MODAL -->
+    <div id="customAlertOverlay" class="custom-alert-overlay">
+        <div class="alert-box" id="alertBoxContent"></div>
+    </div>
+
+    <!-- SDK FIREBASE COMPAT -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+
+    <script>
+        // 1. FIREBASE INITIALIZATION
+        const firebaseConfig = {
+            apiKey: "AIzaSyBZ31_bLqBiHY6VqHSza2qMuZqesp9-Cgg",
+            authDomain: "sensus04.firebaseapp.com",
+            databaseURL: "https://sensus04-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "sensus04",
+            storageBucket: "sensus04.firebasestorage.app",
+            messagingSenderId: "538090009079",
+            appId: "1:538090009079:web:932a4a812dd6de5fabfef2"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+        const sensusRef = db.ref('sensus_warga');
+
+        let rowCount = 0;
+        let temporarySubmissionData = null;
+        let databaseSensusLocal = [];
+
+        // Ambil data real-time untuk validasi anti ganda lokal
+        sensusRef.on('value', (snapshot) => {
+            databaseSensusLocal = [];
+            if(snapshot.exists()) {
+                const data = snapshot.val();
+                Object.keys(data).forEach(key => {
+                    databaseSensusLocal.push(data[key]);
+                });
+            }
+        });
+
+        function switchPage(pageId, element) {
+            document.querySelectorAll('.app-page').forEach(p => p.style.display = 'none');
+            document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active'));
+            document.getElementById(pageId).style.display = 'block';
+            if(element) element.classList.add('active');
+            if(pageId === 'pageStatus') {
+                document.getElementById("inputCariKode").value = "";
+                resetTabelKeKeadaanAwal();
+            }
+        }
+
+        function resetTabelKeKeadaanAwal() {
+            const tbody = document.getElementById("tabelStatusSensus");
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="4" style="text-align:center; color:var(--text-muted); padding: 30px 10px;">
+                        <i class="fas fa-lock" style="font-size:1.2rem; margin-bottom:8px; display:block; color:var(--text-muted)"></i>
+                        Masukkan Kode Unik untuk melacak status berkas Anda.
+                    </td>
+                </tr>`;
+        }
+
+        function cariStatusSensus() {
+            const kataKunci = document.getElementById("inputCariKode").value.trim().toUpperCase();
+            const tbody = document.getElementById("tabelStatusSensus");
+            if(kataKunci === "") { resetTabelKeKeadaanAwal(); return; }
+
+            const hasilCari = databaseSensusLocal.filter(d => d.kode === kataKunci);
+            tbody.innerHTML = "";
+
+            if(hasilCari.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="4" style="text-align:center; color:var(--accent-warn); padding: 30px 10px; font-weight: 500;">
+                            <i class="fas fa-triangle-exclamation" style="font-size:1.2rem; margin-bottom:8px; display:block;"></i>
+                            Kode Unik salah atau tidak terdaftar!
+                        </td>
+                    </tr>`;
+                return;
+            }
+
+            hasilCari.forEach(item => {
+                const badgeClass = item.status === "Pending" ? "status-pending" : "status-approved";
+                tbody.innerHTML += `
+                    <tr>
+                        <td style="font-weight:700; color:var(--primary); font-size:0.85rem; letter-spacing:0.5px;">${item.kode}</td>
+                        <td>No. ${item.noRumah}</td>
+                        <td>${item.jumlahJiwa} Jiwa</td>
+                        <td><span class="status-badge ${badgeClass}">${item.status}</span></td>
+                    </tr>
+                `;
+            });
+        }
+
+        function sinkronisasiKategoriWargaAll() {
+            const statusRumah = document.getElementById("status_rumah").value;
+            const infoNote = document.getElementById("infoNoteStatus");
+            const btnTambah = document.getElementById("btnTambahAnggota");
+            const container = document.getElementById("wargaListContainer");
+
+            if (statusRumah === "Kos") {
+                infoNote.innerHTML = `<i class="fas fa-exclamation-triangle" style="color:var(--primary)"></i> <b>Mode Kost Mandiri:</b> Terkunci untuk 1 pengisi. Wajib melampirkan foto KTP asli.`;
+                btnTambah.style.display = "none"; container.innerHTML = ""; rowCount = 0; tambahWargaRow(); 
+            } else if (statusRumah === "Sewa / Kontrak") {
+                infoNote.innerHTML = `<i class="fas fa-info-circle"></i> <b>Mode Kontrakan:</b> Seluruh penghuni wajib didaftarkan dan melampirkan foto KTP.`;
+                btnTambah.style.display = "flex"; container.innerHTML = ""; rowCount = 0; tambahWargaRow();
+            } else {
+                infoNote.innerHTML = `<i class="fas fa-info-circle"></i> <b>Mode Rumah Pribadi:</b> Masukkan Kepala Keluarga & anggota inti (KTP RT 04 tidak wajib lampiran).`;
+                btnTambah.style.display = "flex"; container.innerHTML = ""; rowCount = 0; tambahWargaRow();
+            }
+        }
+
+        function tambahWargaRow() {
+            rowCount++;
+            const container = document.getElementById("wargaListContainer");
+            const statusRumah = document.getElementById("status_rumah").value;
+            const row = document.createElement("div");
+            row.className = "warga-item-box";
+            row.id = `wargaRow_${rowCount}`;
+            
+            let selectOptionsHtml = "";
+            if (statusRumah === "Kos") {
+                selectOptionsHtml = `<option value="Anak Kos">Anak Kos (Warga Tidak Tetap)</option>`;
+            } else if (statusRumah === "Sewa / Kontrak") {
+                selectOptionsHtml = `
+                    <option value="Kontrakan">Kontrakan / Penyewa Rumah</option>
+                    <option value="ART / Sopir (Kontrak)">ART / Sopir Tinggal Dalam</option>
+                `;
+            } else {
+                selectOptionsHtml = `
+                    <option value="Kepala Keluarga">Kepala Keluarga (Warga Tetap)</option>
+                    <option value="Istri">Istri (Warga Tetap)</option>
+                    <option value="Anak">Anak (Warga Tetap)</option>
+                    <option value="Orang Tua">Orang Tua / Mertua (Warga Tetap)</option>
+                    <option value="ART / Sopir (Tetap)">ART / Sopir Rumah Pribadi</option>
+                `;
+            }
+
+            row.innerHTML = `
+                ${(statusRumah === "Kos") ? '' : `<button type="button" class="btn-delete-row" onclick="hapusWargaRow(${rowCount})"><i class="fas fa-trash"></i> Hapus</button>`}
+                <h4 style="font-size:0.9rem; margin-bottom:12px; color:var(--primary)"><i class="fas fa-user-tag"></i> Data Jiwa Penghuni</h4>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Nama Lengkap</label>
+                        <input type="text" class="form-control input-nama" placeholder="Sesuai dokumen KTP" required>
+                    </div>
+                    <div class="form-group">
+                        <label>NIK (Nomor Induk Kependudukan)</label>
+                        <input type="text" 
+                               class="form-control input-nik" 
+                               placeholder="Harus 16 digit angka" 
+                               inputmode="numeric" 
+                               pattern="[0-9]{16}" 
+                               maxlength="16" 
+                               oninput="this.value = this.value.replace(/[^0-9]/g, ''); cekPanjangNikLive(this, ${rowCount});"
+                               required>
+                        <div id="errorNik_${rowCount}" class="error-hint">⚠️ NIK harus tepat 16 digit angka!</div>
+                    </div>
+                    <div class="form-group">
+                        <label>Status Hubungan di Rumah Ini</label>
+                        <select class="form-control input-status" onchange="evaluasiKewajibanKtp(this, ${rowCount})">
+                            ${selectOptionsHtml}
+                        </select>
+                    </div>
+                    <div class="form-group upload-box-wrapper" id="uploadWrapper_${rowCount}">
+                        <label style="color:var(--primary)"><i class="fas fa-id-card"></i> Dokumen Wajib KTP / Domisili</label>
+                        <div class="file-zone" onclick="document.getElementById('file_${rowCount}').click()">
+                            <i class="fas fa-cloud-arrow-up"></i>
+                            <p id="fileNameLabel_${rowCount}" style="font-size:0.8rem; margin-top:4px;">Klik upload berkas KTP</p>
+                            <input type="file" id="file_${rowCount}" class="input-file" accept="image/*" style="display:none;" onchange="fileChanged(this, ${rowCount})">
+                        </div>
+                    </div>
+                </div>
+            `;
+            container.appendChild(row);
+            const selectElement = row.querySelector(".input-status");
+            evaluasiKewajibanKtp(selectElement, rowCount);
+        }
+
+        function cekPanjangNikLive(input, id) {
+            const errorHint = document.getElementById(`errorNik_${id}`);
+            if(input.value.length > 0 && input.value.length < 16) {
+                errorHint.style.display = "block";
+                input.style.borderColor = "var(--accent-warn)";
+            } else {
+                errorHint.style.display = "none";
+                input.style.borderColor = "";
+            }
+        }
+
+        function hapusWargaRow(id) {
+            const row = document.getElementById(`wargaRow_${id}`);
+            if (row) row.remove();
+        }
+
+        function evaluasiKewajibanKtp(select, id) {
+            const wrapper = document.getElementById(`uploadWrapper_${id}`);
+            const inputNode = document.getElementById(`file_${id}`);
+            const statusValue = select.value;
+
+            if(statusValue === "Anak Kos" || statusValue === "Kontrakan" || statusValue.includes("ART / Sopir")) {
+                wrapper.style.display = "block"; inputNode.setAttribute("required", "required");
+            } else {
+                wrapper.style.display = "none"; inputNode.removeAttribute("required"); inputNode.value = "";
+                document.getElementById(`fileNameLabel_${id}`).innerText = "Klik upload berkas KTP";
+            }
+        }
+
+        function fileChanged(input, id) {
+            const label = document.getElementById(`fileNameLabel_${id}`);
+            label.innerText = input.files[0] ? `📄 ${input.files[0].name}` : "Klik upload berkas KTP";
+        }
+
+        function panggilCustomModal(tipe, judul, pesan, detailTambahan = "") {
+            const containerBox = document.getElementById("alertBoxContent");
+            if (tipe === "sukses") {
+                containerBox.innerHTML = `
+                    <div class="alert-icon-box alert-icon-success"><i class="fas fa-circle-check"></i></div>
+                    <h3>${judul}</h3>
+                    <p>${pesan}</p>
+                    <div class="code-display">${detailTambahan}</div>
+                    <button class="btn-modal-close" onclick="tutupAlertDanReset()">Ke Menu Validasi Status</button>
+                `;
+            } else if (tipe === "error") {
+                containerBox.innerHTML = `
+                    <div class="alert-icon-box alert-icon-error"><i class="fas fa-triangle-exclamation"></i></div>
+                    <h3 style="color:var(--accent-warn);">${judul}</h3>
+                    <p>${pesan}</p>
+                    <button class="btn-modal-close" style="background:var(--accent-warn); color: white; border: none;" onclick="tutupCustomModalOnly()">Perbaiki Data</button>
+                `;
+            }
+            document.getElementById("customAlertOverlay").style.display = "flex";
+        }
+
+        function tutupCustomModalOnly() {
+            document.getElementById("customAlertOverlay").style.display = "none";
+        }
+
+        document.getElementById("mainSensusForm").addEventListener("submit", function(e) {
+            e.preventDefault();
+            const rows = document.querySelectorAll(".warga-item-box");
+            if(rows.length === 0) { panggilCustomModal("error", "Data Kosong", "Mohon masukkan minimal 1 data penghuni rumah!"); return; }
+
+            let validasiLolos = true;
+            const regexNik = /^[0-9]{16}$/;
+            let kumpulanNikInputForm = [];
+
+            for (let row of rows) {
+                const inputNik = row.querySelector(".input-nik");
+                const valueNik = inputNik.value.trim();
+                const namaWarga = row.querySelector(".input-nama").value.trim() || 'Tanpa Nama';
+
+                if (!regexNik.test(valueNik)) {
+                    panggilCustomModal("error", "Format NIK Keliru", `NIK untuk <b>${namaWarga}</b> tidak valid. Harus tepat 16 digit angka!`);
+                    inputNik.focus(); inputNik.style.borderColor = "var(--accent-warn)";
+                    validasiLolos = false; break;
+                }
+
+                if (kumpulanNikInputForm.includes(valueNik)) {
+                    panggilCustomModal("error", "Duplikasi Form", `NIK <b>${valueNik}</b> (${namaWarga}) diinput lebih dari satu kali!`);
+                    inputNik.focus(); inputNik.style.borderColor = "var(--accent-warn)";
+                    validasiLolos = false; break;
+                }
+                kumpulanNikInputForm.push(valueNik);
+
+                let nikSudahAdaDiDb = false;
+                for (let dataSensus of databaseSensusLocal) {
+                    if (dataSensus.anggota) {
+                        let cocok = dataSensus.anggota.find(warga => warga.nik === valueNik);
+                        if (cocok) { nikSudahAdaDiDb = true; break; }
+                    }
+                }
+
+                if (nikSudahAdaDiDb) {
+                    panggilCustomModal("error", "Sensus Ganda Diblokir", `Warga bernama <b>${namaWarga}</b> (NIK: ${valueNik}) sudah terdaftar sebelumnya di RT 04.`);
+                    inputNik.focus(); inputNik.style.borderColor = "var(--accent-warn)";
+                    validasiLolos = false; break;
+                }
+            }
+
+            if(!validasiLolos) return;
+
+            temporarySubmissionData = {
+                noRumah: document.getElementById("no_rumah").value,
+                statusRumah: document.getElementById("status_rumah").value,
+                waUtama: document.getElementById("wa_utama").value,
+                alamat: document.getElementById("alamat_rumah").value,
+                anggota: []
+            };
+
+            rows.forEach(row => {
+                temporarySubmissionData.anggota.push({
+                    nama: row.querySelector(".input-nama").value,
+                    nik: row.querySelector(".input-nik").value,
+                    status: row.querySelector(".input-status").value,
+                    fileUploaded: row.querySelector(".input-file").files[0] ? row.querySelector(".input-file").files[0].name : "Tidak Perlu"
+                });
+            });
+
+            let htmlReview = `
+                <div class="form-group"><label>Status Hunian</label><div class="review-value" style="color:var(--primary); font-weight:700;">${temporarySubmissionData.statusRumah}</div></div>
+                <div class="form-group"><label>No. Rumah & Kontak WA</label><div class="review-value">Rumah ${temporarySubmissionData.noRumah} / WA: ${temporarySubmissionData.waUtama}</div></div>
+                <div class="form-group"><label>Alamat Domisili</label><div class="review-value">${temporarySubmissionData.alamat}</div></div>
+                <div style="margin-top:10px;"><h4 style="font-size:0.9rem; border-bottom:1px solid var(--border); padding-bottom:5px; color:var(--text-muted)">DATA PENGHUNI:</h4></div>
+            `;
+
+            temporarySubmissionData.anggota.forEach((w, index) => {
+                htmlReview += `
+                    <div class="warga-item-box" style="background: rgba(0,0,0,0.1); border-style: solid;">
+                        <div style="font-weight:700; color:var(--primary); font-size:0.9rem; margin-bottom:8px;">Penghuni #${index + 1} <span class="review-badge">${w.status}</span></div>
+                        <p style="font-size:0.85rem; margin-bottom:3px;"><b>Nama:</b> ${w.nama}</p>
+                        <p style="font-size:0.85rem; margin-bottom:3px;"><b>NIK:</b> ${w.nik}</p>
+                        <p style="font-size:0.85rem; color:${w.fileUploaded !== 'Tidak Perlu' ? 'var(--teal)' : 'var(--text-muted)'}"><b>File KTP:</b> ${w.fileUploaded}</p>
+                    </div>
+                `;
+            });
+
+            document.getElementById("reviewContentHtml").innerHTML = htmlReview;
+            document.getElementById("pageForm").style.display = "none";
+            document.getElementById("pageReview").style.display = "block";
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        });
+
+        function kembaliEditForm() {
+            document.getElementById("pageReview").style.display = "none";
+            document.getElementById("pageForm").style.display = "block";
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        }
+
+        function generateRandomCode() {
+            const karakter = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+            let hasil = "";
+            for (let i = 0; i < 4; i++) { hasil += karakter.charAt(Math.floor(Math.random() * karakter.length)); }
+            return `RT04-${hasil}`;
+        }
+
+        function simpanFinalKolektif() {
+            const kodeUnik = generateRandomCode();
+            
+            db.ref(`sensus_warga/${kodeUnik}`).set({
+                kode: kodeUnik,
+                noRumah: temporarySubmissionData.noRumah,
+                statusRumah: temporarySubmissionData.statusRumah,
+                waUtama: temporarySubmissionData.waUtama,
+                alamat: temporarySubmissionData.alamat,
+                jumlahJiwa: temporarySubmissionData.anggota.length,
+                status: "Pending",
+                anggota: temporarySubmissionData.anggota
+            })
+            .then(() => {
+                panggilCustomModal("sukses", "Pendaftaran Berhasil!", "Gunakan kode unik di bawah ini untuk melacak berkas validasi:", kodeUnik);
+            })
+            .catch((err) => {
+                panggilCustomModal("error", "Firebase Error", "Gagal menyimpan ke database: " + err.message);
+            });
+        }
+
+        function tutupAlertDanReset() {
+            document.getElementById("customAlertOverlay").style.display = "none";
+            document.getElementById("mainSensusForm").reset();
+            document.getElementById("wargaListContainer").innerHTML = "";
+            document.getElementById("pageReview").style.display = "none";
+            rowCount = 0;
+            tambahWargaRow();
+            switchPage('pageStatus', document.getElementById("navStatus"));
+        }
+
+        window.onload = function() {
+            tambahWargaRow();
+        };
+    </script>
+</body>
+</html>
