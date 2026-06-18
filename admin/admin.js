@@ -1,6 +1,3 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getDatabase, ref, onValue, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-
 // 1. FIREBASE CONFIGURATION
 const firebaseConfig = {
   apiKey: "AIzaSyBZ31_bLqBiHY6VqHSza2qMuZqesp9-Cgg",
@@ -12,18 +9,18 @@ const firebaseConfig = {
   appId: "1:538090009079:web:932a4a812dd6de5fabfef2"
 };
 
-// Inisialisasi Firebase
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
-const sensusRef = ref(db, 'sensus_warga');
+// Inisialisasi Firebase versi lama (Compat)
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+const sensusRef = db.ref('sensus_warga');
 
 let semuaDataSensus = {};
 
 // 2. LISTEN DATA FIREBASE REAL-TIME
-onValue(sensusRef, (snapshot) => {
+sensusRef.on('value', (snapshot) => {
     const tbody = document.getElementById("tabelAdminSensus");
     if (!snapshot.exists()) {
-        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:30px; color:var(--text-muted);">Belum ada data warga yang masuk.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:40px; color:var(--text-muted); font-weight:500;">Belum ada data warga yang masuk.</td></tr>`;
         updateStatistik(0, 0, 0);
         return;
     }
@@ -44,11 +41,11 @@ onValue(sensusRef, (snapshot) => {
         const tr = document.createElement("tr");
         tr.className = "clickable-row";
         tr.innerHTML = `
-            <td style="font-weight:700; color:var(--primary); font-size:0.85rem;">${item.kode}</td>
+            <td style="font-weight:700; color:var(--primary); font-size:0.85rem; letter-spacing:0.5px;">${item.kode}</td>
             <td><b>No. ${item.noRumah}</b></td>
-            <td>${item.statusRumah}</td>
+            <td><span style="color:var(--text-main); font-weight:500;">${item.statusRumah}</span></td>
             <td>${item.jumlahJiwa} Jiwa</td>
-            <td><span class="status-badge ${badgeClass}">${item.status}</span></td>
+            <td><span class="status-badge ${badgeClass}">${item.status === 'Pending' ? '<i class="fas fa-clock"></i> Pending' : '<i class="fas fa-circle-check"></i> Approved'}</span></td>
         `;
         
         tr.addEventListener("click", () => bukaDetailBerkas(item.kode));
@@ -58,6 +55,7 @@ onValue(sensusRef, (snapshot) => {
     updateStatistik(total, pending, approved);
 }, (error) => {
     console.error("Firebase Realtime Error Listen:", error);
+    document.getElementById("tabelAdminSensus").innerHTML = `<tr><td colspan="5" style="text-align:center; color:red; padding:40px;">Error: ${error.message}</td></tr>`;
 });
 
 function updateStatistik(t, p, a) {
@@ -67,21 +65,26 @@ function updateStatistik(t, p, a) {
 }
 
 // 3. MODAL DETAIL PENGHUNI RUMAH
-function bukaDetailBerkas(kode) {
+window.bukaDetailBerkas = function(kode) {
     const data = semuaDataSensus[kode];
     const containerBox = document.getElementById("alertBoxContent");
     
     let htmlAnggota = "";
     data.anggota.forEach((w, idx) => {
         htmlAnggota += `
-            <div class="warga-item-box" style="border-bottom: 1px dashed #cbd5e1; padding: 8px 0; font-size:0.85rem;">
-                <p><b>#${idx+1} ${w.nama}</b> <span class="review-badge">${w.status}</span></p>
-                <p style="color:var(--text-muted); font-size:0.8rem;">NIK: ${w.nik} | File KTP: <span style="color:var(--accent-warn)">${w.fileUploaded}</span></p>
+            <div class="warga-item-box" style="font-size:0.85rem;">
+                <p style="display:flex; justify-content:between; align-items:center; width:100%; margin-bottom:4px;">
+                    <span style="color:#ffffff; font-weight:600;">#${idx+1} ${w.nama}</span> 
+                    <span class="status-badge" style="background:rgba(255,255,255,0.05); color:var(--text-muted); font-size:0.7rem; padding:2px 8px;">${w.status}</span>
+                </p>
+                <p style="color:var(--text-muted); font-size:0.8rem;"><i class="far fa-id-card"></i> NIK: ${w.nik} | <i class="fas fa-paperclip"></i> KTP: <span style="color:var(--primary)">${w.fileUploaded}</span></p>
             </div>`;
     });
 
     containerBox.innerHTML = `
-        <h3 style="border-bottom: 2px solid var(--primary); padding-bottom: 8px; margin-bottom: 15px;"><i class="fas fa-folder-open"></i> Detail Berkas ${data.kode}</h3>
+        <h3 style="padding-bottom: 12px; margin-bottom: 15px; border-bottom: 1px solid var(--border-color); display:flex; align-items:center; gap:10px; color:#ffffff;">
+            <i class="fas fa-folder-open" style="color:var(--primary)"></i> Detail Berkas ${data.kode}
+        </h3>
         <div class="detail-grid">
             <div class="detail-item"><label>No. Rumah</label><p>No. ${data.noRumah}</p></div>
             <div class="detail-item"><label>Kontak WA</label><p>${data.waUtama}</p></div>
@@ -89,20 +92,20 @@ function bukaDetailBerkas(kode) {
             <div class="detail-item" style="grid-column: span 2"><label>Detail Alamat Gang</label><p>${data.alamat}</p></div>
         </div>
         
-        <h4 style="font-size:0.9rem; margin-bottom:5px;"><i class="fas fa-users"></i> Daftar Penghuni (${data.jumlahJiwa} Jiwa):</h4>
-        <div style="max-height: 200px; overflow-y: auto; background:#fff; border:1px solid #e2e8f0; padding:10px; border-radius:8px; margin-bottom: 15px;">
+        <h4 style="font-size:0.85rem; text-transform:uppercase; color:var(--text-muted); letter-spacing:0.5px; margin-bottom:10px;"><i class="fas fa-users"></i> Daftar Penghuni (${data.jumlahJiwa} Jiwa):</h4>
+        <div style="max-height: 180px; overflow-y: auto; background:rgba(0,0,0,0.15); border:1px solid var(--border-color); padding:12px; border-radius:10px; margin-bottom: 20px; display:flex; flex-direction:column; gap:4px;">
             ${htmlAnggota}
         </div>
 
         <div class="action-zone" id="actionZoneButtons"></div>
-        <button class="btn-action" style="margin-top:10px; background:#e2e8f0; color:#334155;" id="btnTutupModalAdmin"><i class="fas fa-arrow-left"></i> Tutup Detail</button>
+        <button class="btn-action" style="margin-top:12px; background:var(--bg-input); color:var(--text-main); border: 1px solid var(--border-color);" id="btnTutupModalAdmin"><i class="fas fa-arrow-left"></i> Tutup Detail</button>
     `;
 
     const actionZone = document.getElementById("actionZoneButtons");
     if (data.status === "Pending") {
         actionZone.innerHTML = `
-            <button class="btn-action btn-approve" id="btnApproveAction"><i class="fas fa-check"></i> Sahkan (Approve)</button>
-            <button class="btn-action btn-reject" id="btnRejectAction"><i class="fas fa-xmark"></i> Batal</button>`;
+            <button class="btn-action btn-approve" id="btnApproveAction"><i class="fas fa-check"></i> Sahkan Berkas</button>
+            <button class="btn-action btn-reject" id="btnRejectAction"><i class="fas fa-trash-can"></i> Tolak</button>`;
         document.getElementById("btnApproveAction").addEventListener("click", () => ubahStatusKependudukan(data.kode, 'Approved'));
         document.getElementById("btnRejectAction").addEventListener("click", () => ubahStatusKependudukan(data.kode, 'Pending'));
     } else {
@@ -114,12 +117,9 @@ function bukaDetailBerkas(kode) {
     document.getElementById("customAlertOverlay").style.display = "flex";
 }
 
-// 4. UPDATE DATA STATUS KE FIREBASE CLOUD
 function ubahStatusKependudukan(kode, statusBaru) {
-    const updates = {};
-    updates[`/sensus_warga/${kode}/status`] = statusBaru;
-    
-    update(ref(db), updates).then(() => {
+    db.ref(`/sensus_warga/${kode}`).update({ status: statusBaru })
+    .then(() => {
         tutupModalAdmin();
     }).catch(err => {
         console.error("Error updating status:", err);
@@ -127,6 +127,6 @@ function ubahStatusKependudukan(kode, statusBaru) {
     });
 }
 
-function tutupModalAdmin() {
+window.tutupModalAdmin = function() {
     document.getElementById("customAlertOverlay").style.display = "none";
 }
