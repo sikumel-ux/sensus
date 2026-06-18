@@ -1,4 +1,4 @@
-// 1. FIREBASE CONFIGURATION
+// 1. FIREBASE CONFIGURATION (SUDAH DISINKRONKAN KE DATABASE BARU)
 const firebaseConfig = {
   apiKey: "AIzaSyBZ31_bLqBiHY6VqHSza2qMuZqesp9-Cgg",
   authDomain: "sensus04.firebaseapp.com",
@@ -16,11 +16,17 @@ const sensusRef = db.ref('sensus_warga');
 
 let semuaDataSensus = {};
 
-// 2. LISTEN DATA FIREBASE (MOBILE-CARD RENDER)
+// 2. LISTEN DATA FIREBASE REAL-TIME
 sensusRef.on('value', (snapshot) => {
     const listContainer = document.getElementById("tabelAdminSensus");
+    
+    // Jika Database Baru Masih Kosong Total
     if (!snapshot.exists()) {
-        listContainer.innerHTML = `<div class="loading-state"><p>Belum ada data warga masuk.</p></div>`;
+        listContainer.innerHTML = `
+            <div class="loading-state">
+                <i class="fas fa-folder-open" style="font-size: 1.5rem; color: var(--text-muted); margin-bottom: 8px;"></i>
+                <p>Belum ada data sensus masuk di database baru.</p>
+            </div>`;
         updateStatistik(0, 0, 0);
         return;
     }
@@ -39,6 +45,7 @@ sensusRef.on('value', (snapshot) => {
         const badgeClass = item.status === "Pending" ? "status-pending" : "status-approved";
         const iconBadge = item.status === "Pending" ? '<i class="fas fa-clock"></i>' : '<i class="fas fa-check"></i>';
 
+        // Render List Card Mobile Friendly
         const card = document.createElement("div");
         card.className = "warga-mobile-card";
         card.innerHTML = `
@@ -57,7 +64,12 @@ sensusRef.on('value', (snapshot) => {
 
     updateStatistik(total, pending, approved);
 }, (error) => {
-    console.error("Firebase Error Listen:", error);
+    console.error("Firebase Realtime Error Listen:", error);
+    document.getElementById("tabelAdminSensus").innerHTML = `
+        <div class="loading-state" style="color: var(--rose);">
+            <i class="fas fa-triangle-exclamation"></i>
+            <p>Error Hubungan: ${error.message}</p>
+        </div>`;
 });
 
 function updateStatistik(t, p, a) {
@@ -66,22 +78,24 @@ function updateStatistik(t, p, a) {
     document.getElementById("statApproved").innerText = a;
 }
 
-// 3. NATIVE BOTTOM SHEET COMPONENT MODAL
+// 3. NATIVE BOTTOM SHEET COMPONENT MODAL (POP-UP DETAIL)
 window.bukaDetailBerkas = function(kode) {
     const data = semuaDataSensus[kode];
     const containerBox = document.getElementById("alertBoxContent");
     
     let htmlAnggota = "";
-    data.anggota.forEach((w, idx) => {
-        htmlAnggota += `
-            <div class="warga-item-box">
-                <p style="display:flex; justify-content:space-between; font-weight:600; color:#fff; margin-bottom:2px;">
-                    <span>#${idx+1} ${w.nama}</span>
-                    <span style="color:var(--text-muted); font-size:0.7rem;">${w.status}</span>
-                </p>
-                <p style="color:var(--text-muted); font-size:0.75rem;">NIK: ${w.nik}</p>
-            </div>`;
-    });
+    if (data.anggota && Array.isArray(data.anggota)) {
+        data.anggota.forEach((w, idx) => {
+            htmlAnggota += `
+                <div class="warga-item-box">
+                    <p style="display:flex; justify-content:space-between; font-weight:600; color:#fff; margin-bottom:2px;">
+                        <span>#${idx+1} ${w.nama}</span>
+                        <span style="color:var(--text-muted); font-size:0.7rem;">${w.status}</span>
+                    </p>
+                    <p style="color:var(--text-muted); font-size:0.75rem;">NIK: ${w.nik}</p>
+                </div>`;
+        });
+    }
 
     containerBox.innerHTML = `
         <div class="sheet-handle"></div>
@@ -89,15 +103,15 @@ window.bukaDetailBerkas = function(kode) {
         <p style="font-size:0.75rem; color:var(--text-muted);">Verifikasi berkas kependudukan warga</p>
         
         <div class="detail-grid">
-            <div class="detail-item"><label>No. Rumah</label><p>${data.noRumah}</p></div>
-            <div class="detail-item"><label>Kontak WA</label><p>${data.waUtama}</p></div>
-            <div class="detail-item" style="grid-column: span 2"><label>Hunian</label><p>${data.statusRumah}</p></div>
-            <div class="detail-item" style="grid-column: span 2"><label>Alamat</label><p>${data.alamat}</p></div>
+            <div class="detail-item"><label>No. Rumah</label><p>${data.noRumah || '-'}</p></div>
+            <div class="detail-item"><label>Kontak WA</label><p>${data.waUtama || '-'}</p></div>
+            <div class="detail-item" style="grid-column: span 2"><label>Hunian</label><p>${data.statusRumah || '-'}</p></div>
+            <div class="detail-item" style="grid-column: span 2"><label>Alamat</label><p>${data.alamat || '-'}</p></div>
         </div>
         
-        <h4 style="font-size:0.7rem; text-transform:uppercase; color:var(--text-muted); font-weight:700; margin-bottom:6px;">Daftar Penghuni (${data.jumlahJiwa} Jiwa):</h4>
+        <h4 style="font-size:0.7rem; text-transform:uppercase; color:var(--text-muted); font-weight:700; margin-bottom:6px;">Daftar Penghuni (${data.jumlahJiwa || 0} Jiwa):</h4>
         <div style="max-height: 160px; overflow-y: auto; background:rgba(0,0,0,0.2); padding:0 10px; border-radius:8px; border:1px solid var(--border);">
-            ${htmlAnggota}
+            ${htmlAnggota || '<p style="padding:10px; color:var(--text-muted); font-size:0.8rem;">Tidak ada data penghuni.</p>'}
         </div>
 
         <div class="action-zone" id="actionZoneButtons"></div>
@@ -124,7 +138,7 @@ function ubahStatusKependudukan(kode, statusBaru) {
     db.ref(`/sensus_warga/${kode}`).update({ status: statusBaru })
     .then(() => {
         tutupModalAdmin();
-    }).catch(err => { console.error(err); });
+    }).catch(err => { console.error("Gagal update status:", err); });
 }
 
 window.tutupModalAdmin = function() {
