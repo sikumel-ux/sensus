@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Form Sensus Online - RT 04 Digital</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2 family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    
+    <style>
+        /* DESIGN SYSTEM YANG SAMA DENGAN ADMIN PWA (#1A1714) */
+        :root {
+            --bg-app: #1A1714;
+            --bg-card: #24201D;
+            --bg-input: #2D2824;
+            --border: #38322D;
+            --primary: #D4AF37;
+            --text-main: #F4F2F0;
+            --text-muted: #9E968F;
+            --emerald: #10b981;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background-color: var(--bg-app); color: var(--text-main); padding: 16px; min-height: 100vh; }
+        
+        .container { max-width: 500px; margin: 0 auto; padding-bottom: 40px; }
+        
+        .header { text-align: center; margin: 20px 0 30px 0; }
+        .header .icon { width: 50px; height: 50px; background: rgba(212, 175, 55, 0.1); color: var(--primary); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin: 0 auto 12px auto; }
+        .header h1 { font-size: 1.25rem; font-weight: 800; color: #fff; }
+        .header p { font-size: 0.8rem; color: var(--text-muted); margin-top: 4px; }
+
+        form { display: flex; flex-direction: column; gap: 16px; }
+        .form-group { display: flex; flex-direction: column; gap: 6px; }
+        .form-group label { font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+        
+        input[type="text"], input[type="number"], select, textarea {
+            width: 100%; background: var(--bg-input); border: 1px solid var(--border); border-radius: 10px; padding: 12px; color: var(--text-main); font-size: 0.9rem; outline: none; transition: border-color 0.2s;
+        }
+        input:focus, select:focus, textarea:focus { border-color: var(--primary); }
+
+        /* BOX ANGGOTA KELUARGA DINAMIS */
+        .warga-repeater-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 14px; position: relative; margin-bottom: 10px; }
+        .warga-repeater-card h3 { font-size: 0.8rem; color: var(--primary); margin-bottom: 10px; text-transform: uppercase; }
+        
+        .btn-add-warga { background: transparent; border: 1px dashed var(--primary); color: var(--primary); padding: 12px; border-radius: 10px; font-weight: 700; font-size: 0.85rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 4px; }
+        .btn-submit { background: var(--primary); color: #000; border: none; padding: 14px; border-radius: 10px; font-weight: 800; font-size: 0.95rem; cursor: pointer; margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        
+        .btn-remove-warga { position: absolute; top: 12px; right: 12px; background: transparent; border: none; color: #ef4444; font-size: 0.9rem; cursor: pointer; }
+
+        /* NOTIFIKASI POPUP */
+        .popup-overlay { display: none; position: fixed; top:0; left:0; right:0; bottom:0; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); z-index: 2000; align-items: center; justify-content: center; padding: 20px; }
+        .popup-box { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 24px; text-align: center; max-width: 360px; width: 100%; }
+        .popup-box i { font-size: 2.5rem; color: var(--emerald); margin-bottom: 14px; }
+        .popup-box h2 { font-size: 1.15rem; color: #fff; margin-bottom: 6px; }
+        .popup-box p { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 16px; line-height: 1.4; }
+        .popup-box button { background: var(--bg-input); border: 1px solid var(--border); color: #fff; padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 0.85rem; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header">
+            <div class="icon"><i class="fas fa-file-invoice"></i></div>
+            <h1>SENSUS WARGA RT 04</h1>
+            <p>Isi data hunian dan keluarga Anda dengan benar</p>
+        </div>
+
+        <form id="formSensusWarga">
+            <div class="form-group">
+                <label>Nomor Rumah</label>
+                <input type="text" id="noRumah" placeholder="Contoh: 12A atau 04" required>
+            </div>
+
+            <div class="form-group">
+                <label>Status Hunian</label>
+                <select id="statusRumah" required>
+                    <option value="Rumah Milik Sendiri">Rumah Milik Sendiri</option>
+                    <option value="Rumah Sewa / Kontrak">Rumah Sewa / Kontrak</option>
+                    <option value="Kos">Kos</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>No. WhatsApp Utama</label>
+                <input type="number" id="waUtama" placeholder="Contoh: 08123456789" required>
+            </div>
+
+            <div class="form-group">
+                <label>Detail Alamat / Nama Gang</label>
+                <textarea id="alamat" rows="3" placeholder="Contoh: Gang Kenanga, RT 04 Dongkelan" required></textarea>
+            </div>
+
+            <div class="form-group" style="margin-top: 10px;">
+                <label>Daftar Penghuni Rumah</label>
+                <div id="wargaRepeaterContainer">
+                    <div class="warga-repeater-card">
+                        <h3>Penghuni #1 (Kepala Keluarga / Perwakilan)</h3>
+                        <div class="form-group" style="margin-bottom: 10px;">
+                            <input type="text" class="input-nama" placeholder="Nama Lengkap sesuai KTP" required>
+                        </div>
+                        <div class="form-group" style="margin-bottom: 10px;">
+                            <input type="number" class="input-nik" placeholder="Nomor Induk Kependudukan (NIK)" required>
+                        </div>
+                        <div class="form-group">
+                            <select class="input-status">
+                                <option value="KTP RT 04">KTP RT 04</option>
+                                <option value="KTP Luar RT 04">KTP Luar RT 04</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <button type="button" class="btn-add-warga" id="btnAddWarga">
+                    <i class="fas fa-plus"></i> Tambah Anggota Keluarga
+                </button>
+            </div>
+
+            <button type="submit" class="btn-submit">
+                <i class="fas fa-paper-plane"></i> Kirim Data Sensus
+            </button>
+        </form>
+    </div>
+
+    <div class="popup-overlay" id="popupSukses">
+        <div class="popup-box">
+            <i class="fas fa-circle-check"></i>
+            <h2>Data Terkirim!</h2>
+            <p>Berkas sensus rumah Anda berhasil disimpan dan sedang menunggu verifikasi Pengurus RT.</p>
+            <button onclick="tutupPopup()">Oke, Mengerti</button>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+
+    <script>
+        // 1. DATABASE CONFIGURATION BARU (100% SAMA DENGAN PANEL ADMIN)
+        const firebaseConfig = {
+          apiKey: "AIzaSyBZ31_bLqBiHY6VqHSza2qMuZqesp9-Cgg",
+          authDomain: "sensus04.firebaseapp.com",
+          databaseURL: "https://sensus04-default-rtdb.asia-southeast1.firebasedatabase.app", 
+          projectId: "sensus04",
+          storageBucket: "sensus04.firebasestorage.app",
+          messagingSenderId: "538090009079",
+          appId: "1:538090009079:web:932a4a812dd6de5fabfef2"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        let wargaCount = 1;
+
+        // 2. LOGIKA TAMBAH FORM ANGGOTA KELUARGA DINAMIS
+        document.getElementById("btnAddWarga").addEventListener("click", () => {
+            wargaCount++;
+            const container = document.getElementById("wargaRepeaterContainer");
+            
+            const card = document.createElement("div");
+            card.className = "warga-repeater-card";
+            card.id = `wargaCard_${wargaCount}`;
+            card.innerHTML = `
+                <button type="button" class="btn-remove-warga" onclick="hapusWarga(${wargaCount})"><i class="fas fa-trash"></i></button>
+                <h3>Penghuni #${wargaCount}</h3>
+                <div class="form-group" style="margin-bottom: 10px;">
+                    <input type="text" class="input-nama" placeholder="Nama Lengkap sesuai KTP" required>
+                </div>
+                <div class="form-group" style="margin-bottom: 10px;">
+                    <input type="number" class="input-nik" placeholder="Nomor Induk Kependudukan (NIK)" required>
+                </div>
+                <div class="form-group">
+                    <select class="input-status">
+                        <option value="KTP RT 04">KTP RT 04</option>
+                        <option value="KTP Luar RT 04">KTP Luar RT 04</option>
+                    </select>
+                </div>
+            `;
+            container.appendChild(card);
+        });
+
+        window.hapusWarga = function(id) {
+            const card = document.getElementById(`wargaCard_${id}`);
+            if(card) card.remove();
+        };
+
+        // 3. LOGIKA KIRIM DATA KE NODE 'sensus_warga' FIREBASE BARU
+        document.getElementById("formSensusWarga").addEventListener("submit", (e) => {
+            e.preventDefault();
+
+            // Membuat kode berkas acak yang rapi (Misal: RT04-892A)
+            const tokenAcak = Math.random().toString(36).substring(2, 6).toUpperCase();
+            const kodeBerkas = `RT04-${tokenAcak}`;
+
+            // Kumpulkan array data anggota keluarga
+            const listNama = document.querySelectorAll(".input-nama");
+            const listNik = document.querySelectorAll(".input-nik");
+            const listStatus = document.querySelectorAll(".input-status");
+            
+            let arrayAnggota = [];
+            listNama.forEach((el, index) => {
+                arrayAnggota.push({
+                    nama: el.value,
+                    nik: listNik[index].value,
+                    status: listStatus[index].value,
+                    fileUploaded: "KTP_Terlampir.jpg" // Dummy fallback agar admin tidak crash
+                });
+            });
+
+            // Bungkus payload objek utama sesuai kebutuhan dashboard admin PWA
+            const payloadSensus = {
+                kode: kodeBerkas,
+                noRumah: document.getElementById("noRumah").value,
+                statusRumah: document.getElementById("statusRumah").value,
+                waUtama: document.getElementById("waUtama").value,
+                alamat: document.getElementById("alamat").value,
+                jumlahJiwa: arrayAnggota.length,
+                status: "Pending", // Status bawaan wajib pending sebelum di-sah-kan admin
+                anggota: arrayAnggota
+            };
+
+            // Tembakkan langsung ke Firebase
+            db.ref(`sensus_warga/${kodeBerkas}`).set(payloadSensus)
+            .then(() => {
+                document.getElementById("formSensusWarga").reset();
+                // Sisakan hanya 1 form input penghuni semula
+                document.getElementById("wargaRepeaterContainer").innerHTML = `
+                    <div class="warga-repeater-card">
+                        <h3>Penghuni #1 (Kepala Keluarga / Perwakilan)</h3>
+                        <div class="form-group" style="margin-bottom: 10px;">
+                            <input type="text" class="input-nama" placeholder="Nama Lengkap sesuai KTP" required>
+                        </div>
+                        <div class="form-group" style="margin-bottom: 10px;">
+                            <input type="number" class="input-nik" placeholder="Nomor Induk Kependudukan (NIK)" required>
+                        </div>
+                        <div class="form-group">
+                            <select class="input-status">
+                                <option value="KTP RT 04">KTP RT 04</option>
+                                <option value="KTP Luar RT 04">KTP Luar RT 04</option>
+                            </select>
+                        </div>
+                    </div>`;
+                wargaCount = 1;
+                
+                // Munculkan pop up sukses
+                document.getElementById("popupSukses").style.display = "flex";
+            })
+            .catch((err) => {
+                alert("Gagal mengirim data sensus: " + err.message);
+            });
+        });
+
+        window.tutupPopup = function() {
+            document.getElementById("popupSukses").style.display = "none";
+        };
+    </script>
+</body>
+</html>
