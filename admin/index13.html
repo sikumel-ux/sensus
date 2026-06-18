@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sensus RT 04 Digital App v4.5 (Direct Submit System)</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #587A9D;
+            --primary-light: #eff4f8;
+            --primary-gradient: linear-gradient(135deg, #425f7c 0%, #587A9D 60%, #7697ba 100%);
+            --accent-warn: #D9745B;
+            --accent-warn-light: #fdf2f0;
+            --bg-app: #f5f7fa;
+            --card-bg: #ffffff;
+            --text-main: #2c3a47;
+            --text-muted: #6b7c8c;
+            --radius-lg: 20px;
+            --radius-md: 12px;
+            --transition: all 0.25s ease;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background-color: var(--bg-app); color: var(--text-main); min-height: 100vh; padding-bottom: 90px; }
+
+        .app-header {
+            background: var(--primary-gradient); color: white; padding: 30px 20px 40px 20px;
+            border-bottom-left-radius: var(--radius-lg); border-bottom-right-radius: var(--radius-lg);
+            box-shadow: 0 10px 25px rgba(88, 122, 157, 0.15); text-align: center;
+        }
+        .app-header .header-logo {
+            width: 60px; height: 60px; background: rgba(255, 255, 255, 0.2); backdrop-filter: blur(10px); 
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-size: 1.8rem; margin: 0 auto 12px auto; border: 1px solid rgba(255,255,255,0.4);
+        }
+        .app-header h1 { font-size: 1.6rem; font-weight: 800; letter-spacing: -0.5px; }
+        .app-header p { opacity: 0.9; font-size: 0.9rem; margin-top: 2px; }
+
+        .app-container { max-width: 700px; margin: -20px auto 0 auto; padding: 0 16px; }
+        
+        .app-page { display: none; }
+        .app-page.active { display: block !important; animation: fadeIn 0.3s ease forwards; }
+
+        .app-card {
+            background: var(--card-bg); border-radius: var(--radius-lg); padding: 25px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.015); border: 1px solid #e6ecf2; margin-bottom: 20px;
+        }
+
+        .card-title-group {
+            display: flex; align-items: center; gap: 12px; border-bottom: 1px solid #edf2f7; padding-bottom: 12px; margin-bottom: 20px;
+        }
+        .card-title-group .step-icon {
+            background: var(--primary-light); color: var(--primary); width: 35px; height: 35px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; font-weight: 700;
+        }
+        .card-title-group h3 { font-size: 1.1rem; font-weight: 700; }
+
+        .form-grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
+        .form-group { display: flex; flex-direction: column; gap: 6px; }
+        .form-group label { font-size: 0.78rem; font-weight: 700; color: #5a6a85; text-transform: uppercase; letter-spacing: 0.5px;}
+        
+        .form-control {
+            width: 100%; padding: 12px 16px; border: 1.5px solid #e2e8f0; border-radius: var(--radius-md);
+            font-size: 0.95rem; background: #f8fafc; outline: none; transition: var(--transition); color: var(--text-main);
+        }
+        .form-control:focus { background: #fff; border-color: var(--primary); box-shadow: 0 0 0 4px rgba(88, 122, 157, 0.15); }
+
+        .info-note { background: var(--primary-light); border-left: 4px solid var(--primary); padding: 12px; border-radius: 6px; font-size: 0.85rem; color: #38526d; font-weight: 500; margin-bottom: 15px; }
+        
+        .warga-item-box { background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: var(--radius-md); padding: 20px; margin-bottom: 16px; position: relative; }
+        .btn-delete-row { position: absolute; right: 15px; top: 15px; background: var(--accent-warn-light); color: var(--accent-warn); border: none; padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; cursor: pointer; }
+
+        .upload-box-wrapper { display: none; margin-top: 10px; }
+        .file-zone { border: 2px dashed #cbd5e0; background: #fff; padding: 15px; text-align: center; border-radius: 8px; cursor: pointer; }
+        .file-zone i { font-size: 1.4rem; color: var(--text-muted); }
+
+        .error-hint { color: var(--accent-warn); font-size: 0.75rem; font-weight: 600; display: none; margin-top: 2px; }
+
+        .btn-action { width: 100%; padding: 14px; border: none; border-radius: var(--radius-md); font-size: 1rem; font-weight: 700; cursor: pointer; transition: var(--transition); display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .btn-primary { background: var(--primary-gradient); color: white; box-shadow: 0 4px 12px rgba(88, 122, 157, 0.25); }
+        .btn-primary:hover { transform: translateY(-1px); opacity: 0.95; }
+        .btn-outline { background: #fff; color: var(--primary); border: 2px dashed var(--primary); margin-top: 10px; }
+
+        .search-container { display: flex; gap: 10px; margin-bottom: 20px; }
+        .table-responsive { width: 100%; overflow-x: auto; border-radius: var(--radius-md); border: 1px solid #e2e8f0; }
+        .app-table { width: 100%; border-collapse: collapse; background: white; text-align: left; font-size: 0.9rem; }
+        .app-table th, .app-table td { padding: 12px 16px; border-bottom: 1px solid #e2e8f0; }
+        .app-table th { background: #f1f5f9; font-weight: 700; color: #475569; }
+        .status-badge { padding: 4px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; display: inline-flex; align-items: center; gap: 5px; }
+        .status-pending { background: #fef3c7; color: #d97706; }
+        .status-approved { background: #e6f4ea; color: #1e7e34; }
+
+        /* MODAL SYSTEM */
+        .custom-alert-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(44, 58, 71, 0.6); backdrop-filter: blur(8px); z-index: 9999; justify-content: center; align-items: center; padding: 20px; }
+        .alert-box { background: white; border-radius: var(--radius-lg); padding: 35px 25px; max-width: 440px; width: 100%; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.15); }
+        
+        .alert-icon-box { width: 70px; height: 70px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; margin: 0 auto 20px auto; }
+        .alert-icon-success { background: #eaf6ed; color: #2ecc71; }
+        .alert-icon-error { background: var(--accent-warn-light); color: var(--accent-warn); }
+
+        .alert-box h3 { font-size: 1.3rem; font-weight: 800; margin-bottom: 10px; color: var(--text-main); }
+        .alert-box p { font-size: 0.9rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 20px; }
+        
+        .code-display { background: var(--primary-light); border: 2px dashed var(--primary); padding: 12px; font-size: 1.4rem; font-weight: 800; color: var(--primary); letter-spacing: 2px; border-radius: var(--radius-md); margin-bottom: 25px; text-transform: uppercase; }
+        .btn-modal-close { background: var(--text-main); color: white; border: none; padding: 14px 30px; border-radius: var(--radius-md); font-weight: 700; cursor: pointer; width: 100%; }
+
+        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; height: 65px; background: #ffffff; border-top: 1px solid #e2e8f0; display: flex; justify-content: space-around; align-items: center; z-index: 1000; box-shadow: 0 -4px 10px rgba(0,0,0,0.03); }
+        .nav-link { display: flex; flex-direction: column; align-items: center; gap: 4px; color: var(--text-muted); text-decoration: none; font-size: 0.75rem; font-weight: 600; width: 50%; text-align: center; }
+        .nav-link i { font-size: 1.3rem; }
+        .nav-link.active { color: var(--primary); }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    </style>
+</head>
+<body>
+
+    <header class="app-header">
+        <div class="header-logo"><i class="fas fa-users-viewfinder"></i></div>
+        <h1>Sensus RT 04 Digital</h1>
+        <p>Sistem Data Kependudukan Terintegrasi</p>
+    </header>
+
+    <div class="app-container">
+
+        <div id="pageForm" class="app-page active">
+            <form id="mainSensusForm" onsubmit="eksekusiKirimSensusDirect(event)">
+                <div class="app-card">
+                    <div class="card-title-group">
+                        <div class="step-icon">1</div>
+                        <h3>Data Rumah & Kontak</h3>
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Status Hunian Properti</label>
+                            <select id="status_rumah" class="form-control" onchange="sinkronisasiKategoriWargaAll()">
+                                <option value="Milik Sendiri">Milik Sendiri / Rumah Keluarga Tetap</option>
+                                <option value="Sewa / Kontrak">Sewa / Kontrak Rumah</option>
+                                <option value="Kos">Kost Mandiri</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Nomor Rumah</label>
+                            <input type="text" id="no_rumah" class="form-control" placeholder="Contoh: No. 12" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Nomor WhatsApp Utama</label>
+                            <input type="text" id="wa_utama" class="form-control" placeholder="Contoh: 081234567xxx" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Alamat Rumah / Detail Gang</label>
+                            <input type="text" id="alamat_rumah" class="form-control" placeholder="Nama gang atau jalan detail" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="app-card">
+                    <div class="card-title-group">
+                        <div class="step-icon">2</div>
+                        <h3>Daftar Anggota Penghuni</h3>
+                    </div>
+                    <div id="infoNoteStatus" class="info-note">
+                        <i class="fas fa-info-circle"></i> Mengisi sebagai Rumah Pribadi: Anda bisa memasukkan Kepala Keluarga & Anggota inti.
+                    </div>
+                    <div id="wargaListContainer"></div>
+                    <button type="button" id="btnTambahAnggota" class="btn-action btn-outline" onclick="tambahWargaRow()">
+                        <i class="fas fa-user-plus"></i> Tambah Anggota
+                    </button>
+                </div>
+                
+                <button type="submit" class="btn-action btn-primary">
+                    <i class="fas fa-paper-plane"></i> Kirim Data Sensus Sekarang
+                </button>
+            </form>
+        </div>
+
+        <div id="pageStatus" class="app-page">
+            <div class="app-card">
+                <div class="card-title-group">
+                    <div class="step-icon"><i class="fas fa-magnifying-glass"></i></div>
+                    <h3>Cek Status Validasi Sensus</h3>
+                </div>
+                
+                <div class="search-container">
+                    <input type="text" id="inputCariKode" class="form-control" placeholder="Masukkan Kode Unik (Contoh: RT04-ABCD)">
+                    <button type="button" class="btn-action btn-primary" style="width: auto; padding: 0 20px;" onclick="cariStatusSensus()">Cari Berkas</button>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="app-table">
+                        <thead>
+                            <tr>
+                                <th>Kode Unik</th>
+                                <th>No. Rumah</th>
+                                <th>Jumlah Jiwa</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabelStatusSensus"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <nav class="bottom-nav">
+        <a href="#" class="nav-link active" id="navForm" onclick="switchPage('pageForm', this)"><i class="fas fa-file-signature"></i>Isi Sensus</a>
+        <a href="#" class="nav-link" id="navStatus" onclick="switchPage('pageStatus', this)"><i class="fas fa-square-poll-horizontal"></i>Cek Validasi</a>
+    </nav>
+
+    <div id="customAlertOverlay" class="custom-alert-overlay">
+        <div class="alert-box" id="alertBoxContent"></div>
+    </div>
+
+    <script>
+        let rowCount = 0;
+        
+        // MOCKUP DATABASE
+        let databaseSensus = [
+            { 
+                kode: "RT04-A92B", 
+                noRumah: "10", 
+                jumlahJiwa: 1, 
+                status: "Disetujui",
+                anggotaDetail: [{ nama: "Budi Santoso", nik: "3402111122223333" }]
+            }
+        ];
+
+        function switchPage(pageId, element) {
+            document.getElementById('pageForm').style.setProperty('display', 'none', 'important');
+            document.getElementById('pageStatus').style.setProperty('display', 'none', 'important');
+            
+            document.querySelectorAll('.app-page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active'));
+            
+            const targetPage = document.getElementById(pageId);
+            if(targetPage) {
+                targetPage.style.setProperty('display', 'block', 'important');
+                targetPage.classList.add('active');
+            }
+            
+            if(element) element.classList.add('active');
+            
+            if(pageId === 'pageStatus') {
+                document.getElementById("inputCariKode").value = "";
+                resetTabelKeKeadaanAwal();
+            }
+        }
+
+        function resetTabelKeKeadaanAwal() {
+            document.getElementById("tabelStatusSensus").innerHTML = `
+                <tr>
+                    <td colspan="4" style="text-align:center; color:var(--text-muted); padding: 30px 10px;">
+                        <i class="fas fa-lock" style="font-size:1.2rem; margin-bottom:8px; display:block; color:#94a3b8"></i>
+                        Masukkan Kode Unik di atas untuk melacak status berkas Anda.
+                    </td>
+                </tr>`;
+        }
+
+        function cariStatusSensus() {
+            const kataKunci = document.getElementById("inputCariKode").value.trim().toUpperCase();
+            const tbody = document.getElementById("tabelStatusSensus");
+            if(kataKunci === "") { resetTabelKeKeadaanAwal(); return; }
+
+            const hasilCari = databaseSensus.filter(d => d.kode === kataKunci);
+            tbody.innerHTML = "";
+
+            if(hasilCari.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="4" style="text-align:center; color:var(--accent-warn); padding: 30px 10px; font-weight: 500;">
+                            <i class="fas fa-triangle-exclamation" style="font-size:1.2rem; margin-bottom:8px; display:block;"></i>
+                            Kode Unik salah atau tidak terdaftar di sistem!
+                        </td>
+                    </tr>`;
+                return;
+            }
+
+            hasilCari.forEach(item => {
+                const badgeClass = item.status === "Pending" ? "status-pending" : "status-approved";
+                tbody.innerHTML += `
+                    <tr>
+                        <td style="font-weight:700; color:var(--primary); font-size:0.85rem; letter-spacing:0.5px;">${item.kode}</td>
+                        <td>No. ${item.noRumah}</td>
+                        <td>${item.jumlahJiwa} Jiwa</td>
+                        <td><span class="status-badge ${badgeClass}">${item.status}</span></td>
+                    </tr>
+                `;
+            });
+        }
+
+        function sinkronisasiKategoriWargaAll() {
+            const statusRumah = document.getElementById("status_rumah").value;
+            const infoNote = document.getElementById("infoNoteStatus");
+            const btnTambah = document.getElementById("btnTambahAnggota");
+            const container = document.getElementById("wargaListContainer");
+
+            if (statusRumah === "Kos") {
+                infoNote.innerHTML = `<i class="fas fa-exclamation-triangle" style="color:var(--accent-warn)"></i> <b>Mode Kost Mandiri:</b> Form dikunci untuk 1 pengisi kost. Anda wajib mengunggah KTP asli.`;
+                btnTambah.style.display = "none"; container.innerHTML = ""; rowCount = 0; tambahWargaRow(); 
+            } else if (statusRumah === "Sewa / Kontrak") {
+                infoNote.innerHTML = `<i class="fas fa-info-circle"></i> <b>Mode Kontrakan:</b> Masukkan seluruh penghuni rumah kontrakan. Seluruh anggota wajib mengunggah KTP.`;
+                btnTambah.style.display = "flex"; container.innerHTML = ""; rowCount = 0; tambahWargaRow();
+            } else {
+                infoNote.innerHTML = `<i class="fas fa-info-circle"></i> <b>Mode Rumah Pribadi:</b> Anda bisa memasukkan Kepala Keluarga, Istri, Anak (Warga Tetap).`;
+                btnTambah.style.display = "flex"; container.innerHTML = ""; rowCount = 0; tambahWargaRow();
+            }
+        }
+
+        function tambahWargaRow() {
+            rowCount++;
+            const container = document.getElementById("wargaListContainer");
+            const statusRumah = document.getElementById("status_rumah").value;
+            const row = document.createElement("div");
+            row.className = "warga-item-box";
+            row.id = `wargaRow_${rowCount}`;
+            
+            let selectOptionsHtml = "";
+            if (statusRumah === "Kos") {
+                selectOptionsHtml = `<option value="Anak Kos">Anak Kos (Warga Tidak Tetap)</option>`;
+            } else if (statusRumah === "Sewa / Kontrak") {
+                selectOptionsHtml = `
+                    <option value="Kontrakan">Kontrakan / Penyewa Rumah</option>
+                    <option value="ART / Sopir (Kontrak)">ART / Sopir Tinggal Dalam</option>
+                `;
+            } else {
+                selectOptionsHtml = `
+                    <option value="Kepala Keluarga">Kepala Keluarga (Warga Tetap)</option>
+                    <option value="Istri">Istri (Warga Tetap)</option>
+                    <option value="Anak">Anak (Warga Tetap)</option>
+                    <option value="Orang Tua">Orang Tua / Mertua (Warga Tetap)</option>
+                `;
+            }
+
+            row.innerHTML = `
+                ${(statusRumah === "Kos") ? '' : `<button type="button" class="btn-delete-row" onclick="hapusWargaRow(${rowCount})"><i class="fas fa-trash"></i> Hapus</button>`}
+                <h4 style="font-size:0.9rem; margin-bottom:12px; color:var(--primary)"><i class="fas fa-user-tag"></i> Data Jiwa Penghuni</h4>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Nama Lengkap</label>
+                        <input type="text" class="form-control input-nama" placeholder="Sesuai dokumen KTP" required>
+                    </div>
+                    <div class="form-group">
+                        <label>NIK (Nomor Induk Kependudukan)</label>
+                        <input type="text" 
+                               class="form-control input-nik" 
+                               placeholder="Harus 16 digit angka" 
+                               inputmode="numeric" 
+                               pattern="[0-9]{16}" 
+                               maxlength="16" 
+                               oninput="this.value = this.value.replace(/[^0-9]/g, ''); cekPanjangNikLive(this, ${rowCount});"
+                               required>
+                        <div id="errorNik_${rowCount}" class="error-hint">⚠️ NIK harus tepat 16 digit angka!</div>
+                    </div>
+                    <div class="form-group">
+                        <label>Status Hubungan</label>
+                        <select class="form-control input-status" onchange="evaluasiKewajibanKtp(this, ${rowCount})">
+                            ${selectOptionsHtml}
+                        </select>
+                    </div>
+                    <div class="form-group upload-box-wrapper" id="uploadWrapper_${rowCount}">
+                        <label style="color:var(--accent-warn)"><i class="fas fa-id-card"></i> Dokumen Wajib KTP</label>
+                        <div class="file-zone" onclick="document.getElementById('file_${rowCount}').click()">
+                            <i class="fas fa-cloud-arrow-up"></i>
+                            <p id="fileNameLabel_${rowCount}" style="font-size:0.8rem; margin-top:4px;">Klik upload berkas KTP</p>
+                            <input type="file" id="file_${rowCount}" class="input-file" accept="image/*" style="display:none;" onchange="fileChanged(this, ${rowCount})">
+                        </div>
+                    </div>
+                </div>
+            `;
+            container.appendChild(row);
+            evaluasiKewajibanKtp(row.querySelector(".input-status"), rowCount);
+        }
+
+        function cekPanjangNikLive(input, id) {
+            const errorHint = document.getElementById(`errorNik_${id}`);
+            if(input.value.length > 0 && input.value.length < 16) {
+                errorHint.style.display = "block";
+                input.style.borderColor = "var(--accent-warn)";
+            } else {
+                errorHint.style.display = "none";
+                input.style.borderColor = "";
+            }
+        }
+
+        function hapusWargaRow(id) {
+            const row = document.getElementById(`wargaRow_${id}`);
+            if (row) row.remove();
+        }
+
+        function evaluasiKewajibanKtp(select, id) {
+            const wrapper = document.getElementById(`uploadWrapper_${id}`);
+            const inputNode = document.getElementById('file_' + id);
+            if(!wrapper || !inputNode) return;
+            
+            if(select.value === "Anak Kos" || select.value === "Kontrakan" || select.value.includes("ART / Sopir")) {
+                wrapper.style.display = "block"; inputNode.setAttribute("required", "required");
+            } else {
+                wrapper.style.display = "none"; inputNode.removeAttribute("required"); inputNode.value = "";
+                document.getElementById(`fileNameLabel_${id}`).innerText = "Klik upload berkas KTP";
+            }
+        }
+
+        function fileChanged(input, id) {
+            const label = document.getElementById(`fileNameLabel_${id}`);
+            label.innerText = input.files[0] ? `📄 ${input.files[0].name}` : "Klik upload berkas KTP";
+        }
+
+        function panggilCustomModal(tipe, judul, pesan, detailTambahan = "") {
+            const containerBox = document.getElementById("alertBoxContent");
+            if (tipe === "sukses") {
+                containerBox.innerHTML = `
+                    <div class="alert-icon-box alert-icon-success"><i class="fas fa-circle-check"></i></div>
+                    <h3>${judul}</h3>
+                    <p>${pesan}</p>
+                    <div class="code-display">${detailTambahan}</div>
+                    <button type="button" class="btn-modal-close" onclick="tutupAlertDanReset()">Ke Menu Validasi Status</button>
+                `;
+            } else {
+                containerBox.innerHTML = `
+                    <div class="alert-icon-box alert-icon-error"><i class="fas fa-triangle-exclamation"></i></div>
+                    <h3 style="color:var(--accent-warn);">${judul}</h3>
+                    <p>${pesan}</p>
+                    <button type="button" class="btn-modal-close" style="background:var(--accent-warn)" onclick="tutupCustomModalOnly()">Perbaiki Data</button>
+                `;
+            }
+            document.getElementById("customAlertOverlay").style.display = "flex";
+        }
+
+        function tutupCustomModalOnly() {
+            document.getElementById("customAlertOverlay").style.display = "none";
+        }
+
+        function generateRandomCode() {
+            const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+            let code = "";
+            for (let i = 0; i < 4; i++) { code += chars.charAt(Math.floor(Math.random() * chars.length)); }
+            return `RT04-${code}`;
+        }
+
+        // PROSES UTAMA VALIDASI & LANGSUNG SUBMIT TANPA KELUAR HALAMAN
+        function eksekusiKirimSensusDirect(e) {
+            e.preventDefault(); 
+            
+            const rows = document.querySelectorAll(".warga-item-box");
+            if(rows.length === 0) { panggilCustomModal("error", "Data Kosong", "Mohon masukkan minimal 1 data penghuni rumah!"); return; }
+
+            let validasiLolos = true;
+            const regexNik = /^[0-9]{16}$/;
+            let kumpulanNikInputForm = [];
+            let listDataAnggotaKolektif = [];
+
+            for (let row of rows) {
+                const inputNik = row.querySelector(".input-nik");
+                const valueNik = inputNik.value.trim();
+                const namaWarga = row.querySelector(".input-nama").value.trim() || 'Tanpa Nama';
+
+                if (!regexNik.test(valueNik)) {
+                    panggilCustomModal("error", "Format NIK Keliru", `NIK untuk <b>${namaWarga}</b> tidak valid. Harus tepat 16 digit angka!`);
+                    inputNik.focus();
+                    validasiLolos = false; break;
+                }
+
+                if (kumpulanNikInputForm.includes(valueNik)) {
+                    panggilCustomModal("error", "Duplikasi Form", `NIK <b>${valueNik}</b> diinput ganda di form ini!`);
+                    inputNik.focus();
+                    validasiLolos = false; break;
+                }
+                kumpulanNikInputForm.push(valueNik);
+
+                let nikSudahAdaDiDb = false;
+                for (let dataSensus of databaseSensus) {
+                    if (dataSensus.anggotaDetail) {
+                        let cocok = dataSensus.anggotaDetail.find(w => w.nik === valueNik);
+                        if (cocok) { nikSudahAdaDiDb = true; break; }
+                    }
+                }
+
+                if (nikSudahAdaDiDb) {
+                    panggilCustomModal("error", "Sensus Ganda", `Warga atas nama <b>${namaWarga}</b> (NIK: ${valueNik}) sudah terdaftar di database RT 04.`);
+                    inputNik.focus();
+                    validasiLolos = false; break;
+                }
+
+                // Masukkan data ke array penampung sementara loop jika baris ini aman
+                listDataAnggotaKolektif.push({
+                    nama: row.querySelector(".input-nama").value,
+                    nik: valueNik,
+                    status: row.querySelector(".input-status").value,
+                    fileUploaded: row.querySelector(".input-file").files[0] ? row.querySelector(".input-file").files[0].name : "-"
+                });
+            }
+
+            if(!validasiLolos) return;
+
+            // JIKA LOLOS VALIDASI SEMUA, LANGSUNG INJECT KE DATABASE MOCKUP
+            const kodeUnik = generateRandomCode();
+            databaseSensus.push({
+                kode: kodeUnik,
+                noRumah: document.getElementById("no_rumah").value,
+                jumlahJiwa: listDataAnggotaKolektif.length,
+                status: "Pending",
+                anggotaDetail: listDataAnggotaKolektif
+            });
+
+            // Tampilkan modal sukses langsung di tempat
+            panggilCustomModal("sukses", "Berkas Terkirim!", "Gunakan kode berikut untuk melacak berkas:", kodeUnik);
+        }
+
+        function tutupAlertDanReset() {
+            document.getElementById("customAlertOverlay").style.display = "none";
+            document.getElementById("mainSensusForm").reset();
+            document.getElementById("wargaListContainer").innerHTML = "";
+            
+            rowCount = 0;
+            tambahWargaRow();
+            // Alihkan halaman secara bersih ke panel pengecekan status
+            switchPage('pageStatus', document.getElementById("navStatus"));
+        }
+
+        window.onload = function() {
+            tambahWargaRow();
+        };
+    </script>
+</body>
+</html>
