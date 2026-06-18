@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>RT 04 Digital - Admin PWA</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="ad.css">
+</head>
+<body>
+
+    <header class="app-bar">
+        <div class="brand-wrapper">
+            <div class="app-icon"><i class="fas fa-shield-halved"></i></div>
+            <div>
+                <h1>PENGURUS RT 04</h1>
+                <p class="status-cloud"><span class="pulse-dot"></span> Live Sync</p>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-layout" id="areaCetakPdf">
+        
+        <h2 class="section-title">Ringkasan Sensus</h2>
+
+        <div class="stats-mobile-grid">
+            <div class="stat-card">
+                <div class="sc-icon"><i class="fas fa-folder-open"></i></div>
+                <div class="sc-info">
+                    <span id="statTotal">0</span>
+                    <p>Total Berkas</p>
+                </div>
+            </div>
+            
+            <div class="stat-card status-orange">
+                <div class="sc-icon"><i class="fas fa-clock"></i></div>
+                <div class="sc-info">
+                    <span id="statPending">0</span>
+                    <p>Pending</p>
+                </div>
+            </div>
+            
+            <div class="stat-card status-teal">
+                <div class="sc-icon"><i class="fas fa-circle-check"></i></div>
+                <div class="sc-info">
+                    <span id="statApproved">0</span>
+                    <p>Approved</p>
+                </div>
+            </div>
+            
+            <div class="stat-card status-pdf" id="btnDownloadPDFCard">
+                <div class="sc-icon"><i class="fas fa-file-pdf"></i></div>
+                <div class="sc-info">
+                    <span class="sc-action-text">Unduh Data</span>
+                    <p>Format PDF</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="list-section-header">
+            <h2 class="section-title">Daftar Warga Masuk</h2>
+            <p class="section-subtitle">Ketuk kartu warga untuk validasi & kelola berkas</p>
+        </div>
+
+        <div class="mobile-list-container" id="tabelAdminSensus">
+            <div class="loading-state">
+                <i class="fas fa-circle-notch fa-spin"></i>
+                <p>Menghubungkan ke Firebase...</p>
+            </div>
+        </div>
+
+    </main>
+
+    <div id="customAlertOverlay" class="custom-alert-overlay">
+        <div class="bottom-sheet-box" id="alertBoxContent"></div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+    
+    <script src="ad.js"></script>
+</body>
+</html>
