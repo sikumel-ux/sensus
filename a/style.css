@@ -80,7 +80,7 @@ body {
 .stat-card.status-amber .sc-icon { background: var(--amber-bg); color: var(--amber); }
 .stat-card.status-emerald .sc-icon { background: var(--emerald-bg); color: var(--emerald); }
 
-/* Card Download Khusus */
+/* Card Download Laporan Khusus */
 .stat-card.status-pdf {
     background: rgba(239, 68, 68, 0.06); border: 1px solid rgba(239, 68, 68, 0.2);
     cursor: pointer; transition: background 0.2s;
