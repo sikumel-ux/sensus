@@ -3,88 +3,368 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Admin Premium - Sensus RT 04 Digital</title>
+    <title>Dashboard Admin Sensus RT 04 v2.6</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
     
-    <link rel="stylesheet" href="gaya.css">
+    <style>
+        :root {
+            --bg-admin: #0F172A;
+            --bg-content: #F8FAFC;
+            --card-bg: #FFFFFF;
+            --border: #CBD5E1;
+            --primary: #FF6B35;
+            --primary-gradient: linear-gradient(135deg, #E0531F 0%, #FF6B35 60%);
+            --teal: #0D9488;
+            --accent-warn: #EF4444;
+            --text-main: #1E293B;
+            --text-muted: #64748B;
+            --radius: 16px;
+            
+            /* Warna kelompok KK selang-seling */
+            --kk-warna-a: #FFFFFF;
+            --kk-warna-b: #F1F5F9;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background-color: var(--bg-content); color: var(--text-main); font-size: 0.82rem; }
+
+        header { background: var(--bg-admin); color: white; padding: 20px; display: flex; justify-content: space-between; align-items: center; }
+        header h1 { font-size: 1.3rem; font-weight: 800; }
+        header p { color: #94A3B8; font-size: 0.75rem; }
+
+        .container { max-width: 100%; margin: 20px auto; padding: 0 20px; }
+
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 24px; }
+        .stat-card { background: var(--card-bg); padding: 20px; border-radius: var(--radius); border: 1px solid var(--border); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02); display: flex; align-items: center; gap: 16px; }
+        .stat-icon { width: 45px; height: 45px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; color: #fff; }
+        .stat-info p { font-size: 1.5rem; font-weight: 800; }
+
+        .controls-card { background: var(--card-bg); padding: 16px; border-radius: var(--radius); border: 1px solid var(--border); margin-bottom: 20px; display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; }
+        .filter-group { display: flex; gap: 10px; }
+        .form-select, .form-search { padding: 8px 14px; border: 1.5px solid var(--border); border-radius: 8px; font-size: 0.8rem; outline: none; background: #fff; }
+
+        .btn { padding: 8px 14px; border: none; border-radius: 8px; font-weight: 600; font-size: 0.8rem; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: all 0.2s; }
+        .btn-refresh { background: var(--bg-admin); color: #fff; }
+        .btn-pdf { background: #0284C7; color: #fff; }
+
+        .table-responsive { background: var(--card-bg); border-radius: var(--radius); border: 1px solid var(--border); overflow-x: auto; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05); }
+        table { width: 100%; border-collapse: collapse; text-align: left; table-layout: auto; }
+        th { background: #E2E8F0; padding: 14px 16px; font-weight: 800; font-size: 0.75rem; text-transform: uppercase; color: #334155; border-bottom: 2px solid var(--border); white-space: nowrap; }
+        
+        td { padding: 12px 16px; border-bottom: 1px solid var(--border); border-right: 1px solid rgba(203, 213, 225, 0.5); font-size: 0.82rem; white-space: nowrap; color: #334155; }
+        td:last-child { border-right: none; }
+
+        .row-kk-group-a { background-color: var(--kk-warna-a); }
+        .row-kk-group-b { background-color: var(--kk-warna-b); }
+        tr:hover { filter: brightness(0.97); }
+
+        .badge { padding: 4px 8px; border-radius: 6px; font-size: 0.68rem; font-weight: 700; text-transform: uppercase; }
+        .badge-tetap { background: #E0F2FE; color: #0369A1; border: 1px solid #bae6fd; }
+        .badge-kontrak { background: #FEF3C7; color: #B45309; border: 1px solid #fde68a; }
+        .badge-kos { background: #FCE7F3; color: #BE185D; border: 1px solid #fbcfe8; }
+
+        .action-flex { display: flex; gap: 6px; }
+        .btn-act { padding: 4px 8px; border: none; border-radius: 4px; font-size: 0.7rem; font-weight: 700; cursor: pointer; color: white; }
+        .btn-edit { background: #3B82F6; }
+        .btn-del { background: var(--accent-warn); }
+
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15,23,42,0.5); backdrop-filter: blur(4px); z-index: 9999; justify-content: center; align-items: center; padding: 20px; }
+        .modal-box { background: white; border-radius: var(--radius); padding: 24px; max-width: 600px; width: 100%; border: 1px solid var(--border); max-height: 90vh; overflow-y: auto; }
+        .modal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 14px; }
+        .modal-foot { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
+
+        /* CSS MODIFIKASI: SEMBUNYIKAN BERKAS & AKSI SAAT SIMPAN PDF */
+        @media print {
+            @page { size: landscape; margin: 8mm; }
+            header, .controls-card, .btn-act, 
+            th:nth-child(12), td:nth-child(12), 
+            th:last-child, td:last-child { display: none !important; }
+            
+            body { background: #fff; }
+            .container { padding: 0; margin: 0; width: 100%; }
+            .table-responsive { border: 1px solid #000; overflow: visible; border-radius: 0; }
+            th { background: #CBD5E1 !important; color: #000 !important; border: 1px solid #000 !important; }
+            td { border: 1px solid #94A3B8 !important; white-space: normal !important; word-wrap: break-word; font-size: 0.75rem !important; padding: 8px 6px !important; }
+            * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+        }
+    </style>
 </head>
 <body>
 
-    <nav class="admin-nav">
-        <div class="admin-brand">
-            <div class="brand-icon"><i class="fas fa-shield-halved"></i></div>
-            <span>PANEL PENGURUS RT 04</span>
+    <header>
+        <div>
+            <h1>Dashboard Admin RT 04</h1>
+            <p>Sistem Pemantauan Data Sensus - Mode Visualisasi Kelompok Kartu Keluarga</p>
         </div>
-        <div class="nav-status-badge">
-            <span class="pulse-dot"></span> Real-time Cloud
+        <div style="display: flex; gap: 10px;">
+            <button class="btn btn-refresh" onclick="muatDataSensusDariSheet()"><i class="fas fa-sync-alt"></i> Refresh Data</button>
+            <button class="btn btn-pdf" onclick="window.print()"><i class="fas fa-file-pdf"></i> Simpan Sebagai PDF</button>
         </div>
-    </nav>
+    </header>
 
-    <div class="app-container">
-        
+    <div class="container">
+        <!-- STATS -->
         <div class="stats-grid">
-            <div class="stat-box">
-                <div class="stat-icon-wrapper"><i class="fas fa-folder-open"></i></div>
-                <div class="stat-info">
-                    <h4>Total Berkas</h4>
-                    <div class="stat-num" id="statTotal">0</div>
-                </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background: var(--primary-gradient);"><i class="fas fa-users"></i></div>
+                <div class="stat-info"><h4>Total Jiwa</h4><p id="statTotalJiwa">0</p></div>
             </div>
-            <div class="stat-box status-amber">
-                <div class="stat-icon-wrapper"><i class="fas fa-clock"></i></div>
-                <div class="stat-info">
-                    <h4>Berkas Pending</h4>
-                    <div class="stat-num" id="statPending">0</div>
-                </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background: #0284C7;"><i class="fas fa-address-card"></i></div>
+                <div class="stat-info"><h4>Total KK</h4><p id="statTotalKk">0</p></div>
             </div>
-            <div class="stat-box status-emerald">
-                <div class="stat-icon-wrapper"><i class="fas fa-circle-check"></i></div>
-                <div class="stat-info">
-                    <h4>Disahkan (Approved)</h4>
-                    <div class="stat-num" id="statApproved">0</div>
-                </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background: #0D9488;"><i class="fas fa-home"></i></div>
+                <div class="stat-info"><h4>Warga Tetap</h4><p id="statWargaTetap">0</p></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background: #B45309;"><i class="fas fa-file-contract"></i></div>
+                <div class="stat-info"><h4>Kontrak / Kos</h4><p id="statWargaSewa">0</p></div>
             </div>
         </div>
 
-        <div class="app-card">
-            <div class="card-header-group">
-                <div class="header-text">
-                    <h3>Daftar Masuk Sensus Warga</h3>
-                    <p>Klik pada baris tabel untuk memvalidasi berkas kependudukan.</p>
-                </div>
+        <!-- FILTER -->
+        <div class="controls-card">
+            <div class="filter-group">
+                <select id="filterStatusHunian" class="form-select" onchange="aplikasikanFilterData()">
+                    <option value="Semua">-- Semua Status Hunian --</option>
+                    <option value="Milik Sendiri">Milik Sendiri</option>
+                    <option value="Sewa / Kontrak">Sewa / Kontrak</option>
+                    <option value="Kos">Kos Mandiri</option>
+                </select>
+                <input type="text" id="searchAdmin" class="form-search" placeholder="Cari nama, NIK, No Rumah, atau KK..." oninput="aplikasikanFilterData()">
             </div>
+        </div>
 
-            <div class="table-responsive">
-                <table class="app-table">
-                    <thead>
-                        <tr>
-                            <th>KODE</th>
-                            <th>NO. RUMAH</th>
-                            <th>STATUS HUNIAN</th>
-                            <th>JUMLAH JIWA</th>
-                            <th>STATUS VERIFIKASI</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tabelAdminSensus">
-                        <tr>
-                            <td colspan="5" class="table-loading">
-                                <i class="fas fa-circle-notch fa-spin"></i> Menghubungkan ke Firebase Cloud...
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+        <!-- TABLE -->
+        <div class="table-responsive">
+            <div id="loadingLabel" style="padding:40px; text-align:center;">
+                <i class="fas fa-spinner fa-spin fa-2x" style="color:var(--primary);"></i><p style="margin-top:10px;">Menghubungkan ke server database...</p>
             </div>
+            <table id="tabelSensusAdmin" style="display: none;">
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>No. Rmh</th>
+                        <th>No KK</th>
+                        <th>Nama Lengkap</th>
+                        <th>NIK</th>
+                        <th>Hubungan</th>
+                        <th>Status Hunian</th>
+                        <th>Jimpitan</th>
+                        <th>TTL</th>
+                        <th>WhatsApp</th>
+                        <th>Pemilik Kos</th>
+                        <th>Berkas</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="badanTabelWarga"></tbody>
+            </table>
         </div>
     </div>
 
-    <div id="customAlertOverlay" class="custom-alert-overlay">
-        <div class="modal-detail-box" id="alertBoxContent"></div>
+    <!-- MODAL FORM EDIT -->
+    <div id="modalEditOverlay" class="modal-overlay">
+        <div class="modal-box">
+            <h3 style="border-bottom:1px solid var(--border); padding-bottom:10px;">Edit Data Jiwa Sensus</h3>
+            <form id="formEditAdmin" onsubmit="simpanPerubahanData(event)">
+                <input type="hidden" id="edit_nik_target">
+                <div class="modal-grid">
+                    <div style="display:flex; flex-direction:column;"><label style="font-size:0.7rem; font-weight:700;">NO KK</label><input type="text" id="edit_no_kk" class="form-select" required></div>
+                    <div style="display:flex; flex-direction:column;"><label style="font-size:0.7rem; font-weight:700;">NO RUMAH</label><input type="text" id="edit_no_rumah" class="form-select" required></div>
+                    <div style="display:flex; flex-direction:column;"><label style="font-size:0.7rem; font-weight:700;">NAMA LENGKAP</label><input type="text" id="edit_nama" class="form-select" required></div>
+                    <div style="display:flex; flex-direction:column;"><label style="font-size:0.7rem; font-weight:700;">NIK</label><input type="text" id="edit_nik" class="form-select" required></div>
+                    <div style="display:flex; flex-direction:column;"><label style="font-size:0.7rem; font-weight:700;">TEMPAT TANGGAL LAHIR</label><input type="text" id="edit_ttl" class="form-select" required></div>
+                    <div style="display:flex; flex-direction:column;">
+                        <label style="font-size:0.7rem; font-weight:700;">JENIS KELAMIN</label>
+                        <select id="edit_jk" class="form-select"><option value="Laki-laki">Laki-laki</option><option value="Perempuan">Perempuan</option></select>
+                    </div>
+                    <div style="display:flex; flex-direction:column;">
+                        <label style="font-size:0.7rem; font-weight:700;">STATUS HUNIAN</label>
+                        <select id="edit_status_rumah" class="form-select" onchange="sinkronisasiFormEditKos()">
+                            <option value="Milik Sendiri">Milik Sendiri</option><option value="Sewa / Kontrak">Sewa / Kontrak</option><option value="Kos">Kos Mandiri</option>
+                        </select>
+                    </div>
+                    <div style="display:flex; flex-direction:column;">
+                        <label style="font-size:0.7rem; font-weight:700;">MODE JIMPITAN</label>
+                        <select id="edit_jimpitan" class="form-select"><option value="Harian">Harian</option><option value="Bulanan">Bulanan</option><option value="-">-</option></select>
+                    </div>
+                    <div style="display:flex; flex-direction:column;">
+                        <label style="font-size:0.7rem; font-weight:700;">HUBUNGAN KELUARGA</label>
+                        <select id="edit_hubungan" class="form-select">
+                            <option value="Suami">Suami</option><option value="Istri">Istri</option><option value="Anak">Anak</option><option value="Cucu">Cucu</option><option value="Mertua">Mertua</option><option value="Kos">Kos</option><option value="Lainnya">Lainnya</option>
+                        </select>
+                    </div>
+                    <div style="display:flex; flex-direction:column;"><label style="font-size:0.7rem; font-weight:700;">WHATSAPP</label><input type="text" id="edit_wa" class="form-select" required></div>
+                    <div style="display:flex; flex-direction:column; grid-column: span 2;" id="edit_wrapper_kos">
+                        <label style="font-size:0.7rem; font-weight:700; color:var(--primary)">NAMA PEMILIK KOS</label>
+                        <input type="text" id="edit_pemilik_kos" class="form-select">
+                    </div>
+                </div>
+                <div class="modal-foot">
+                    <button type="button" class="btn" style="background:#E2E8F0;" onclick="tutupModalEdit()">Batal</button>
+                    <button type="submit" class="btn" style="background:var(--teal); color:white;">Simpan Perubahan</button>
+                </div>
+            </form>
+        </div>
     </div>
 
-    <script type="module" src="admin.js"></script>
+    <script>
+        const GOOGLE_SCRIPT_API_URL = "https://script.google.com/macros/s/AKfycby-DpvqtWpu8FEVeudZYPms_0kc7jJyQ60BwiVJ9NlIxKcBzMbse9GcbBpjnorz94_wHg/exec";
+        let MASTER_DATA_SENSUS = [];
+
+        function muatDataSensusDariSheet() {
+            document.getElementById("loadingLabel").style.display = "block";
+            document.getElementById("tabelSensusAdmin").style.display = "none";
+            fetch(GOOGLE_SCRIPT_API_URL).then(res => res.json()).then(data => {
+                MASTER_DATA_SENSUS = data;
+                hitungStatistikKolektif(data);
+                isiTabelWargaIndividu(data);
+                document.getElementById("loadingLabel").style.display = "none";
+                document.getElementById("tabelSensusAdmin").style.display = "table";
+            });
+        }
+
+        function hitungStatistikKolektif(data) {
+            document.getElementById("statTotalJiwa").innerText = data.length;
+            let setKk = new Set(), countTetap = 0, countSewa = 0;
+            data.forEach(w => {
+                if(w.noKk) setKk.add(w.noKk);
+                if(w.statusRumah === "Milik Sendiri") countTetap++;
+                if(w.statusRumah === "Sewa / Kontrak" || w.statusRumah === "Kos") countSewa++;
+            });
+            document.getElementById("statTotalKk").innerText = setKk.size;
+            document.getElementById("statWargaTetap").innerText = countTetap;
+            document.getElementById("statWargaSewa").innerText = countSewa;
+        }
+
+        function isiTabelWargaIndividu(dataArr) {
+            const tbody = document.getElementById("badanTabelWarga"); 
+            tbody.innerHTML = "";
+            
+            let lastNoKk = "";
+            let currentClass = "row-kk-group-a";
+
+            dataArr.forEach((w, idx) => {
+                let cleanKk = (w.noKk || "").replace(/'/g, "").trim();
+                
+                if (lastNoKk !== "" && cleanKk !== lastNoKk) {
+                    currentClass = (currentClass === "row-kk-group-a") ? "row-kk-group-b" : "row-kk-group-a";
+                }
+                lastNoKk = cleanKk;
+
+                let badge = w.statusRumah === "Milik Sendiri" ? "badge-tetap" : (w.statusRumah === "Kos" ? "badge-kos" : "badge-kontrak");
+                let linkFoto = w.linkFoto && w.linkFoto !== "-" ? `<a href="${w.linkFoto}" target="_blank" style="color:var(--primary); font-weight:600;"><i class="fas fa-image"></i> Lihat</a>` : "-";
+                
+                let row = document.createElement("tr");
+                row.className = currentClass;
+                
+                row.innerHTML = `
+                    <td><b>${idx+1}</b></td>
+                    <td style="font-weight:700;">${w.noRumah || "-"}</td>
+                    <td style="font-family:monospace; font-weight:600; letter-spacing:0.3px;">${cleanKk}</td>
+                    <td style="font-weight:700; color:var(--bg-admin);">${w.namaLengkap || "-"}</td>
+                    <td>${(w.nik || "").replace(/'/g, "")}</td>
+                    <td>${w.hubungan || "-"}</td>
+                    <td><span class="badge ${badge}">${w.statusRumah || "-"}</span></td>
+                    <td>${w.modeJimpitan || "-"}</td>
+                    <td>${w.ttl || "-"}</td>
+                    <td>${(w.waUtama || "").replace(/'/g, "")}</td>
+                    <td>${w.namaPemilikKos || "-"}</td>
+                    <td>${linkFoto}</td>
+                    <td>
+                        <div class="action-flex">
+                            <button class="btn-act btn-edit" onclick="bukaModalEdit(${idx})">Edit</button>
+                            <button class="btn-act btn-del" onclick="hapusWargaData('${w.nik}')">Hapus</button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function aplikasikanFilterData() {
+            const fStatus = document.getElementById("filterStatusHunian").value;
+            const q = document.getElementById("searchAdmin").value.toLowerCase().trim();
+            let hasil = MASTER_DATA_SENSUS.filter(w => {
+                let matchStatus = (fStatus === "Semua" || w.statusRumah === fStatus);
+                let matchText = q === "" || (w.namaLengkap||"").toLowerCase().includes(q) || (w.nik||"").toLowerCase().includes(q) || (w.noRumah||"").toLowerCase().includes(q) || (w.noKk||"").toLowerCase().includes(q);
+                return matchStatus && matchText;
+            });
+            isiTabelWargaIndividu(hasil);
+        }
+
+        function bukaModalEdit(idx) {
+            let w = MASTER_DATA_SENSUS[idx];
+            document.getElementById("edit_nik_target").value = w.nik.replace(/'/g, "");
+            document.getElementById("edit_no_kk").value = w.noKk.replace(/'/g, "");
+            document.getElementById("edit_no_rumah").value = w.noRumah;
+            document.getElementById("edit_nama").value = w.namaLengkap;
+            document.getElementById("edit_nik").value = w.nik.replace(/'/g, "");
+            document.getElementById("edit_ttl").value = w.ttl;
+            document.getElementById("edit_jk").value = w.jk;
+            document.getElementById("edit_status_rumah").value = w.statusRumah;
+            document.getElementById("edit_jimpitan").value = w.modeJimpitan;
+            document.getElementById("edit_hubungan").value = w.hubungan;
+            document.getElementById("edit_wa").value = w.waUtama.replace(/'/g, "");
+            document.getElementById("edit_pemilik_kos").value = w.namaPemilikKos;
+            
+            sinkronisasiFormEditKos();
+            document.getElementById("modalEditOverlay").style.display = "flex";
+        }
+
+        function sinkronisasiFormEditKos() {
+            let status = document.getElementById("edit_status_rumah").value;
+            if(status === "Kos") {
+                document.getElementById("edit_wrapper_kos").style.display = "flex";
+                document.getElementById("edit_jimpitan").value = "-";
+            } else {
+                document.getElementById("edit_wrapper_kos").style.display = "none";
+            }
+        }
+
+        function tutupModalEdit() { document.getElementById("modalEditOverlay").style.display = "none"; }
+
+        function simpanPerubahanData(e) {
+            e.preventDefault();
+            if(!confirm("Simpan perubahan data ini?")) return;
+            
+            let payload = {
+                aksi: "edit",
+                nikTarget: document.getElementById("edit_nik_target").value,
+                noKk: document.getElementById("edit_no_kk").value,
+                noRumah: document.getElementById("edit_no_rumah").value,
+                namaLengkap: document.getElementById("edit_nama").value,
+                nik: document.getElementById("edit_nik").value,
+                ttl: document.getElementById("edit_ttl").value,
+                jk: document.getElementById("edit_jk").value,
+                statusRumah: document.getElementById("edit_status_rumah").value,
+                modeJimpitan: document.getElementById("edit_jimpitan").value,
+                hubungan: document.getElementById("edit_hubungan").value,
+                waUtama: document.getElementById("edit_wa").value,
+                namaPemilikKos: document.getElementById("edit_pemilik_kos").value
+            };
+
+            fetch(GOOGLE_SCRIPT_API_URL, { method: "POST", body: JSON.stringify(payload) })
+            .then(() => { alert("Data berhasil diupdate!"); tutupModalEdit(); muatDataSensusDariSheet(); });
+        }
+
+        function hapusWargaData(nikClean) {
+            let nik = nikClean.replace(/'/g, "");
+            if(!confirm("Apakah Anda yakin ingin menghapus data warga ini?")) return;
+            
+            fetch(GOOGLE_SCRIPT_API_URL, {
+                method: "POST",
+                body: JSON.stringify({ aksi: "hapus", nik: nik })
+            }).then(() => { alert("Data berhasil terhapus!"); muatDataSensusDariSheet(); });
+        }
+
+        window.onload = function() { muatDataSensusDariSheet(); };
+    </script>
 </body>
 </html>
