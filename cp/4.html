@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Admin Sensus RT 04</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-app: #F8FAFC;
+            --card-bg: #FFFFFF;
+            --bg-input: #F1F5F9;
+            --border: #E2E8F0;
+            --primary: #FF6B35;
+            --primary-light: rgba(255, 107, 53, 0.08);
+            --teal: #0D9488;
+            --teal-light: rgba(13, 148, 136, 0.08);
+            --blue: #3B82F6;
+            --blue-light: rgba(59, 130, 246, 0.08);
+            --accent-warn: #EF4444;
+            --text-main: #0F172A;
+            --text-muted: #64748B;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background-color: var(--bg-app); color: var(--text-main); padding: 20px; font-size: 0.85rem; }
+        
+        .container { max-width: 1200px; margin: 0 auto; }
+        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; background: #fff; padding: 15px 20px; border-radius: 12px; border: 1px solid var(--border); }
+        header h1 { font-size: 1.2rem; font-weight: 800; color: var(--text-main); }
+        
+        /* CARDS GRID */
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; margin-bottom: 20px; }
+        .stat-card { background: var(--card-bg); border: 1px solid var(--border); padding: 18px; border-radius: 12px; display: flex; align-items: center; justify-content: space-between; }
+        .stat-info h3 { font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.5px; margin-bottom: 4px; }
+        .stat-info p { font-size: 1.6rem; font-weight: 800; color: var(--text-main); }
+        .stat-icon { width: 45px; height: 45px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
+        
+        .stat-card.jiwa .stat-icon { background: var(--primary-light); color: var(--primary); }
+        .stat-card.kk .stat-icon { background: var(--blue-light); color: var(--blue); }
+        .stat-card.tetap .stat-icon { background: var(--teal-light); color: var(--teal); }
+        .stat-card.kos .stat-icon { background: rgba(100, 116, 139, 0.1); color: var(--text-muted); }
+        
+        /* BUTTONS */
+        .btn { padding: 8px 14px; border: none; border-radius: 6px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; font-size: 0.8rem; transition: 0.2s; }
+        .btn-refresh { background: var(--teal); color: white; }
+        .btn-refresh:hover { background: #0f766e; }
+        .btn-edit { background: var(--teal-light); color: var(--teal); }
+        .btn-edit:hover { background: var(--teal); color: white; }
+        .btn-danger { background: rgba(239, 68, 68, 0.08); color: var(--accent-warn); }
+        .btn-danger:hover { background: var(--accent-warn); color: white; }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:hover { background: #e0531f; }
+        
+        /* TABLE STYLING */
+        .card { background: var(--card-bg); border-radius: 12px; border: 1px solid var(--border); padding: 20px; }
+        .table-responsive { width: 100%; overflow-x: auto; margin-top: 5px; }
+        table { width: 100%; border-collapse: collapse; text-align: left; min-width: 1000px; }
+        th, td { padding: 12px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+        th { background: #F1F5F9; color: var(--text-muted); font-weight: 700; text-transform: uppercase; font-size: 0.7rem; letter-spacing: 0.5px; }
+        tr:hover { background: #F8FAFC; }
+        
+        .badge { padding: 3px 6px; border-radius: 4px; font-size: 0.7rem; font-weight: 700; display: inline-block; }
+        .badge-code { background: var(--primary-light); color: var(--primary); }
+        .badge-hub { background: #E2E8F0; color: var(--text-main); }
+        .btn-foto { color: var(--primary); text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; }
+        .btn-foto:hover { text-decoration: underline; }
+        
+        .loading { text-align: center; padding: 50px; font-size: 1rem; color: var(--text-muted); }
+        .loading i { margin-bottom: 10px; font-size: 1.8rem; color: var(--primary); }
+        
+        /* MODAL */
+        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(15, 23, 42, 0.4); display: none; justify-content: center; align-items: center; z-index: 1000; padding: 15px; }
+        .modal-content { background: white; padding: 25px; border-radius: 16px; max-width: 600px; width: 100%; max-height: 85vh; overflow-y: auto; border: 1px solid var(--border); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
+        .modal-header h2 { font-size: 1.1rem; font-weight: 800; }
+        .close-modal { font-size: 1.3rem; color: var(--text-muted); cursor: pointer; border: none; background: none; }
+        
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .form-group { display: flex; flex-direction: column; gap: 4px; margin-bottom: 12px; }
+        .form-group.full-width { grid-column: span 2; }
+        .form-group label { font-weight: 600; color: var(--text-main); font-size: 0.8rem; }
+        .form-group input, .form-group select { padding: 8px 12px; border: 1px solid var(--border); border-radius: 6px; background: var(--bg-input); outline: none; font-size: 0.85rem; }
+        .form-group input:focus, .form-group select:focus { border-color: var(--primary); background: #fff; }
+        .modal-footer { display: flex; justify-content: flex-end; gap: 10px; margin-top: 15px; border-top: 1px solid var(--border); padding-top: 15px; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <div>
+                <h1>Dashboard Admin Sensus RT 04</h1>
+                <p style="color: var(--text-muted); font-size: 0.75rem;">Verifikasi, Edit, dan Sinkronisasi Cloud Google Sheet</p>
+            </div>
+            <button class="btn btn-refresh" onclick="muatDataSensus()"><i class="fas fa-sync-alt"></i> Segarkan Data</button>
+        </header>
+
+        <div class="stats-grid">
+            <div class="stat-card jiwa">
+                <div class="stat-info">
+                    <h3>Total Jiwa</h3>
+                    <p id="cnt_totalJiwa">0</p>
+                </div>
+                <div class="stat-icon"><i class="fas fa-users"></i></div>
+            </div>
+            <div class="stat-card kk">
+                <div class="stat-info">
+                    <h3>Total KK</h3>
+                    <p id="cnt_totalKk">0</p>
+                </div>
+                <div class="stat-icon"><i class="fas fa-address-card"></i></div>
+            </div>
+            <div class="stat-card tetap">
+                <div class="stat-info">
+                    <h3>Warga Tetap</h3>
+                    <p id="cnt_wargaTetap">0</p>
+                </div>
+                <div class="stat-icon"><i class="fas fa-house-user"></i></div>
+            </div>
+            <div class="stat-card kos">
+                <div class="stat-info">
+                    <h3>Kos / Kontrak</h3>
+                    <p id="cnt_wargaKos">0</p>
+                </div>
+                <div class="stat-icon"><i class="fas fa-door-open"></i></div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="table-responsive">
+                <div id="loadingState" class="loading">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <p>Menghubungkan ke server database...</p>
+                </div>
+                
+                <table id="adminTable" style="display: none;">
+                    <thead>
+                        <tr>
+                            <th>Kode</th>
+                            <th>No. KK</th>
+                            <th>Nama Lengkap</th>
+                            <th>NIK</th>
+                            <th>Hubungan</th>
+                            <th>Hunian & No</th>
+                            <th>Jimpitan</th>
+                            <th>WhatsApp</th>
+                            <th>Lampiran</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="sensusTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="editModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-user-pen" style="color: var(--primary);"></i> Edit Data Warga</h2>
+                <button class="close-modal" onclick="tutupModal()">&times;</button>
+            </div>
+            <form id="formEditWarga" onsubmit="eksekusiUpdateWarga(event)">
+                <input type="hidden" id="edit_nikTarget">
+                
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>No. Kartu Keluarga (KK)</label>
+                        <input type="text" id="edit_noKk" required>
+                    </div>
+                    <div class="form-group">
+                        <label>WhatsApp Utama</label>
+                        <input type="text" id="edit_waUtama" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Status Rumah</label>
+                        <select id="edit_statusRumah" onchange="toggleEditPemilikKos()">
+                            <option value="Milik Sendiri">Milik Sendiri</option>
+                            <option value="Kontrak">Kontrak</option>
+                            <option value="Kos">Kos</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Nomor Rumah</label>
+                        <input type="text" id="edit_noRumah" required>
+                    </div>
+                    <div class="form-group" id="edit_boxPemilikKos" style="display:none;">
+                        <label>Nama Pemilik Kos</label>
+                        <input type="text" id="edit_namaPemilikKos">
+                    </div>
+                    <div class="form-group">
+                        <label>Mode Jimpitan</label>
+                        <select id="edit_modeJimpitan">
+                            <option value="Harian">Harian</option>
+                            <option value="Bulanan">Bulanan</option>
+                            <option value="Warga Kos">Warga Kos</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group full-width" style="border-top:1px dashed var(--border); margin-top:5px; padding-top:10px;">
+                        <span style="font-weight:700; color:var(--primary)">Data Individu Warga</span>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label>Nama Lengkap</label>
+                        <input type="text" id="edit_namaLengkap" required>
+                    </div>
+                    <div class="form-group">
+                        <label>NIK Warga</label>
+                        <input type="text" id="edit_nik" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Tempat, Tanggal Lahir</label>
+                        <input type="text" id="edit_ttl" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Jenis Kelamin</label>
+                        <select id="edit_jk">
+                            <option value="Laki-laki">Laki-laki</option>
+                            <option value="Perempuan">Perempuan</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Agama</label>
+                        <input type="text" id="edit_agama" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Pekerjaan</label>
+                        <input type="text" id="edit_pekerjaan" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Hubungan Keluarga</label>
+                        <select id="edit_hubungan">
+                            <option value="Kepala Keluarga">Kepala Keluarga</option>
+                            <option value="Istri">Istri</option>
+                            <option value="Anak">Anak</option>
+                            <option value="Orang Tua">Orang Tua</option>
+                            <option value="Lainnya">Lainnya</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" onclick="tutupModal()">Batal</button>
+                    <button type="submit" class="btn btn-primary" id="btnSimpanEdit"><i class="fas fa-floppy-disk"></i> Simpan Perubahan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const GOOGLE_SCRIPT_API_URL = "https://script.google.com/macros/s/AKfycby-DpvqtWpu8FEVeudZYPms_0kc7jJyQ60BwiVJ9NlIxKcBzMbse9GcbBpjnorz94_wHg/exec";
+        let databaseWargaMemory = [];
+
+        function hitungKalkulasiStatistik(data) {
+            let totalJiwa = data.length;
+            let kumpulanKkUnik = new Set();
+            let countTetap = 0;
+            let countKosKontrak = 0;
+
+            data.forEach(warga => {
+                let kkBersih = warga.noKk ? warga.noKk.toString().replace(/'/g, "").trim() : "";
+                if(kkBersih) kumpulanKkUnik.add(kkBersih);
+
+                let statusRumah = warga.statusRumah ? warga.statusRumah.toString().trim() : "";
+                if (statusRumah === "Milik Sendiri") {
+                    countTetap++;
+                } else if (statusRumah === "Kos" || statusRumah === "Kontrak") {
+                    countKosKontrak++;
+                }
+            });
+
+            document.getElementById("cnt_totalJiwa").innerText = totalJiwa;
+            document.getElementById("cnt_totalKk").innerText = kumpulanKkUnik.size;
+            document.getElementById("cnt_wargaTetap").innerText = countTetap;
+            document.getElementById("cnt_wargaKos").innerText = countKosKontrak;
+        }
+
+        function muatDataSensus() {
+            const loading = document.getElementById("loadingState");
+            const table = document.getElementById("adminTable");
+            const tbody = document.getElementById("sensusTableBody");
+            
+            loading.style.display = "block";
+            table.style.display = "none";
+            tbody.innerHTML = "";
+
+            fetch(GOOGLE_SCRIPT_API_URL)
+            .then(res => res.json())
+            .then(data => {
+                loading.style.display = "none";
+                table.style.display = "table";
+                
+                if (data.status === "error" || data.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="10" style="text-align:center; color:var(--text-muted)">Belum ada data sensus warga.</td></tr>`;
+                    return;
+                }
+
+                databaseWargaMemory = data;
+                hitungKalkulasiStatistik(data);
+
+                data.forEach((row) => {
+                    const linkFotoHtml = (row.linkFoto && row.linkFoto !== "-") 
+                        ? `<a href="${row.linkFoto}" target="_blank" class="btn-foto"><i class="fas fa-image"></i> Lihat KTP</a>` 
+                        : `<span style="color:var(--text-muted)">-</span>`;
+                    
+                    const infoRumah = row.statusRumah === "Kos" 
+                        ? `Kos (No. ${row.noRumah})<br><small style="color:var(--text-muted)">Pemilik: ${row.namaPemilikKos}</small>`
+                        : `${row.statusRumah} (No. ${row.noRumah})`;
+
+                    const tr = document.createElement("tr");
+                    tr.innerHTML = `
+                        <td><span class="badge badge-code">${row.kode || '-'}</span></td>
+                        <td><b>${row.noKk || '-'}</b></td>
+                        <td>${row.namaLengkap || '-'}</td>
+                        <td><code>${row.nik || '-'}</code></td>
+                        <td><span class="badge badge-hub">${row.hubungan || '-'}</span></td>
+                        <td>${infoRumah}</td>
+                        <td>${row.modeJimpitan || '-'}</td>
+                        <td>${row.waUtama || '-'}</td>
+                        <td>${linkFotoHtml}</td>
+                        <td>
+                            <div style="display:flex; gap:6px;">
+                                <button class="btn btn-edit" onclick="bukaModalEdit('${row.nik}')"><i class="fas fa-edit"></i></button>
+                                <button class="btn btn-danger" onclick="eksekusiHapusWarga('${row.nik}', '${row.namaLengkap}')"><i class="fas fa-trash-can"></i></button>
+                            </div>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            })
+            .catch(err => {
+                loading.innerHTML = `<i class="fas fa-exclamation-circle" style="color:var(--accent-warn)"></i><p>Gagal memuat database: ${err.toString()}</p>`;
+            });
+        }
+
+        function eksekusiHapusWarga(nikWarga, namaWarga) {
+            if (!confirm(`Hapus permanen warga berikut?\nNama: ${namaWarga}\nNIK: ${nikWarga}`)) return;
+
+            fetch(GOOGLE_SCRIPT_API_URL, {
+                method: "POST",
+                body: JSON.stringify({ aksi: "hapus", nik: nikWarga })
+            })
+            .then(res => res.json())
+            .then(response => {
+                alert(response.message);
+                muatDataSensus();
+            })
+            .catch(() => {
+                alert("Perintah hapus terkirim ke Cloud Google Sheet!");
+                setTimeout(muatDataSensus, 1500);
+            });
+        }
+
+        function bukaModalEdit(nikWarga) {
+            const dataWarga = databaseWargaMemory.find(w => w.nik.toString().trim() === nikWarga.toString().trim());
+            if (!dataWarga) return alert("Data tidak ditemukan.");
+
+            document.getElementById("edit_nikTarget").value = dataWarga.nik;
+            document.getElementById("edit_noKk").value = dataWarga.noKk;
+            document.getElementById("edit_waUtama").value = dataWarga.waUtama;
+            document.getElementById("edit_statusRumah").value = dataWarga.statusRumah;
+            document.getElementById("edit_noRumah").value = dataWarga.noRumah;
+            document.getElementById("edit_namaPemilikKos").value = dataWarga.namaPemilikKos || "";
+            document.getElementById("edit_modeJimpitan").value = dataWarga.modeJimpitan;
+            document.getElementById("edit_namaLengkap").value = dataWarga.namaLengkap;
+            document.getElementById("edit_nik").value = dataWarga.nik;
+            document.getElementById("edit_ttl").value = dataWarga.ttl;
+            document.getElementById("edit_jk").value = dataWarga.jk;
+            document.getElementById("edit_agama").value = dataWarga.agama;
+            document.getElementById("edit_pekerjaan").value = dataWarga.pekerjaan;
+            document.getElementById("edit_hubungan").value = dataWarga.hubungan;
+
+            toggleEditPemilikKos();
+            document.getElementById("editModal").style.display = "flex";
+        }
+
+        function tutupModal() { document.getElementById("editModal").style.display = "none"; }
+        function toggleEditPemilikKos() {
+            const status = document.getElementById("edit_statusRumah").value;
+            document.getElementById("edit_boxPemilikKos").style.display = (status === "Kos") ? "flex" : "none";
+        }
+
+        function eksekusiUpdateWarga(event) {
+            event.preventDefault();
+            const btnSimpan = document.getElementById("btnSimpanEdit");
+            btnSimpan.setAttribute("disabled", "disabled");
+
+            const payload = {
+                aksi: "edit",
+                nikTarget: document.getElementById("edit_nikTarget").value,
+                noKk: document.getElementById("edit_noKk").value,
+                waUtama: document.getElementById("edit_waUtama").value,
+                statusRumah: document.getElementById("edit_statusRumah").value,
+                noRumah: document.getElementById("edit_noRumah").value,
+                namaPemilikKos: document.getElementById("edit_namaPemilikKos").value,
+                modeJimpitan: document.getElementById("edit_modeJimpitan").value,
+                namaLengkap: document.getElementById("edit_namaLengkap").value,
+                nik: document.getElementById("edit_nik").value,
+                ttl: document.getElementById("edit_ttl").value,
+                jk: document.getElementById("edit_jk").value,
+                agama: document.getElementById("edit_agama").value,
+                pekerjaan: document.getElementById("edit_pekerjaan").value,
+                hubungan: document.getElementById("edit_hubungan").value
+            };
+
+            fetch(GOOGLE_SCRIPT_API_URL, {
+                method: "POST",
+                body: JSON.stringify(payload)
+            })
+            .then(res => res.json())
+            .then(response => {
+                btnSimpan.removeAttribute("disabled");
+                alert(response.message);
+                tutupModal();
+                muatDataSensus();
+            })
+            .catch(() => {
+                alert("Data berhasil diproses ke cloud!");
+                tutupModal();
+                btnSimpan.removeAttribute("disabled");
+                setTimeout(muatDataSensus, 1500);
+            });
+        }
+
+        window.onload = muatDataSensus;
+    </script>
+</body>
+</html>
