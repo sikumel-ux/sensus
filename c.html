@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Sensus RT 04</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header class="app-header">
+        <div class="header-logo"><i class="fas fa-users-viewfinder"></i></div>
+        <h1>Sensus RT 04</h1>
+        <p>Formulir Pengumpulan Data Warga</p>
+    </header>
+
+    <div class="app-container">
+        <div id="pageFormulir" class="app-page active">
+            <form id="mainSensusForm" onsubmit="return false;">
+                
+                <div class="app-card">
+                    <div class="card-title-group">
+                        <div class="step-icon">1</div>
+                        <h3>Data Properti & Nomor KK</h3>
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Status Hunian</label>
+                            <select id="status_rumah" class="form-control" onchange="sinkronisasiKategoriWargaAll()">
+                                <option value="Milik Sendiri">Milik Sendiri / Keluarga</option>
+                                <option value="Sewa / Kontrak">Sewa / Kontrak </option>
+                                <option value="Kos">Kos</option>
+                            </select>
+                        </div>
+                        <div class="form-group" id="wrapperKk">
+                            <label>Nomor Kartu Keluarga (16 Digit)</label>
+                            <input type="text" id="no_kk" class="form-control" placeholder="3402xxxxxxxxxxxx" inputmode="numeric" maxlength="16" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+                        </div>
+                        <div class="form-row-2">
+                            <div class="form-group">
+                                <label>Nomor Rumah</label>
+                                <input type="text" id="no_rumah" class="form-control" placeholder="Contoh: No. 12">
+                            </div>
+                            <div class="form-group" id="wrapperJimpitan">
+                                <label>Mode Jimpitan</label>
+                                <select id="mode_jimpitan" class="form-control">
+                                    <option value="Harian">Harian</option>
+                                    <option value="Bulanan">Bulanan</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group" id="wrapperPemilikKos" style="display: none;">
+                            <label style="color: var(--primary);">Nama Pemilik Kos</label>
+                            <input type="text" id="nama_pemilik_kos" class="form-control" placeholder="Tulis nama pemilik atau pengelola kos">
+                        </div>
+
+                        <div class="form-group">
+                            <label>No WhatsApp Anda</label>
+                            <input type="text" id="wa_utama" class="form-control" placeholder="Contoh: 081234567xxx" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+                        </div>
+                        <div class="form-group">
+                            <label>Alamat Detail </label>
+                            <input type="text" id="alamat_rumah" class="form-control" placeholder="Contoh: Jl. Kenangan">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="app-card">
+                    <div class="card-title-group">
+                        <div class="step-icon">2</div>
+                        <h3>Daftar Anggota Jiwa</h3>
+                    </div>
+                    <div id="infoNoteStatus" class="info-note">
+                        <i class="fas fa-info-circle"></i> Memasukkan data Kepala Keluarga & seluruh anggota yang tinggal di rumah ini.
+                    </div>
+                    <div id="wargaListContainer"></div>
+                    <button type="button" id="btnTambahAnggota" class="btn-action btn-outline" onclick="tambahWargaRow()">
+                        <i class="fas fa-user-plus"></i> Tambah Anggota Jiwa
+                    </button>
+                </div>
+
+                <div class="app-card">
+                    <div class="form-group" style="flex-direction:row; gap:10px; align-items:flex-start;">
+                        <input type="checkbox" id="chkPernyataan" style="width:18px; height:18px; margin-top:2px; accent-color:var(--primary);">
+                        <label for="chkPernyataan" style="text-transform:none; font-size:0.8rem; font-weight:600; color:var(--text-main); cursor:pointer;">
+                            Saya menyatakan bahwa data yang diisi di atas sudah sesuai dengan keadaan yang sebenarnya.
+                        </label>
+                    </div>
+                </div>
+
+                <button type="button" id="btnSubmitFinal" class="btn-action btn-primary" onclick="prosesKolektifKirimData()"><i class="fas fa-cloud-arrow-up"></i> Kirimkan</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="customAlertOverlay" class="custom-alert-overlay">
+        <div class="alert-box" id="alertBoxContent"></div>
+    </div>
+
+    <script src="c.js"></script>
+</body>
+</html>
