@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terima Kasih - Sensus RT 04</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-admin: #0F172A;
+            --bg-content: #F8FAFC;
+            --card-bg: #FFFFFF;
+            --border: #CBD5E1;
+            --primary: #FF6B35;
+            --primary-gradient: linear-gradient(135deg, #E0531F 0%, #FF6B35 60%);
+            --teal: #0D9488;
+            --text-main: #1E293B;
+            --text-muted: #64748B;
+            --radius: 16px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background-color: var(--bg-content); color: var(--text-main); font-size: 0.9rem; line-height: 1.6; }
+
+        .wrapper { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        .thank-card { background: var(--card-bg); max-width: 600px; width: 100%; padding: 40px 30px; border-radius: var(--radius); border: 1px solid var(--border); box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05); text-align: center; }
+
+        .success-icon { width: 80px; height: 80px; background: #DCFCE7; color: #16A34A; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; margin: 0 auto 24px; }
+        
+        h1 { font-size: 1.8rem; font-weight: 800; color: var(--bg-admin); margin-bottom: 8px; }
+        .subtitle { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 30px; }
+
+        .data-box { text-align: left; background: #F1F5F9; border-radius: 12px; padding: 20px; margin-bottom: 30px; border: 1px solid #E2E8F0; }
+        .data-box h3 { font-size: 1rem; font-weight: 700; margin-bottom: 14px; border-bottom: 1px solid var(--border); padding-bottom: 8px; color: var(--bg-admin); display: flex; align-items: center; gap: 8px; }
+        
+        .data-row { display: grid; grid-template-columns: 140px 10px 1fr; padding: 6px 0; font-size: 0.85rem; }
+        .data-label { font-weight: 600; color: var(--text-muted); }
+        .data-value { font-weight: 700; color: var(--text-main); }
+
+        .loading-state { padding: 20px 0; color: var(--text-muted); }
+
+        .btn-back { display: inline-flex; align-items: center; gap: 8px; background: var(--primary-gradient); color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 0.9rem; box-shadow: 0 4px 12px rgba(224, 83, 31, 0.2); transition: all 0.2s; }
+        .btn-back:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(224, 83, 31, 0.3); }
+    </style>
+</head>
+<body>
+
+    <div class="wrapper">
+        <div class="thank-card">
+            <div class="success-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <h1>Data Berhasil Dikirim!</h1>
+            <p class="subtitle">Matur nuwun, data sensus Anda telah aman tersimpan di database RT 04.</p>
+
+            <!-- LOADING STATE -->
+            <div id="loadingData" class="loading-state">
+                <i class="fas fa-spinner fa-spin fa-2x" style="color:var(--primary); margin-bottom:10px;"></i>
+                <p>Memuat ringkasan data Anda...</p>
+            </div>
+
+            <!-- RINGKASAN DATA WARGA -->
+            <div id="ringkasanData" class="data-box" style="display: none;">
+                <h3><i class="fas fa-user-check"></i> Ringkasan Data Jiwa</h3>
+                
+                <div class="data-row">
+                    <div class="data-label">Nama Lengkap</div><div>:</div><div class="data-value" id="res_nama">-</div>
+                </div>
+                <div class="data-row">
+                    <div class="data-label">NIK</div><div>:</div><div class="data-value" id="res_nik">-</div>
+                </div>
+                <div class="data-row">
+                    <div class="data-label">No. Rumah</div><div>:</div><div class="data-value" id="res_rumah">-</div>
+                </div>
+                <div class="data-row">
+                    <div class="data-label">No. KK</div><div>:</div><div class="data-value" id="res_kk">-</div>
+                </div>
+                <div class="data-row">
+                    <div class="data-label">Hubungan Keluarga</div><div>:</div><div class="data-value" id="res_hubungan">-</div>
+                </div>
+                <div class="data-row">
+                    <div class="data-label">Status Hunian</div><div>:</div><div class="data-value" id="res_status">-</div>
+                </div>
+                <div class="data-row">
+                    <div class="data-label">WhatsApp</div><div>:</div><div class="data-value" id="res_wa">-</div>
+                </div>
+            </div>
+
+            <!-- Karena ini di dalam sub-folder, href kembali ke root utama / index.html sebelumnya -->
+            <a href="../" class="btn-back">
+                <i class="fas fa-home"></i> Kembali ke Halaman Utama
+            </a>
+        </div>
+    </div>
+
+    <script>
+        const GOOGLE_SCRIPT_API_URL = "https://script.google.com/macros/s/AKfycby-DpvqtWpu8FEVeudZYPms_0kc7jJyQ60BwiVJ9NlIxKcBzMbse9GcbBpjnorz94_wHg/exec";
+
+        function ambilDataWargaBerdasarkanId() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const wargaId = urlParams.get('id');
+
+            if (!wargaId) {
+                document.getElementById("loadingData").innerHTML = "<p style='color:red;'>ID Warga tidak ditemukan atau tidak valid.</p>";
+                return;
+            }
+
+            fetch(GOOGLE_SCRIPT_API_URL)
+                .then(res => res.json())
+                .then(data => {
+                    const dataWarga = data.find(w => w.nik.replace(/'/g, "").trim() === wargaId.trim());
+
+                    if (dataWarga) {
+                        document.getElementById("res_nama").innerText = dataWarga.namaLengkap || "-";
+                        document.getElementById("res_nik").innerText = dataWarga.nik.replace(/'/g, "") || "-";
+                        document.getElementById("res_rumah").innerText = dataWarga.noRumah || "-";
+                        document.getElementById("res_kk").innerText = dataWarga.noKk.replace(/'/g, "") || "-";
+                        document.getElementById("res_hubungan").innerText = dataWarga.hubungan || "-";
+                        document.getElementById("res_status").innerText = dataWarga.statusRumah || "-";
+                        document.getElementById("res_wa").innerText = dataWarga.waUtama.replace(/'/g, "") || "-";
+
+                        document.getElementById("loadingData").style.display = "none";
+                        document.getElementById("ringkasanData").style.display = "block";
+                    } else {
+                        document.getElementById("loadingData").innerHTML = "<p style='color:orange;'>Data berhasil disimpan, namun gagal memuat ringkasan karena ID tidak terdaftar.</p>";
+                    }
+                })
+                .catch(err => {
+                    console.error(err);
+                    document.getElementById("loadingData").innerHTML = "<p style='color:red;'>Gagal menyambung ke server database.</p>";
+                });
+        }
+
+        window.onload = ambilDataWargaBerdasarkanId;
+    </script>
+</body>
+</html>
