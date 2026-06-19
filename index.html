@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Sensus RT 04 Digital App v6.2 (Cloud Connected)</title>
+    <title>Sensus RT 04 Digital App v6.3 (Sisi Warga)</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -31,7 +31,7 @@
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background-color: var(--bg-app); color: var(--text-main); min-height: 100vh; padding-bottom: 80px; font-size: 0.85rem; }
+        body { background-color: var(--bg-app); color: var(--text-main); min-height: 100vh; padding-bottom: 40px; font-size: 0.85rem; }
 
         .app-header {
             background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
@@ -46,9 +46,7 @@
         .app-header h1 { font-size: 1.25rem; font-weight: 800; letter-spacing: -0.5px; }
         .app-header p { color: var(--text-muted); font-size: 0.75rem; margin-top: 2px; }
 
-        .app-container { max-width: 650px; margin: -10px auto 0 auto; padding: 0 12px; }
-        .app-page { display: none; animation: fadeIn 0.3s ease forwards; }
-        .app-page.active { display: block !important; }
+        .app-container { max-width: 650px; margin: 15px auto 0 auto; padding: 0 12px; }
 
         .app-card {
             background: var(--card-bg); border-radius: var(--radius-lg); padding: 20px;
@@ -92,37 +90,12 @@
         .btn-outline { background: transparent; color: var(--primary); border: 2px dashed var(--primary); margin-top: 8px; }
         .btn-outline:hover { background: var(--primary-light); }
 
-        .btn-download-gdrive { background: var(--teal); color: white; padding: 6px 12px; border-radius: 6px; font-size: 0.75rem; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; font-weight: 700; margin-top: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .btn-pdf-print { background: #E2E8F0; color: var(--text-main); padding: 8px 14px; border: none; border-radius: var(--radius-md); font-size: 0.8rem; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; margin-bottom: 12px; transition: var(--transition); }
-        .btn-pdf-print:hover { background: #CBD5E1; }
-
-        .search-container { display: flex; gap: 8px; margin-bottom: 16px; }
-        .admin-warga-card { background: #fff; border: 1px solid var(--border); padding: 16px; border-radius: var(--radius-md); margin-bottom: 12px; font-size: 0.82rem; box-shadow: 0 2px 8px rgba(0,0,0,0.01); }
-
         .custom-alert-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.4); backdrop-filter: blur(8px); z-index: 9999; justify-content: center; align-items: center; padding: 16px; }
         .alert-box { background: #fff; border-radius: var(--radius-lg); padding: 25px 20px; max-width: 400px; width: 100%; text-align: center; border: 1px solid var(--border); box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
         .code-display { background: var(--primary-light); border: 2px dashed var(--primary); padding: 10px; font-size: 1.25rem; font-weight: 800; color: var(--primary); letter-spacing: 2px; border-radius: var(--radius-md); margin-bottom: 20px; }
         .btn-modal-close { background: var(--text-main); color: white; border: none; padding: 12px; border-radius: var(--radius-md); font-weight: 700; cursor: pointer; width: 100%; }
 
-        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; height: 60px; background: #ffffff; border-top: 1px solid var(--border); display: flex; justify-content: space-around; align-items: center; z-index: 1000; box-shadow: 0 -4px 20px rgba(0,0,0,0.03); }
-        .nav-link { display: flex; flex-direction: column; align-items: center; gap: 2px; color: var(--text-muted); text-decoration: none; font-size: 0.7rem; font-weight: 600; width: 50%; text-align: center; }
-        .nav-link i { font-size: 1.1rem; }
-        .nav-link.active { color: var(--primary); }
-
-        .loading-text { text-align: center; color: var(--text-muted); padding: 20px; font-weight: 600; }
-
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* PRINT CONFIGURATION FOR SAVE TO PDF */
-        @media print {
-            body { background: white; padding-bottom: 0; }
-            .bottom-nav, .search-container, .btn-pdf-print, .btn-delete-row, #btnTambahAnggota, .pernyataan-container { display: none !important; }
-            .app-container { max-width: 100%; margin: 0; padding: 0; }
-            .app-card { border: none; box-shadow: none; padding: 0; }
-            .admin-warga-card { page-break-inside: avoid; border: 1px solid #000; margin-bottom: 15px; background: white; }
-            .btn-download-gdrive { border: 1px solid #000; color: black; background: none; box-shadow: none; font-size: 0.7rem; }
-            .btn-download-gdrive i { display: none; }
-        }
     </style>
 </head>
 <body>
@@ -130,104 +103,78 @@
     <header class="app-header">
         <div class="header-logo"><i class="fas fa-users-viewfinder"></i></div>
         <h1>Sensus RT 04 Digital</h1>
-        <p>Sistem Cloud Database Google Sheets & Drive</p>
+        <p>Formulir Pengumpulan Data Swadaya Warga</p>
     </header>
 
     <div class="app-container">
 
-        <!-- PAGE 1: FORM PENGISIAN DATA -->
-        <div id="pageForm" class="app-page active">
-            <form id="mainSensusForm" onsubmit="prosesKolektifKirimData(event)">
-                
-                <!-- DATA RUMAH & KK UTAMA -->
-                <div class="app-card">
-                    <div class="card-title-group">
-                        <div class="step-icon">1</div>
-                        <h3>Data Properti & Nomor KK</h3>
-                    </div>
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label>Nomor Kartu Keluarga (16 Digit)</label>
-                            <input type="text" id="no_kk" class="form-control" placeholder="3402xxxxxxxxxxxx" inputmode="numeric" maxlength="16" oninput="this.value = this.value.replace(/[^0-9]/g, '');" required>
-                        </div>
-                        <div class="form-row-2">
-                            <div class="form-group">
-                                <label>Status Hunian</label>
-                                <select id="status_rumah" class="form-control" onchange="sinkronisasiKategoriWargaAll()">
-                                    <option value="Milik Sendiri">Milik Sendiri / Keluarga Tetap</option>
-                                    <option value="Sewa / Kontrak">Sewa / Kontrak Rumah</option>
-                                    <option value="Kos">Kost Mandiri</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label>Nomor Rumah</label>
-                                <input type="text" id="no_rumah" class="form-control" placeholder="Contoh: No. 12" required>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label>No. WhatsApp Utama (Penanggung Jawab)</label>
-                            <input type="text" id="wa_utama" class="form-control" placeholder="Contoh: 081234567xxx" oninput="this.value = this.value.replace(/[^0-9]/g, '');" required>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- DAFTAR PENGHUNI -->
-                <div class="app-card">
-                    <div class="card-title-group">
-                        <div class="step-icon">2</div>
-                        <h3>Daftar Anggota Penghuni</h3>
-                    </div>
-                    <div id="infoNoteStatus" class="info-note">
-                        <i class="fas fa-info-circle"></i> Memasukkan data Kepala Keluarga & Anggota inti rumah.
-                    </div>
-                    <div id="wargaListContainer"></div>
-                    <button type="button" id="btnTambahAnggota" class="btn-action btn-outline" onclick="tambahWargaRow()">
-                        <i class="fas fa-user-plus"></i> Tambah Anggota Jiwa
-                    </button>
-                </div>
-
-                <!-- VALIDASI PERNYATAAN WARGA -->
-                <div class="app-card pernyataan-container">
-                    <div class="form-group" style="flex-direction:row; gap:10px; align-items:flex-start;">
-                        <input type="checkbox" id="chkPernyataan" style="width:18px; height:18px; margin-top:2px; accent-color:var(--primary);" required>
-                        <label for="chkPernyataan" style="text-transform:none; font-size:0.8rem; font-weight:600; color:var(--text-main); cursor:pointer;">
-                            Saya menyatakan bahwa data yang diisi di atas sudah sesuai dengan keadaan yang sebenarnya.
-                        </label>
-                    </div>
-                </div>
-
-                <button type="submit" id="btnSubmitFinal" class="btn-action btn-primary"><i class="fas fa-cloud-arrow-up"></i> Kirim Formulir Sensus</button>
-            </form>
-        </div>
-
-        <!-- PAGE 2: LOG SISI ADMIN (LIVE RE-DUPLICATE SHEETS) -->
-        <div id="pageStatus" class="app-page">
+        <form id="mainSensusForm" onsubmit="prosesKolektifKirimData(event)">
+            
             <div class="app-card">
                 <div class="card-title-group">
-                    <div class="step-icon"><i class="fas fa-shield-halved"></i></div>
-                    <h3>Portal Panel Administrasi RT 04</h3>
+                    <div class="step-icon">1</div>
+                    <h3>Data Properti & Nomor KK</h3>
                 </div>
-                
-                <button type="button" class="btn-pdf-print" onclick="window.print()">
-                    <i class="fas fa-file-pdf"></i> Simpan / Cetak ke PDF
-                </button>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Nomor Kartu Keluarga (16 Digit)</label>
+                        <input type="text" id="no_kk" class="form-control" placeholder="3402xxxxxxxxxxxx" inputmode="numeric" maxlength="16" oninput="this.value = this.value.replace(/[^0-9]/g, '');" required>
+                    </div>
+                    <div class="form-row-2">
+                        <div class="form-group">
+                            <label>Status Hunian</label>
+                            <select id="status_rumah" class="form-control" onchange="sinkronisasiKategoriWargaAll()">
+                                <option value="Milik Sendiri">Milik Sendiri / Keluarga Tetap</option>
+                                <option value="Sewa / Kontrak">Sewa / Kontrak Rumah</option>
+                                <option value="Kos">Kos Mandiri</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Nomor Rumah</label>
+                            <input type="text" id="no_rumah" class="form-control" placeholder="Contoh: No. 12" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group" id="wrapperPemilikKos" style="display: none;">
+                        <label style="color: var(--primary);">Nama Pemilik Kos</label>
+                        <input type="text" id="nama_pemilik_kos" class="form-control" placeholder="Tulis nama pemilik atau pengelola kos">
+                    </div>
 
-                <div class="search-container">
-                    <input type="text" id="inputCariKode" class="form-control" placeholder="Cari Berkas Berdasarkan No. KK / No. Rumah..." oninput="filterDataAdminLive()">
+                    <div class="form-group">
+                        <label>No. WhatsApp Utama (Penanggung Jawab)</label>
+                        <input type="text" id="wa_utama" class="form-control" placeholder="Contoh: 081234567xxx" oninput="this.value = this.value.replace(/[^0-9]/g, '');" required>
+                    </div>
                 </div>
-
-                <div id="adminDataContainer"><div class="loading-text">Menghubungkan ke Google Sheets...</div></div>
             </div>
-        </div>
+
+            <div class="app-card">
+                <div class="card-title-group">
+                    <div class="step-icon">2</div>
+                    <h3>Daftar Anggota Jiwa</h3>
+                </div>
+                <div id="infoNoteStatus" class="info-note">
+                    <i class="fas fa-info-circle"></i> Memasukkan data Kepala Keluarga & seluruh anggota yang tinggal di rumah ini.
+                </div>
+                <div id="wargaListContainer"></div>
+                <button type="button" id="btnTambahAnggota" class="btn-action btn-outline" onclick="tambahWargaRow()">
+                    <i class="fas fa-user-plus"></i> Tambah Anggota Jiwa
+                </button>
+            </div>
+
+            <div class="app-card">
+                <div class="form-group" style="flex-direction:row; gap:10px; align-items:flex-start;">
+                    <input type="checkbox" id="chkPernyataan" style="width:18px; height:18px; margin-top:2px; accent-color:var(--primary);" required>
+                    <label for="chkPernyataan" style="text-transform:none; font-size:0.8rem; font-weight:600; color:var(--text-main); cursor:pointer;">
+                        Saya menyatakan bahwa data yang diisi di atas sudah sesuai dengan keadaan yang sebenarnya.
+                    </label>
+                </div>
+            </div>
+
+            <button type="submit" id="btnSubmitFinal" class="btn-action btn-primary"><i class="fas fa-cloud-arrow-up"></i> Kirim Formulir Sensus</button>
+        </form>
 
     </div>
 
-    <nav class="bottom-nav">
-        <a href="#" class="nav-link active" id="navForm" onclick="switchPage('pageForm', this)"><i class="fas fa-file-signature"></i>Isi Sensus</a>
-        <a href="#" class="nav-link" id="navStatus" onclick="switchPage('pageStatus', this)"><i class="fas fa-table-list"></i>Sisi Admin</a>
-    </nav>
-
-    <!-- ALERT COMPONENT MODAL -->
     <div id="customAlertOverlay" class="custom-alert-overlay">
         <div class="alert-box" id="alertBoxContent"></div>
     </div>
@@ -239,34 +186,45 @@
         const GOOGLE_SCRIPT_API_URL = "PASANG_URL_APPS_SCRIPT_DI_SINI";
 
         let rowCount = 0;
-        let masterCachedAdminData = [];
-
-        function switchPage(pageId, element) {
-            document.querySelectorAll('.app-page').forEach(p => p.style.display = 'none');
-            document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active'));
-            const target = document.getElementById(pageId);
-            if(target) target.style.setProperty('display', 'block', 'important');
-            if(element) element.classList.add('active');
-            
-            if(pageId === 'pageStatus') {
-                muatDataDariGoogleSheets();
-            }
-        }
 
         function sinkronisasiKategoriWargaAll() {
             const statusRumah = document.getElementById("status_rumah").value;
+            const wrapperKos = document.getElementById("wrapperPemilikKos");
+            const inputPemilik = document.getElementById("nama_pemilik_kos");
             const infoNote = document.getElementById("infoNoteStatus");
-            const btnTambah = document.getElementById("btnTambahAnggota");
-            const container = document.getElementById("wargaListContainer");
 
-            container.innerHTML = ""; rowCount = 0;
-
+            // Atur kondisional field Nama Pemilik Kos
             if (statusRumah === "Kos") {
-                infoNote.innerHTML = `<i class="fas fa-circle-exclamation"></i> <b>Mode Kos:</b> Maksimal 1 orang pengisi, wajib melampirkan berkas KTP asli.`;
-                btnTambah.style.display = "none"; tambahWargaRow();
+                wrapperKos.style.display = "block";
+                inputPemilik.setAttribute("required", "required");
+                infoNote.innerHTML = `<i class="fas fa-info-circle"></i> <b>Mode Kos:</b> Masukkan data seluruh anggota keluarga yang ikut mengekos di tempat ini.`;
             } else {
-                infoNote.innerHTML = `<i class="fas fa-info-circle"></i> Memasukkan data Kepala Keluarga & Anggota keluarga inti properti.`;
-                btnTambah.style.display = "flex"; tambahWargaRow();
+                wrapperKos.style.display = "none";
+                inputPemilik.removeAttribute("required");
+                inputPemilik.value = "";
+                infoNote.innerHTML = `<i class="fas fa-info-circle"></i> Memasukkan data Kepala Keluarga & seluruh anggota yang tinggal di rumah ini.`;
+            }
+
+            // Update baris-baris dropdown hubungan keluarga yang sudah ada di bawah
+            document.querySelectorAll(".input-status").forEach(selectNode => {
+                const currentId = selectNode.id.split("_")[1];
+                updateDropdownOpsiHubungan(selectNode, statusRumah);
+                evaluasiKewajibanKtp(selectNode, currentId);
+            });
+        }
+
+        function updateDropdownOpsiHubungan(selectElement, statusHunian) {
+            const valSebelumnya = selectElement.value;
+            if (statusHunian === "Kos") {
+                selectElement.innerHTML = `<option value="Kos">Kos</option>`;
+            } else if (statusHunian === "Sewa / Kontrak") {
+                selectElement.innerHTML = `<option value="Kontrakan">Penyewa Rumah Utama</option><option value="Anggota Kontrak">Anggota Ikut Mengontrak</option>`;
+            } else {
+                selectElement.innerHTML = `<option value="Kepala Keluarga">Kepala Keluarga</option><option value="Istri">Istri</option><option value="Anak">Anak</option><option value="Orang Tua">Orang Tua</option>`;
+            }
+            // Kembalikan ke value sebelumnya jika opsi tersebut masih tersedia
+            if (selectElement.querySelector(`option[value="${valSebelumnya}"]`)) {
+                selectElement.value = valSebelumnya;
             }
         }
 
@@ -278,12 +236,8 @@
             row.className = "warga-item-box";
             row.id = `wargaRow_${rowCount}`;
             
-            let selectOptionsHtml = (statusRumah === "Kos") ? `<option value="Anak Kos">Anak Kos (Warga Pendatang)</option>` :
-                                    (statusRumah === "Sewa / Kontrak") ? `<option value="Kontrakan">Penyewa Utama Kontrak</option><option value="Anggota Kontrak">Anggota Ikut Mengontrak</option>` :
-                                    `<option value="Kepala Keluarga">Kepala Keluarga</option><option value="Istri">Istri</option><option value="Anak">Anak</option><option value="Orang Tua">Orang Tua</option>`;
-
             row.innerHTML = `
-                ${(statusRumah === "Kos") ? '' : `<button type="button" class="btn-delete-row" onclick="hapusWargaRow(${rowCount})">Hapus</button>`}
+                <button type="button" class="btn-delete-row" onclick="hapusWargaRow(${rowCount})">Hapus</button>
                 <div class="form-grid">
                     <div class="form-row-2">
                         <div class="form-group"><label>Nama Lengkap</label><input type="text" class="form-control input-nama" required></div>
@@ -316,7 +270,7 @@
                         <div class="form-group"><label>Pekerjaan</label><input type="text" class="form-control input-pekerjaan" required></div>
                         <div class="form-group">
                             <label>Hubungan Keluarga</label>
-                            <select class="form-control input-status" onchange="evaluasiKewajibanKtp(this, ${rowCount})">${selectOptionsHtml}</select>
+                            <select class="form-control input-status" id="statusHub_${rowCount}" onchange="evaluasiKewajibanKtp(this, ${rowCount})"></select>
                         </div>
                     </div>
                     <div class="form-group upload-box-wrapper" id="uploadWrapper_${rowCount}">
@@ -330,13 +284,25 @@
                     </div>
                 </div>`;
             container.appendChild(row);
-            evaluasiKewajibanKtp(row.querySelector(".input-status"), rowCount);
+            
+            const selectEl = document.getElementById(`statusHub_${rowCount}`);
+            updateDropdownOpsiHubungan(selectEl, statusRumah);
+            evaluasiKewajibanKtp(selectEl, rowCount);
         }
 
         function cekPanjangNikLive(input, id) {
             document.getElementById(`errorNik_${id}`).style.display = (input.value.length > 0 && input.value.length < 16) ? "block" : "none";
         }
-        function hapusWargaRow(id) { const row = document.getElementById(`wargaRow_${id}`); if (row) row.remove(); }
+
+        function hapusWargaRow(id) { 
+            const rows = document.querySelectorAll(".warga-item-box");
+            if(rows.length <= 1) {
+                alert("Minimal harus ada 1 data warga yang diisi!");
+                return;
+            }
+            const row = document.getElementById(`wargaRow_${id}`); 
+            if (row) row.remove(); 
+        }
         
         function prosesKonversiFileToBase64(input, id) {
             const zone = document.getElementById(`fileZone_${id}`);
@@ -361,7 +327,9 @@
             const wrapper = document.getElementById(`uploadWrapper_${id}`);
             const inputNode = document.getElementById(`file_${id}`);
             if(!wrapper || !inputNode) return;
-            if(select.value === "Anak Kos" || select.value === "Kontrakan" || select.value === "Anggota Kontrak") {
+
+            // Warga kos atau pengontrak wajib melampirkan berkas KTP fisik
+            if(select.value === "Kos" || select.value === "Kontrakan" || select.value === "Anggota Kontrak") {
                 wrapper.style.display = "block"; inputNode.setAttribute("required", "required");
             } else {
                 wrapper.style.display = "none"; inputNode.removeAttribute("required"); inputNode.value = "";
@@ -378,7 +346,7 @@
                     <div style="font-size:2.5rem; color:var(--teal); margin-bottom:12px;"><i class="fas fa-circle-check"></i></div>
                     <h3>${judul}</h3><p style="margin:8px 0; color:var(--text-muted);">${pesan}</p>
                     <div class="code-display">${detail}</div>
-                    <button class="btn-modal-close" onclick="tutupAlertDanResetForm()">Buka Data Admin</button>`;
+                    <button class="btn-modal-close" onclick="tutupAlertDanResetForm()">Selesai</button>`;
             } else {
                 box.innerHTML = `
                     <div style="font-size:2.5rem; color:var(--accent-warn); margin-bottom:12px;"><i class="fas fa-triangle-exclamation"></i></div>
@@ -389,6 +357,14 @@
         }
 
         function tutupModalOnly() { document.getElementById("customAlertOverlay").style.display = "none"; }
+        
+        function tutupAlertDanResetForm() {
+            document.getElementById("customAlertOverlay").style.display = "none";
+            document.getElementById("mainSensusForm").reset();
+            document.getElementById("wargaListContainer").innerHTML = "";
+            sinkronisasiKategoriWargaAll();
+            tambahWargaRow();
+        }
 
         function generateRandomCode() {
             const char = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; let out = "";
@@ -396,7 +372,6 @@
             return `RT04-${out}`;
         }
 
-        // POST DATA PROSES UTAMA (SHEETS & GDRIVE INTEGRATED)
         function prosesKolektifKirimData(e) {
             e.preventDefault();
 
@@ -439,32 +414,34 @@
             if(!flagLolos) return;
 
             const btn = document.getElementById("btnSubmitFinal");
-            btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Menghubungkan ke Server Cloud...`;
+            btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Memvalidasi No. KK...`;
             btn.setAttribute("disabled", "disabled");
 
-            // VALIDASI LIVE: Ambil data Sheets terbaru untuk cek apakah KK sudah terdaftar
+            // VALIDASI LIVE: Cek apakah KK sudah pernah mengirim data sebelumnya
             fetch(GOOGLE_SCRIPT_API_URL)
             .then(res => res.json())
             .then(database => {
-                // Check duplicate No KK
                 let kkSudahAda = database.some(item => item.noKk === "'" + noKkField || item.noKk === noKkField);
                 if(kkSudahAda) {
-                    panggilCustomModal("error", "No. KK Sudah Terdaftar", `Sensus gagal. Kartu Keluarga dengan No: <b>${noKkField}</b> terdeteksi sudah pernah mengisi form sensus RT 04.`);
+                    panggilCustomModal("error", "No. KK Sudah Terdaftar", `Sensus gagal. Kartu Keluarga dengan No: <b>${noKkField}</b> terdeteksi sudah pernah mengisi form sensus.`);
                     btn.innerHTML = `<i class="fas fa-cloud-arrow-up"></i> Kirim Formulir Sensus`;
                     btn.removeAttribute("disabled");
                     return;
                 }
 
-                // Jika lolos duplikasi, tembak POST data baru
+                // Jika lolos duplikasi, kirim data sensus baru
                 const kodeRegistrasi = generateRandomCode();
                 const payloadSensus = {
                     kode: kodeRegistrasi,
                     noKk: noKkField,
                     statusRumah: document.getElementById("status_rumah").value,
                     noRumah: document.getElementById("no_rumah").value,
+                    namaPemilikKos: document.getElementById("nama_pemilik_kos").value,
                     waUtama: document.getElementById("wa_utama").value,
                     anggota: payloadAnggota
                 };
+
+                btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Mengirim Data ke Server...`;
 
                 fetch(GOOGLE_SCRIPT_API_URL, {
                     method: "POST",
@@ -475,110 +452,14 @@
                 .then(() => {
                     btn.innerHTML = `<i class="fas fa-cloud-arrow-up"></i> Kirim Formulir Sensus`;
                     btn.removeAttribute("disabled");
-                    panggilCustomModal("sukses", "Sensus Terkirim!", "Data tersimpan permanen di cloud. Kode pelacakan registrasi:", kodeRegistrasi);
+                    panggilCustomModal("sukses", "Sensus Terkirim!", "Data sensus Anda berhasil disimpan permanen di sistem cloud RT 04. Kode Pelacakan:", kodeRegistrasi);
                 });
             })
             .catch(err => {
                 btn.innerHTML = `<i class="fas fa-cloud-arrow-up"></i> Kirim Formulir Sensus`;
                 btn.removeAttribute("disabled");
-                panggilCustomModal("error", "Koneksi Terganggu", "Gagal memproses validasi: " + err.toString());
+                panggilCustomModal("error", "Koneksi Terganggu", "Gagal memproses validasi data: " + err.toString());
             });
-        }
-
-        function tutupAlertDanResetForm() {
-            document.getElementById("customAlertOverlay").style.display = "none";
-            document.getElementById("mainSensusForm").reset();
-            document.getElementById("wargaListContainer").innerHTML = "";
-            switchPage('pageStatus', document.getElementById("navStatus"));
-        }
-
-        function muatDataDariGoogleSheets() {
-            const container = document.getElementById("adminDataContainer");
-            if(GOOGLE_SCRIPT_API_URL === "PASANG_URL_APPS_SCRIPT_DI_SINI") {
-                container.innerHTML = `<p style="color:var(--accent-warn); text-align:center; font-weight:700;">⚠️ Pasang URL Web App Google Apps Script!</p>`;
-                return;
-            }
-            container.innerHTML = `<div class="loading-text"><i class="fas fa-spinner fa-spin"></i> Mendownload Data realtime Google Sheets...</div>`;
-
-            fetch(GOOGLE_SCRIPT_API_URL)
-            .then(res => res.json())
-            .then(data => {
-                masterCachedAdminData = kelompokkanDataPerRumahKk(data);
-                renderTampilanAdminPanel(masterCachedAdminData);
-            })
-            .catch(err => {
-                container.innerHTML = `<p style="color:var(--accent-warn); text-align:center;">Gagal Sinkronisasi: ${err.toString()}</p>`;
-            });
-        }
-
-        function kelompokkanDataPerRumahKk(dataRows) {
-            let kelompok = {};
-            dataRows.forEach(row => {
-                if(!kelompok[row.kode]) {
-                    kelompok[row.kode] = {
-                        kode: row.kode,
-                        noKk: row.noKk,
-                        noRumah: row.noRumah,
-                        waUtama: row.waUtama,
-                        statusRumah: row.statusRumah,
-                        anggotaList: []
-                    };
-                }
-                kelompok[row.kode].anggotaList.push({
-                    nama: row.namaWarga,
-                    nik: row.nik,
-                    hubungan: row.hubungan,
-                    linkKtp: row.linkKtp,
-                    ttl: (row.tempatLahir && row.tanggalLahir) ? `${row.tempatLahir}, ${row.tanggalLahir}` : '-',
-                    pekerjaan: row.pekerjaan || '-'
-                });
-            });
-            return Object.values(kelompok);
-        }
-
-        function renderTampilanAdminPanel(dataArray) {
-            const container = document.getElementById("adminDataContainer");
-            container.innerHTML = "";
-
-            if(dataArray.length === 0) {
-                container.innerHTML = `<p style="text-align:center; color:var(--text-muted); padding:20px;">Belum ada arsip sensus warga.</p>`;
-                return;
-            }
-
-            dataArray.reverse().forEach(item => {
-                let htmlAnggota = "";
-                item.anggotaList.forEach(w => {
-                    let linkKtpHtml = (w.linkKtp && w.linkKtp !== "-") ? 
-                        `<br><a href="${w.linkKtp}" target="_blank" class="btn-download-gdrive"><i class="fab fa-google-drive"></i> Download File KTP</a>` : 
-                        `<br><span style="color:var(--text-muted); font-style:italic; font-size:0.7rem;">Tanpa Berkas KTP</span>`;
-
-                    htmlAnggota += `
-                        <div style="margin-top:8px; padding-left:10px; border-left:3px solid var(--primary); font-size:0.78rem;">
-                            <strong>${w.nama}</strong> (${w.hubungan})<br>
-                            NIK: ${w.nik} | TTL: ${w.ttl} | Kerja: ${w.pekerjaan}
-                            ${linkKtpHtml}
-                        </div>`;
-                });
-
-                container.innerHTML += `
-                    <div class="admin-warga-card">
-                        <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border); padding-bottom:6px; margin-bottom:6px;">
-                            <span style="font-weight:800; color:var(--primary);">${item.kode}</span>
-                            <span style="font-weight:700;"><i class="fas fa-house"></i> No. Rumah: ${item.noRumah}</span>
-                        </div>
-                        <p><b>No. KK:</b> ${item.noKk}</p>
-                        <p><b>Kontak WA:</b> ${item.waUtama} | <b>Hunian:</b> ${item.statusRumah}</p>
-                        <div style="font-weight:700; color:var(--text-muted); font-size:0.7rem; text-transform:uppercase; margin-top:8px; border-top:1px dashed var(--border); padding-top:4px;">Anggota Penghuni:</div>
-                        ${htmlAnggota}
-                    </div>`;
-            });
-        }
-
-        function filterDataAdminLive() {
-            const kw = document.getElementById("inputCariKode").value.trim().toUpperCase();
-            if(kw === "") { renderTampilanAdminPanel(masterCachedAdminData); return; }
-            const filtered = masterCachedAdminData.filter(d => d.noKk.includes(kw) || d.noRumah.toUpperCase().includes(kw) || d.kode.includes(kw));
-            renderTampilanAdminPanel(filtered);
         }
 
         window.onload = function() { tambahWargaRow(); };
