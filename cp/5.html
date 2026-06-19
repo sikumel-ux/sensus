@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Monitoring Sensus RT 04</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-app: #F8FAFC;
+            --card-bg: #FFFFFF;
+            --border: #E2E8F0;
+            --primary: #FF6B35;
+            --primary-light: rgba(255, 107, 53, 0.08);
+            --teal: #0D9488;
+            --teal-light: rgba(13, 148, 136, 0.08);
+            --blue: #3B82F6;
+            --blue-light: rgba(59, 130, 246, 0.08);
+            --text-main: #0F172A;
+            --text-muted: #64748B;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background-color: var(--bg-app); color: var(--text-main); padding: 20px; font-size: 0.85rem; }
+        
+        .container { max-width: 1200px; margin: 0 auto; }
+        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; background: #fff; padding: 15px 20px; border-radius: 12px; border: 1px solid var(--border); }
+        header h1 { font-size: 1.2rem; font-weight: 800; color: var(--text-main); }
+        
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; margin-bottom: 20px; }
+        .stat-card { background: var(--card-bg); border: 1px solid var(--border); padding: 18px; border-radius: 12px; display: flex; align-items: center; justify-content: space-between; }
+        .stat-info h3 { font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.5px; margin-bottom: 4px; }
+        .stat-info p { font-size: 1.6rem; font-weight: 800; color: var(--text-main); }
+        .stat-icon { width: 45px; height: 45px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
+        
+        .stat-card.jiwa .stat-icon { background: var(--primary-light); color: var(--primary); }
+        .stat-card.kk .stat-icon { background: var(--blue-light); color: var(--blue); }
+        .stat-card.tetap .stat-icon { background: var(--teal-light); color: var(--teal); }
+        .stat-card.kos .stat-icon { background: rgba(100, 116, 139, 0.1); color: var(--text-muted); }
+        
+        .btn { padding: 8px 14px; border: none; border-radius: 6px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; font-size: 0.8rem; transition: 0.2s; }
+        .btn-refresh { background: var(--teal); color: white; }
+        .btn-refresh:hover { background: #0f766e; }
+        
+        .card { background: var(--card-bg); border-radius: 12px; border: 1px solid var(--border); padding: 20px; }
+        .table-responsive { width: 100%; overflow-x: auto; margin-top: 5px; }
+        table { width: 100%; border-collapse: collapse; text-align: left; min-width: 1000px; }
+        th, td { padding: 12px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+        th { background: #F1F5F9; color: var(--text-muted); font-weight: 700; text-transform: uppercase; font-size: 0.7rem; letter-spacing: 0.5px; }
+        tr:hover { background: #F8FAFC; }
+        
+        .badge { padding: 3px 6px; border-radius: 4px; font-size: 0.7rem; font-weight: 700; display: inline-block; }
+        .badge-code { background: var(--primary-light); color: var(--primary); }
+        .badge-hub { background: #E2E8F0; color: var(--text-main); }
+        .btn-foto { color: var(--primary); text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; }
+        .btn-foto:hover { text-decoration: underline; }
+        
+        .loading { text-align: center; padding: 50px; font-size: 1rem; color: var(--text-muted); }
+        .loading i { margin-bottom: 10px; font-size: 1.8rem; color: var(--primary); }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <div>
+                <h1>Panel Monitoring Sensus RT 04</h1>
+                <p style="color: var(--text-muted); font-size: 0.75rem;">Database Real-time Sinkron Cloud Google Sheet</p>
+            </div>
+            <button class="btn btn-refresh" onclick="muatDataSensus()"><i class="fas fa-sync-alt"></i> Segarkan Data</button>
+        </header>
+
+        <div class="stats-grid">
+            <div class="stat-card jiwa">
+                <div class="stat-info">
+                    <h3>Total Jiwa</h3>
+                    <p id="cnt_totalJiwa">0</p>
+                </div>
+                <div class="stat-icon"><i class="fas fa-users"></i></div>
+            </div>
+            <div class="stat-card kk">
+                <div class="stat-info">
+                    <h3>Total KK</h3>
+                    <p id="cnt_totalKk">0</p>
+                </div>
+                <div class="stat-icon"><i class="fas fa-address-card"></i></div>
+            </div>
+            <div class="stat-card tetap">
+                <div class="stat-info">
+                    <h3>Warga Tetap</h3>
+                    <p id="cnt_wargaTetap">0</p>
+                </div>
+                <div class="stat-icon"><i class="fas fa-house-user"></i></div>
+            </div>
+            <div class="stat-card kos">
+                <div class="stat-info">
+                    <h3>Kos / Kontrak</h3>
+                    <p id="cnt_wargaKos">0</p>
+                </div>
+                <div class="stat-icon"><i class="fas fa-door-open"></i></div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="table-responsive">
+                <div id="loadingState" class="loading">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <p>Menghubungkan ke server database...</p>
+                </div>
+                
+                <table id="adminTable" style="display: none;">
+                    <thead>
+                        <tr>
+                            <th>Kode</th>
+                            <th>No. KK</th>
+                            <th>Nama Lengkap</th>
+                            <th>NIK</th>
+                            <th>Hubungan</th>
+                            <th>Hunian & No</th>
+                            <th>Jimpitan</th>
+                            <th>WhatsApp</th>
+                            <th>Lampiran</th>
+                        </tr>
+                    </thead>
+                    <tbody id="sensusTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const GOOGLE_SCRIPT_API_URL = "https://script.google.com/macros/s/AKfycby-DpvqtWpu8FEVeudZYPms_0kc7jJyQ60BwiVJ9NlIxKcBzMbse9GcbBpjnorz94_wHg/exec";
+
+        function hitungKalkulasiStatistik(data) {
+            let totalJiwa = data.length;
+            let kumpulanKkUnik = new Set();
+            let countTetap = 0;
+            let countKosKontrak = 0;
+
+            data.forEach(warga => {
+                let kkBersih = warga.noKk ? warga.noKk.toString().replace(/'/g, "").trim() : "";
+                if(kkBersih) kumpulanKkUnik.add(kkBersih);
+
+                let statusRumah = warga.statusRumah ? warga.statusRumah.toString().trim() : "";
+                if (statusRumah === "Milik Sendiri") {
+                    countTetap++;
+                } else if (statusRumah === "Kos" || statusRumah === "Kontrak") {
+                    countKosKontrak++;
+                }
+            });
+
+            document.getElementById("cnt_totalJiwa").innerText = totalJiwa;
+            document.getElementById("cnt_totalKk").innerText = kumpulanKkUnik.size;
+            document.getElementById("cnt_wargaTetap").innerText = countTetap;
+            document.getElementById("cnt_wargaKos").innerText = countKosKontrak;
+        }
+
+        function muatDataSensus() {
+            const loading = document.getElementById("loadingState");
+            const table = document.getElementById("adminTable");
+            const tbody = document.getElementById("sensusTableBody");
+            
+            loading.style.display = "block";
+            table.style.display = "none";
+            tbody.innerHTML = "";
+
+            fetch(GOOGLE_SCRIPT_API_URL)
+            .then(res => res.json())
+            .then(data => {
+                loading.style.display = "none";
+                table.style.display = "table";
+                
+                if (data.status === "error" || data.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; color:var(--text-muted)">Belum ada data sensus masuk.</td></tr>`;
+                    return;
+                }
+
+                hitungKalkulasiStatistik(data);
+
+                data.forEach((row) => {
+                    const linkFotoHtml = (row.linkFoto && row.linkFoto !== "-") 
+                        ? `<a href="${row.linkFoto}" target="_blank" class="btn-foto"><i class="fas fa-image"></i> Lihat KTP</a>` 
+                        : `<span style="color:var(--text-muted)">-</span>`;
+                    
+                    const infoRumah = row.statusRumah === "Kos" 
+                        ? `Kos (No. ${row.noRumah})<br><small style="color:var(--text-muted)">Pemilik: ${row.namaPemilikKos}</small>`
+                        : `${row.statusRumah} (No. ${row.noRumah})`;
+
+                    const tr = document.createElement("tr");
+                    tr.innerHTML = `
+                        <td><span class="badge badge-code">${row.kode || '-'}</span></td>
+                        <td><b>${row.noKk || '-'}</b></td>
+                        <td>${row.namaLengkap || '-'}</td>
+                        <td><code>${row.nik || '-'}</code></td>
+                        <td><span class="badge badge-hub">${row.hubungan || '-'}</span></td>
+                        <td>${infoRumah}</td>
+                        <td>${row.modeJimpitan || '-'}</td>
+                        <td>${row.waUtama || '-'}</td>
+                        <td>${linkFotoHtml}</td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            })
+            .catch(err => {
+                loading.innerHTML = `<i class="fas fa-exclamation-circle" style="color:var(--accent-warn)"></i><p>Gagal memuat database: ${err.toString()}</p>`;
+            });
+        }
+
+        window.onload = muatDataSensus;
+    </script>
+</body>
+</html>
