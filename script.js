@@ -294,7 +294,7 @@ function prosesKolektifKirimData(e) {
         .then(() => {
             netralkanTombolSubmit(btn);
             localStorage.setItem('sensus_terakhir', JSON.stringify(payloadSensus));
-            window.location.href = "terimakasih/?id=" + kodeRegistrasi;
+            window.location.href = "done/?id=" + kodeRegistrasi;
         });
     })
     .catch(err => {
