@@ -88,7 +88,7 @@ function tambahWargaRow() {
             </div>
             <div class="form-group">
                 <label>Tempat Tanggal Lahir</label>
-                <input type="text" class="form-control input-ttl" placeholder="Contoh: Bantul, 17 Agustus 1997" required>
+                <input type="text" class="form-control input-ttl" placeholder="Contoh: Bantul, 17 Agustus 1945" required>
             </div>
             <div class="form-row-2">
                 <div class="form-group">
@@ -151,7 +151,7 @@ function prosesKonversiFileToBase64(input, id) {
         reader.onload = function(e) {
             hiddenInput.value = e.target.result;
             zone.classList.add("has-file");
-            lbl.innerText = `✓ Terkunci: ${file.name}`;
+            lbl.innerText = `Tersimpan: ${file.name}`;
         };
         reader.readAsDataURL(file);
     } else {
