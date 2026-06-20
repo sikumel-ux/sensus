@@ -96,6 +96,7 @@
         .btn-delete-row { position: absolute; right: 12px; top: 12px; background: var(--accent-warn-light); color: var(--accent-warn); border: none; padding: 4px 8px; border-radius: 6px; font-size: 0.7rem; font-weight: 700; cursor: pointer; }
 
         .upload-box-wrapper { display: none; margin-top: 4px; }
+        .custom-status-wrapper { display: none; margin-top: 4px; }
         .file-zone { border: 2px dashed var(--border); background: #fff; padding: 12px; text-align: center; border-radius: 8px; cursor: pointer; transition: var(--transition); }
         .file-zone.has-file { border-color: var(--teal); background: var(--teal-light); }
         .file-zone i { font-size: 1.2rem; color: var(--text-muted); }
@@ -295,28 +296,16 @@
 
         function updateDropdownOpsiHubungan(selectElement, statusHunian) {
             const valSebelumnya = selectElement.value;
-            if (statusHunian === "Kos") {
-                selectElement.innerHTML = `
-                    <option value="Anak Kos">Penghuni Kos</option>
-                    <option value="ART/Sopir">ART / Sopir</option>
-                `;
-            } else if (statusHunian === "Sewa / Kontrak") {
-                selectElement.innerHTML = `
-                    <option value="Kontrakan">Penyewa Rumah</option>
-                    <option value="ART/Sopir">ART / Sopir</option>
-                    <option value="Lainnya">Lainnya</option>
-                `;
-            } else {
-                // Milik Sendiri / Warga Tetap
-                selectElement.innerHTML = `
-                    <option value="Istri">Istri</option>
-                    <option value="Anak">Anak</option>
-                    <option value="Cucu">Cucu</option>
-                    <option value="Mertua">Mertua</option>
-                    <option value="ART/Sopir">ART / Sopir</option>
-                    <option value="Lainnya">Lainnya</option>
-                `;
-            }
+            
+            selectElement.innerHTML = `
+                <option value="Istri">Istri</option>
+                <option value="Anak">Anak</option>
+                <option value="Cucu">Cucu</option>
+                <option value="Mertua">Mertua</option>
+                <option value="ART/Sopir">ART / Sopir</option>
+                <option value="Penghuni / Lainnya">Penghuni / Lainnya</option>
+            `;
+            
             if (selectElement.querySelector(`option[value="${valSebelumnya}"]`)) {
                 selectElement.value = valSebelumnya;
             }
@@ -384,6 +373,12 @@
                             <select class="form-control input-status" id="statusHub_${rowCount}" onchange="evaluasiKewajibanKtpRow(this, ${rowCount})"></select>
                         </div>
                     </div>
+                    
+                    <div class="form-group custom-status-wrapper" id="customStatusWrapper_${rowCount}">
+                        <label style="color:var(--teal)">Hubungan Spesifik (Tulis Sendiri)</label>
+                        <input type="text" id="customStatusText_${rowCount}" class="form-control input-custom-status" placeholder="Contoh: Kakak Kandung, Keponakan, Teman">
+                    </div>
+
                     <div class="form-group upload-box-wrapper" id="uploadWrapper_${rowCount}">
                         <label style="color:var(--primary)">Berkas Wajib Lampiran KTP</label>
                         <div class="file-zone" id="fileZone_${rowCount}" onclick="document.getElementById('file_${rowCount}').click()">
@@ -397,7 +392,7 @@
             container.appendChild(row);
             
             const selectEl = document.getElementById(`statusHub_${rowCount}`);
-            updateDropdownOpsiHubungan(selectEl, statusRumah);
+            updateDropdownOvisHubungan = updateDropdownOpsiHubungan(selectEl, statusRumah);
             evaluasiKewajibanKtpRow(selectEl, rowCount);
         }
 
@@ -437,12 +432,25 @@
         function evaluasiKewajibanKtpRow(select, id) {
             const wrapper = document.getElementById(`uploadWrapper_${id}`);
             const inputNode = document.getElementById('file_' + id);
-            if(!wrapper || !inputNode) return;
+            const customWrapper = document.getElementById(`customStatusWrapper_${id}`);
+            const customInput = document.getElementById(`customStatusText_${id}`);
+            
+            if(!wrapper || !inputNode || !customWrapper || !customInput) return;
 
             const statusRumah = document.getElementById("status_rumah").value;
             const hubungan = select.value;
 
-            // LOGIKA MANDATORI KTP BERDASARKAN RULES BARU
+            // 1. EVALUASI INPUT CUSTOM (TULIS SENDIRI)
+            if (hubungan === "Penghuni / Lainnya") {
+                customWrapper.style.display = "block";
+                customInput.setAttribute("required", "required");
+            } else {
+                customWrapper.style.display = "none";
+                customInput.removeAttribute("required");
+                customInput.value = "";
+            }
+
+            // 2. EVALUASI WAJIB UPLOAD KTP
             if(statusRumah === "Kos" || statusRumah === "Sewa / Kontrak" || hubungan === "ART/Sopir") {
                 wrapper.style.display = "block"; 
                 inputNode.setAttribute("required", "required");
@@ -497,7 +505,7 @@
                 
                 payloadAnggota.push({
                     nama: namaKepala,
-                    nik: "-", // Kepala keluarga di induk properti data utama
+                    nik: "-", 
                     ttl: "-",
                     jk: "Laki-laki",
                     agama: "-",
@@ -510,9 +518,18 @@
             // Iterasi list anggota di bawahnya
             const rows = document.querySelectorAll(".warga-item-box");
             for (let row of rows) {
+                const id = row.id.split("_")[1];
                 const nik = row.querySelector(".input-nik").value.trim();
                 const nama = row.querySelector(".input-nama").value.trim();
                 const hiddenBase64 = row.querySelector(".input-hidden-base64");
+                
+                // Cek apakah status hubungan berupa custom text
+                const statusSelectValue = row.querySelector(".input-status").value;
+                let hubunganFinal = statusSelectValue;
+                if (statusSelectValue === "Penghuni / Lainnya") {
+                    const customText = document.getElementById(`customStatusText_${id}`).value.trim();
+                    hubunganFinal = customText ? `Lainnya (${customText})` : "Penghuni / Lainnya";
+                }
 
                 if(nik.length !== 16) { alert(`NIK untuk ${nama} belum 16 digit!`); flagLolos = false; break; }
                 if(listNik.includes(nik)) { alert("Ada nomor NIK ganda di formulir pengisian!"); flagLolos = false; break; }
@@ -525,7 +542,7 @@
                     jk: row.querySelector(".input-jk").value,
                     agama: row.querySelector(".input-agama").value,
                     pekerjaan: row.querySelector(".input-pekerjaan").value,
-                    hubungan: row.querySelector(".input-status").value,
+                    hubungan: hubunganFinal,
                     ktpBase64: hiddenBase64 ? hiddenBase64.value : ""
                 });
             }
