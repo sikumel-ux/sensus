@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Terima Kasih - Sensus RT 04</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=600;700;800&family=Roboto:wght=400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-app: #F8FAFC;
+            --card-bg: #FFFFFF;
+            --border: #E2E8F0;
+            --primary: #FF6B35;
+            --primary-gradient: linear-gradient(135deg, #E0531F 0%, #FF6B35 60%, #FF8557 100%);
+            --teal: #0D9488;
+            --text-main: #0F172A;
+            --text-muted: #64748B;
+            --radius-lg: 20px;
+            --radius-md: 12px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Roboto', sans-serif; }
+        body { background-color: var(--bg-app); color: var(--text-main); min-height: 100vh; padding: 20px 12px 40px 12px; }
+        h3, h4, .btn-action, .code-display, .warga-nama-title, .code-label { font-family: 'Plus Jakarta Sans', sans-serif; }
+        
+        .app-container { max-width: 650px; margin: 0 auto; }
+        .app-card {
+            background: var(--card-bg); border-radius: var(--radius-lg); padding: 20px;
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.04); border: 1px solid var(--border); border-top: 4px solid var(--teal);
+        }
+        
+        .success-banner { text-align: center; padding: 15px 0 5px 0; }
+        .success-banner i { font-size: 3.5rem; color: var(--teal); margin-bottom: 15px; }
+        .success-banner h3 { font-size: 1.4rem; font-weight: 800; color: var(--text-main); letter-spacing: -0.3px; }
+        
+        .code-container { margin: 20px 0; text-align: center; }
+        .code-label { font-size: 0.75rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 6px; display: block; }
+        .code-display { background: rgba(255, 107, 53, 0.08); border: 2px dashed var(--primary); padding: 14px; font-size: 1.6rem; font-weight: 800; color: var(--primary); letter-spacing: 1px; border-radius: var(--radius-md); display: inline-block; width: 100%; max-width: 280px; margin: 0 auto; }
+
+        .form-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
+        .data-row { display: grid; grid-template-columns: 140px 10px 1fr; padding: 6px 0; font-size: 0.88rem; align-items: start; }
+        .data-label { font-weight: 400; color: var(--text-muted); }
+        .data-value { font-weight: 700; color: var(--text-main); word-break: break-all; overflow-wrap: break-word; }
+        
+        .warga-item-box { background: var(--bg-app); border: 1px dashed var(--border); border-radius: var(--radius-md); padding: 14px; margin-bottom: 8px; }
+        .review-badge { display: inline-block; padding: 2px 6px; background: rgba(255, 107, 53, 0.08); border-radius: 4px; font-size: 0.65rem; font-weight: 700; color: var(--primary); margin-left: 5px; }
+        
+        .btn-action { width: 100%; padding: 13px; border: none; border-radius: var(--radius-md); font-size: 0.9rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <div class="app-card">
+            <div class="success-banner">
+                <i class="fas fa-circle-check"></i>
+                <h3>Data Berhasil Dikirim!</h3>
+                <p style="color: var(--text-muted); margin-top: 5px;">Matur nuwun, data sensus Anda telah aman tersimpan di database RT 04.</p>
+            </div>
+            
+            <div class="code-container">
+                <span class="code-label">Kode Registrasi Anda:</span>
+                <div class="code-display" id="registrasiKodeDisplay">-</div>
+            </div>
+
+            <div style="border-top: 1px solid var(--border); padding-top: 15px; margin-top: 15px;">
+                <h4 style="font-size:0.85rem; color:var(--text-main); margin-bottom: 14px; text-transform: uppercase; letter-spacing: 0.8px; font-weight: 800;">
+                    <i class="fas fa-file-invoice"></i> Resume Data Sensus
+                </h4>
+                <div id="reviewDataTerimaKasih" class="form-grid"></div>
+            </div>
+
+            <a href="../indexki.html" class="btn-action" style="background: var(--primary-gradient); color: #fff; margin-top: 25px; box-shadow: 0 4px 12px rgba(224, 83, 31, 0.2);">
+                <i class="fas fa-home"></i> Kembali ke Halaman Utama
+            </a>
+        </div>
+    </div>
+
+    <script>
+        window.onload = function() {
+            const rawData = sessionStorage.getItem("sensus_success_data");
+            if (!rawData) {
+                // Jika diakses langsung tanpa submit form, tendang balik ke halaman awal
+                window.location.href = "../indexki.html";
+                return;
+            }
+
+            const data = JSON.parse(rawData);
+            document.getElementById("registrasiKodeDisplay").innerText = data.kode;
+
+            // BIND RESUME PROPERTI
+            let htmlSummary = `
+                <div class="data-row">
+                    <div class="data-label">Status Hunian</div><div>:</div><div class="data-value">${data.statusRumah}</div>
+                </div>
+                ${data.statusRumah !== "Kos" ? `
+                <div class="data-row">
+                    <div class="data-label">No. Kartu Keluarga</div><div>:</div><div class="data-value">${data.noKk}</div>
+                </div>` : ''}
+                <div class="data-row">
+                    <div class="data-label">No. Rumah</div><div>:</div><div class="data-value">${data.noRumah}</div>
+                </div>
+                <div class="data-row">
+                    <div class="data-label">WhatsApp Utama</div><div>:</div><div class="data-value">${data.waUtama}</div>
+                </div>
+                <div class="data-row">
+                    <div class="data-label">Aturan Kewajiban</div><div>:</div><div class="data-value">${data.statusRumah === "Kos" ? "Bebas Jimpitan (-)" : "Wajib Jimpitan (" + data.modeJimpitan + ")"}</div>
+                </div>
+                ${data.statusRumah === "Kos" ? `
+                <div class="data-row">
+                    <div class="data-label">Pemilik/Pengelola Kos</div><div>:</div><div class="data-value">${data.namaPemilikKos}</div>
+                </div>` : ''}
+                <div class="data-row">
+                    <div class="data-label">Alamat Detail</div><div>:</div><div class="data-value">${data.alamat}</div>
+                </div>
+                
+                <h4 style="font-size:0.85rem; color:var(--text-main); margin-top: 25px; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.8px; font-weight: 800;"><i class="fas fa-users"></i> Daftar Anggota Jiwa Terdaftar</h4>
+            `;
+
+            // BIND RESUME ANGGOTA JIWA (TANPA KTP)
+            data.anggota.forEach((w, idx) => {
+                htmlSummary += `
+                    <div class="warga-item-box" style="background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.01);">
+                        <div class="warga-nama-title" style="font-weight:800; color:var(--primary); margin-bottom: 8px; font-size: 0.88rem;">
+                            #${idx + 1} ${w.nama} <span class="review-badge">${w.hubungan}</span>
+                        </div>
+                        <div class="data-row" style="padding: 2px 0;">
+                            <div class="data-label">NIK</div><div>:</div><div class="data-value">${w.nik}</div>
+                        </div>
+                        <div class="data-row" style="padding: 2px 0;">
+                            <div class="data-label">TTL</div><div>:</div><div class="data-value">${w.ttl}</div>
+                        </div>
+                        <div class="data-row" style="padding: 2px 0;">
+                            <div class="data-label">Jenis Kelamin</div><div>:</div><div class="data-value">${w.jk}</div>
+                        </div>
+                        <div class="data-row" style="padding: 2px 0;">
+                            <div class="data-label">Agama</div><div>:</div><div class="data-value">${w.agama}</div>
+                        </div>
+                        <div class="data-row" style="padding: 2px 0;">
+                            <div class="data-label">Pekerjaan</div><div>:</div><div class="data-value">${w.pekerjaan}</div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            document.getElementById("reviewDataTerimaKasih").innerHTML = htmlSummary;
+            
+            // Hapus data session setelah berhasil render demi keamanan data warga
+            sessionStorage.removeItem("sensus_success_data");
+        };
+    </script>
+</body>
+</html>
