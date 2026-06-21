@@ -5,11 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel Admin - Sensus RT 04</title>
     
+    <!-- Google Fonts & Font Awesome -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=600;700;800&family=Roboto:wght=400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
     
+    <!-- html2pdf.js Library untuk simpan PDF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
     <style>
@@ -41,7 +43,7 @@
         .stat-label { font-size: 0.75rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
         .stat-value { font-size: 1.6rem; font-weight: 800; margin-top: 4px; color: var(--text-main); }
 
-        /* FILTER TABS (TERPECAH: MILIK SENDIRI, SEWA, KOS) */
+        /* FILTER TABS */
         .filter-wrapper { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
         .btn-filter { 
             padding: 8px 16px; border: 1px solid var(--border); background: #fff; 
@@ -105,6 +107,7 @@
             </div>
         </header>
 
+        <!-- PANEL STATISTIK -->
         <div class="stats-grid">
             <div class="stat-card">
                 <div class="stat-label">Total Jiwa</div>
@@ -124,6 +127,7 @@
             </div>
         </div>
 
+        <!-- TOMBOL FILTER -->
         <div class="filter-wrapper">
             <button class="btn-filter active" onclick="filterStatus('All', this)">Semua Rumah</button>
             <button class="btn-filter" onclick="filterStatus('Milik Sendiri', this)">Milik Sendiri</button>
@@ -131,11 +135,13 @@
             <button class="btn-filter" onclick="filterStatus('Kos', this)">Kos</button>
         </div>
 
+        <!-- LOADING AREA -->
         <div id="loadingState">
             <i class="fas fa-spinner fa-spin"></i>
             <p style="margin-top: 10px; font-weight: 500; color: var(--text-muted)">Menghubungkan ke Google Database...</p>
         </div>
 
+        <!-- TABEL DATA UTAMA -->
         <div class="table-responsive" id="adminTable" style="display: none;">
             <table>
                 <thead>
@@ -154,6 +160,7 @@
         </div>
     </div>
 
+    <!-- MODAL POP UP DETAIL -->
     <div id="detailModalOverlay" class="modal-overlay">
         <div class="modal-box">
             <div class="modal-header">
@@ -169,6 +176,7 @@
                     <p style="font-size: 0.8rem; color: var(--text-muted);">Wilayah Administratif RT 04 / RW 00</p>
                 </div>
                 
+                <!-- Metadata Lengkap (Dihasilkan secara dinamis lewat JS) -->
                 <div class="pdf-meta-grid" id="modalMetaInfo"></div>
 
                 <h4 style="margin-bottom: 8px;">Daftar Anggota / Penghuni Rumah:</h4>
@@ -252,9 +260,8 @@
             KELOMPOK_RUMAH_MAP = {};
             
             data.forEach(warga => {
-                // Normalisasi nama status agar klop dengan pemecahan kategori
                 let statusAsli = warga.statusRumah ? warga.statusRumah.toString().trim() : "-";
-                if(statusAsli === "Kontrak") statusAsli = "Sewa"; // Menghindari ketidaksamaan string data spreadsheet
+                if(statusAsli === "Kontrak") statusAsli = "Sewa"; 
 
                 let groupKey = `${warga.noRumah || 'TanpaNo'}_${warga.noKk || 'TanpaKK'}`;
                 
@@ -329,32 +336,53 @@
             renderMainTable(status);
         }
 
-        // LOGIKA DINAMIS MENYEMBUNYIKAN JIMPITAN KHUSUS KOS
+        // BUKA POP UP & METADATA BERSIH (DATA STRIP "-" MAUPUN KOSONG OTOMATIS TIDAK DICETAK)
         function bukaModalDetail(groupKey) {
             const rumah = KELOMPOK_RUMAH_MAP[groupKey];
             if (!rumah) return;
 
             selectedHouseCode = groupKey;
 
-            // Cek kondisi jimpitan, jika 'Kos' baris jimpitan dihilangkan dari HTML string
-            let jimpitanHtmlRow = `<div class="meta-item"><span>Sistem Jimpitan:</span> ${rumah.modeJimpitan}</div>`;
-            if (rumah.statusRumah === "Kos") {
-                jimpitanHtmlRow = ""; // Kosongkan elemen jimpitan
-            }
-
-            document.getElementById("modalMetaInfo").innerHTML = `
+            // 1. Header Kepala Keluarga (Wajib Ada)
+            let metaHtml = `
                 <div class="meta-item" style="grid-column: span 2; background: #FFF3EB; padding: 10px; border-radius: 6px; margin-bottom: 4px;">
                     <span style="color: var(--primary);">Nama Kepala Keluarga / Penghuni Utama:</span> 
                     <strong style="font-size: 1rem; display: block; margin-top: 2px; color: var(--text-main);">${rumah.kepalaKeluarga}</strong>
                 </div>
-                <div class="meta-item"><span>Status Hunian:</span> ${rumah.statusRumah}</div>
-                <div class="meta-item"><span>No. Rumah:</span> No. ${rumah.noRumah}</div>
-                <div class="meta-item"><span>No. KK:</span> ${rumah.noKk}</div>
-                ${jimpitanHtmlRow} 
-                <div class="meta-item"><span>Kontak WA:</span> ${rumah.waUtama}</div>
-                <div class="meta-item"><span>Pemilik Kos:</span> ${rumah.namaPemilikKos || '-'}</div>
             `;
 
+            // 2. Fungsi Validasi untuk Menyaring Data Strip (-) atau Kosong
+            const cekValid = (val) => val && val.toString().trim() !== "" && val.toString().trim() !== "-";
+
+            // 3. Penyusunan Baris Data Secara Selektif
+            if (cekValid(rumah.statusRumah)) {
+                metaHtml += `<div class="meta-item"><span>Status Hunian:</span> ${rumah.statusRumah}</div>`;
+            }
+            if (cekValid(rumah.noRumah)) {
+                metaHtml += `<div class="meta-item"><span>No. Rumah:</span> No. ${rumah.noRumah}</div>`;
+            }
+            if (cekValid(rumah.noKk)) {
+                metaHtml += `<div class="meta-item"><span>No. KK:</span> ${rumah.noKk}</div>`;
+            }
+            
+            // Logika Jimpitan: Tidak dicetak kalau statusnya Kos ATAU datanya strip (-)
+            if (rumah.statusRumah !== "Kos" && cekValid(rumah.modeJimpitan)) {
+                metaHtml += `<div class="meta-item"><span>Sistem Jimpitan:</span> ${rumah.modeJimpitan}</div>`;
+            }
+            
+            if (cekValid(rumah.waUtama)) {
+                metaHtml += `<div class="meta-item"><span>Kontak WA:</span> ${rumah.waUtama}</div>`;
+            }
+            
+            // Nama pemilik kos otomatis hilang jika berstatus Milik Sendiri / Sewa karena datanya "-"
+            if (cekValid(rumah.namaPemilikKos)) {
+                metaHtml += `<div class="meta-item"><span>Pemilik Kos:</span> ${rumah.namaPemilikKos}</div>`;
+            }
+
+            // Injeksi Kode Hasil Saringan ke DOM Pop-up
+            document.getElementById("modalMetaInfo").innerHTML = metaHtml;
+
+            // 4. Render Daftar Anggota Keluarga
             const innerTbody = document.getElementById("modalWargaTableBody");
             innerTbody.innerHTML = "";
 
@@ -396,4 +424,3 @@
     </script>
 </body>
 </html>
-
