@@ -170,26 +170,34 @@
                     <button class="btn-close" onclick="tutupModalDetail()"><i class="fas fa-xmark"></i></button>
                 </div>
             </div>
+            
+            <!-- AREA UTAMA YANG AKAN DI-EXPORT KE PDF (DIJAMIN LENGKAP SAMA DENGAN POP UP) -->
             <div class="modal-body" id="pdfPrintArea">
-                <div style="text-align: center; margin-bottom: 16px; border-bottom: 2px dashed var(--border); padding-bottom: 12px;">
-                    <h2 style="font-family:'Plus Jakarta Sans'; font-size: 1.2rem;">DATA SENSUS KELUARGA</h2>
-                    <p style="font-size: 0.8rem; color: var(--text-muted);">Wilayah Administratif RT 04 / RW 00</p>
+                <div style="text-align: center; margin-bottom: 20px; border-bottom: 2px dashed var(--border); padding-bottom: 12px;">
+                    <h2 style="font-family:'Plus Jakarta Sans'; font-size: 1.3rem; color: var(--text-main); letter-spacing: 0.5px;">ARSIP SENSUS WARGA RT 04</h2>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 2px;">Dokumen Registrasi Hunian & Administrasi Sekretariat RT</p>
                 </div>
                 
-                <!-- Metadata Lengkap (Dihasilkan secara dinamis lewat JS) -->
+                <!-- Metadata Hasil Saringan Bersih JS dimasukkan ke sini -->
                 <div class="pdf-meta-grid" id="modalMetaInfo"></div>
 
-                <h4 style="margin-bottom: 8px;">Daftar Anggota / Penghuni Rumah:</h4>
+                <h4 style="margin-bottom: 8px; color: var(--text-main); font-size: 0.95rem;">Daftar Anggota / Penghuni Rumah:</h4>
                 <table class="inner-table">
                     <thead>
                         <tr>
                             <th>Nama Lengkap</th>
                             <th>NIK</th>
-                            <th>Hubungan</th>
+                            <th>Hubungan Keluarga</th>
                         </tr>
                     </thead>
                     <tbody id="modalWargaTableBody"></tbody>
                 </table>
+                
+                <!-- Tambahan Footer Arsip Resmi khusus untuk cetakan Dokumen Sekretariat -->
+                <div style="margin-top: 30px; border-top: 1px solid var(--border); padding-top: 10px; font-size: 0.75rem; color: var(--text-muted); display: flex; justify-content: space-between;">
+                    <p>* Dokumen ini digenerate otomatis melalui Panel Admin Sensus RT 04</p>
+                    <p>Tanggal Cetak: <span id="pdfTanggalCetak"></span></p>
+                </div>
             </div>
         </div>
     </div>
@@ -336,14 +344,18 @@
             renderMainTable(status);
         }
 
-        // BUKA POP UP & METADATA BERSIH (DATA STRIP "-" MAUPUN KOSONG OTOMATIS TIDAK DICETAK)
+        // BUKA POP UP & METADATA BERSIH (DATA STRIP DENGAN TANDA BINTANG JUGA DI-FILTER)
         function bukaModalDetail(groupKey) {
             const rumah = KELOMPOK_RUMAH_MAP[groupKey];
             if (!rumah) return;
 
             selectedHouseCode = groupKey;
 
-            // 1. Header Kepala Keluarga (Wajib Ada)
+            // Set tanggal cetak arsip hari ini
+            const opsiTgl = { year: 'numeric', month: 'long', day: 'numeric' };
+            document.getElementById("pdfTanggalCetak").innerText = new Date().toLocaleDateString('id-ID', opsiTgl);
+
+            // 1. Header Kepala Keluarga
             let metaHtml = `
                 <div class="meta-item" style="grid-column: span 2; background: #FFF3EB; padding: 10px; border-radius: 6px; margin-bottom: 4px;">
                     <span style="color: var(--primary);">Nama Kepala Keluarga / Penghuni Utama:</span> 
@@ -351,10 +363,10 @@
                 </div>
             `;
 
-            // 2. Fungsi Validasi untuk Menyaring Data Strip (-) atau Kosong
+            // 2. Fungsi Validasi (Mencegah strip atau data kosong lolos ke PDF arsip)
             const cekValid = (val) => val && val.toString().trim() !== "" && val.toString().trim() !== "-";
 
-            // 3. Penyusunan Baris Data Secara Selektif
+            // 3. Penyusunan Baris Data Secara Selektif Sesuai Form Pertanyaan
             if (cekValid(rumah.statusRumah)) {
                 metaHtml += `<div class="meta-item"><span>Status Hunian:</span> ${rumah.statusRumah}</div>`;
             }
@@ -374,15 +386,15 @@
                 metaHtml += `<div class="meta-item"><span>Kontak WA:</span> ${rumah.waUtama}</div>`;
             }
             
-            // Nama pemilik kos otomatis hilang jika berstatus Milik Sendiri / Sewa karena datanya "-"
+            // Nama pemilik kos otomatis hanya muncul jika statusnya Kos dan datanya diisi warga
             if (cekValid(rumah.namaPemilikKos)) {
                 metaHtml += `<div class="meta-item"><span>Pemilik Kos:</span> ${rumah.namaPemilikKos}</div>`;
             }
 
-            // Injeksi Kode Hasil Saringan ke DOM Pop-up
+            // Injeksi Kode Hasil Saringan ke DOM Pop-up & Area Cetak PDF
             document.getElementById("modalMetaInfo").innerHTML = metaHtml;
 
-            // 4. Render Daftar Anggota Keluarga
+            // 4. Render Daftar Anggota Keluarga Lengkap
             const innerTbody = document.getElementById("modalWargaTableBody");
             innerTbody.innerHTML = "";
 
@@ -390,7 +402,7 @@
                 const tr = document.createElement("tr");
                 tr.innerHTML = `
                     <td><b>${ang.namaLengkap}</b></td>
-                    <td><code style="color:var(--text-muted)">${ang.nik || '-'}</code></td>
+                    <td><code style="color:var(--text-main); font-weight:500;">${ang.nik || '-'}</code></td>
                     <td><span class="badge badge-hub">${ang.hubungan || '-'}</span></td>
                 `;
                 innerTbody.appendChild(tr);
@@ -404,11 +416,14 @@
             selectedHouseCode = null;
         }
 
+        // EKSPOR PDF LENGKAP MENGIKUTI APA YANG MUNCUL DI POP UP
         function eksporKePdfEksternal() {
             if(!selectedHouseCode) return;
             const element = document.getElementById('pdfPrintArea');
             const rumah = KELOMPOK_RUMAH_MAP[selectedHouseCode];
-            const namaFile = `Sensus_RT04_Rumah_${rumah.noRumah}.pdf`;
+            
+            // Nama file dinamis sesuai nama Kepala Keluarga dan No Rumah biar gampang dicari di komputer
+            const namaFile = `Arsip_RT04_Rumah_${rumah.noRumah}_${rumah.kepalaKeluarga.replace(/\s+/g, '_')}.pdf`;
             
             const opsiKonfigurasi = {
                 margin:       15,
