@@ -5,13 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel Admin - Sensus RT 04</title>
     
-    <!-- Google Fonts & Font Awesome -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=600;700;800&family=Roboto:wght=400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
     
-    <!-- html2pdf.js Library untuk simpan PDF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
     <style>
@@ -43,7 +41,7 @@
         .stat-label { font-size: 0.75rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
         .stat-value { font-size: 1.6rem; font-weight: 800; margin-top: 4px; color: var(--text-main); }
 
-        /* FILTER TABS */
+        /* FILTER TABS (TERPECAH: MILIK SENDIRI, SEWA, KOS) */
         .filter-wrapper { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
         .btn-filter { 
             padding: 8px 16px; border: 1px solid var(--border); background: #fff; 
@@ -107,7 +105,6 @@
             </div>
         </header>
 
-        <!-- PANEL STATISTIK -->
         <div class="stats-grid">
             <div class="stat-card">
                 <div class="stat-label">Total Jiwa</div>
@@ -122,7 +119,7 @@
                 <div class="stat-value" id="cnt_wargaTetap">0</div>
             </div>
             <div class="stat-card">
-                <div class="stat-label">Warga Kos/Kontrak</div>
+                <div class="stat-label">Warga Kos/Sewa</div>
                 <div class="stat-value" id="cnt_wargaKos">0</div>
             </div>
         </div>
@@ -130,17 +127,15 @@
         <div class="filter-wrapper">
             <button class="btn-filter active" onclick="filterStatus('All', this)">Semua Rumah</button>
             <button class="btn-filter" onclick="filterStatus('Milik Sendiri', this)">Milik Sendiri</button>
-            <button class="btn-filter" onclick="filterStatus('Kontrak', this)">Kontrak</button>
+            <button class="btn-filter" onclick="filterStatus('Sewa', this)">Sewa</button>
             <button class="btn-filter" onclick="filterStatus('Kos', this)">Kos</button>
         </div>
 
-        <!-- LOADING AREA -->
         <div id="loadingState">
             <i class="fas fa-spinner fa-spin"></i>
             <p style="margin-top: 10px; font-weight: 500; color: var(--text-muted)">Menghubungkan ke Google Database...</p>
         </div>
 
-        <!-- TABEL DATA UTAMA -->
         <div class="table-responsive" id="adminTable" style="display: none;">
             <table>
                 <thead>
@@ -159,7 +154,6 @@
         </div>
     </div>
 
-    <!-- MODAL POP UP DETAIL -->
     <div id="detailModalOverlay" class="modal-overlay">
         <div class="modal-box">
             <div class="modal-header">
@@ -175,7 +169,6 @@
                     <p style="font-size: 0.8rem; color: var(--text-muted);">Wilayah Administratif RT 04 / RW 00</p>
                 </div>
                 
-                <!-- Metadata Lengkap + Nama Kepala Keluarga Teratas -->
                 <div class="pdf-meta-grid" id="modalMetaInfo"></div>
 
                 <h4 style="margin-bottom: 8px;">Daftar Anggota / Penghuni Rumah:</h4>
@@ -196,8 +189,8 @@
     <script>
         const GOOGLE_SCRIPT_API_URL = "https://script.google.com/macros/s/AKfycby-DpvqtWpu8FEVeudZYPms_0kc7jJyQ60BwiVJ9NlIxKcBzMbse9GcbBpjnorz94_wHg/exec";
         
-        let RAW_DATA_WARGA = []; // Menyimpan baris mentah dari server
-        let KELOMPOK_RUMAH_MAP = {}; // Menyimpan data yang sudah digroup per No Rumah/KK
+        let RAW_DATA_WARGA = []; 
+        let KELOMPOK_RUMAH_MAP = {}; 
         let currentFilter = "All";
         let selectedHouseCode = null;
 
@@ -214,7 +207,7 @@
                 let statusRumah = warga.statusRumah ? warga.statusRumah.toString().trim() : "";
                 if (statusRumah === "Milik Sendiri") {
                     countTetap++;
-                } else if (statusRumah === "Kos" || statusRumah === "Kontrak") {
+                } else if (statusRumah === "Kos" || statusRumah === "Sewa" || statusRumah === "Kontrak") {
                     countKosKontrak++;
                 }
             });
@@ -225,7 +218,6 @@
             document.getElementById("cnt_wargaKos").innerText = countKosKontrak;
         }
 
-        // FUNGSI UTAMA AMBIL DATA
         function muatDataSensus() {
             const loading = document.getElementById("loadingState");
             const table = document.getElementById("adminTable");
@@ -256,12 +248,14 @@
             });
         }
 
-        // PROSES MENGELOMPOKKAN ANGGOTA KE KEPALA KELUARGANYA
         function prosesPengelompokanKeluarga(data) {
             KELOMPOK_RUMAH_MAP = {};
             
             data.forEach(warga => {
-                // Kelompokkan unik berdasarkan No Rumah + No KK
+                // Normalisasi nama status agar klop dengan pemecahan kategori
+                let statusAsli = warga.statusRumah ? warga.statusRumah.toString().trim() : "-";
+                if(statusAsli === "Kontrak") statusAsli = "Sewa"; // Menghindari ketidaksamaan string data spreadsheet
+
                 let groupKey = `${warga.noRumah || 'TanpaNo'}_${warga.noKk || 'TanpaKK'}`;
                 
                 if (!KELOMPOK_RUMAH_MAP[groupKey]) {
@@ -269,7 +263,7 @@
                         kode: warga.kode || "-",
                         noKk: warga.noKk || "-",
                         noRumah: warga.noRumah || "-",
-                        statusRumah: warga.statusRumah || "-",
+                        statusRumah: statusAsli,
                         modeJimpitan: warga.modeJimpitan || "-",
                         waUtama: warga.waUtama || "-",
                         namaPemilikKos: warga.namaPemilikKos || "-",
@@ -279,21 +273,17 @@
                     };
                 }
                 
-                // Cari siapa kepala keluarganya/penghuni utama
                 let hub = warga.hubungan ? warga.hubungan.toLowerCase() : "";
                 if (hub.includes("kepala") || hub.includes("diri sendiri") || hub.includes("utama") || KELOMPOK_RUMAH_MAP[groupKey].kepalaKeluarga === "-") {
-                    // Kalau ketemu status kepala, atau wadah kepala masih kosong, set dia jadi kepala sementara
                     if(KELOMPOK_RUMAH_MAP[groupKey].kepalaKeluarga === "-" || hub.includes("kepala")){
                         KELOMPOK_RUMAH_MAP[groupKey].kepalaKeluarga = warga.namaLengkap;
                     }
                 }
                 
-                // Masukkan sebagai list anggota untuk dicetak di modal
                 KELOMPOK_RUMAH_MAP[groupKey].anggotaKeluarga.push(warga);
             });
         }
 
-        // RENDER TABEL UTAMA PER KEPALA KELUARGA
         function renderMainTable(filter = "All") {
             const tbody = document.getElementById("sensusTableBody");
             tbody.innerHTML = "";
@@ -303,7 +293,6 @@
             Object.keys(KELOMPOK_RUMAH_MAP).forEach(key => {
                 const rumah = KELOMPOK_RUMAH_MAP[key];
 
-                // Cek Filter Tab
                 if (filter !== "All" && rumah.statusRumah !== filter) return;
                 barisDitemukan = true;
 
@@ -340,14 +329,19 @@
             renderMainTable(status);
         }
 
-        // BUKA POP UP & TAMPILKAN NAMA KEPALA KELUARGA DI PALING ATAS METADATA
+        // LOGIKA DINAMIS MENYEMBUNYIKAN JIMPITAN KHUSUS KOS
         function bukaModalDetail(groupKey) {
             const rumah = KELOMPOK_RUMAH_MAP[groupKey];
             if (!rumah) return;
 
             selectedHouseCode = groupKey;
 
-            // Injeksi nama kepala keluarga paling atas sebelum status hunian
+            // Cek kondisi jimpitan, jika 'Kos' baris jimpitan dihilangkan dari HTML string
+            let jimpitanHtmlRow = `<div class="meta-item"><span>Sistem Jimpitan:</span> ${rumah.modeJimpitan}</div>`;
+            if (rumah.statusRumah === "Kos") {
+                jimpitanHtmlRow = ""; // Kosongkan elemen jimpitan
+            }
+
             document.getElementById("modalMetaInfo").innerHTML = `
                 <div class="meta-item" style="grid-column: span 2; background: #FFF3EB; padding: 10px; border-radius: 6px; margin-bottom: 4px;">
                     <span style="color: var(--primary);">Nama Kepala Keluarga / Penghuni Utama:</span> 
@@ -356,12 +350,11 @@
                 <div class="meta-item"><span>Status Hunian:</span> ${rumah.statusRumah}</div>
                 <div class="meta-item"><span>No. Rumah:</span> No. ${rumah.noRumah}</div>
                 <div class="meta-item"><span>No. KK:</span> ${rumah.noKk}</div>
-                <div class="meta-item"><span>Sistem Jimpitan:</span> ${rumah.modeJimpitan}</div>
+                ${jimpitanHtmlRow} 
                 <div class="meta-item"><span>Kontak WA:</span> ${rumah.waUtama}</div>
                 <div class="meta-item"><span>Pemilik Kos:</span> ${rumah.namaPemilikKos || '-'}</div>
             `;
 
-            // List Seluruh Anggota Keluarga
             const innerTbody = document.getElementById("modalWargaTableBody");
             innerTbody.innerHTML = "";
 
@@ -403,3 +396,4 @@
     </script>
 </body>
 </html>
+
