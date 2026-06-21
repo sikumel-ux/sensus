@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Admin - Sensus RT 04</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=600;700;800&family=Roboto:wght=400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="admin-container">
+        <header>
+            <div>
+                <h1>Data Sensus Warga RT 04</h1>
+                <p class="header-desc">Manajemen status hunian terintegrasi Google Sheets</p>
+            </div>
+        </header>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-label">Total Jiwa</div>
+                <div class="stat-value" id="cnt_totalJiwa">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Total KK</div>
+                <div class="stat-value" id="cnt_totalKk">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Warga Tetap</div>
+                <div class="stat-value" id="cnt_wargaTetap">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Sewa/Kontrak</div>
+                <div class="stat-value" id="cnt_wargaSewa">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Kos</div>
+                <div class="stat-value" id="cnt_wargaKos">0</div>
+            </div>
+        </div>
+
+        <div class="filter-wrapper">
+            <button class="btn-filter active" onclick="filterStatus('All', this)">Semua Rumah</button>
+            <button class="btn-filter" onclick="filterStatus('Milik Sendiri', this)">Milik Sendiri</button>
+            <button class="btn-filter" onclick="filterStatus('Sewa/Kontrak', this)">Sewa/Kontrak</button>
+            <button class="btn-filter" onclick="filterStatus('Kos', this)">Kos</button>
+        </div>
+
+        <div id="loadingState">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p class="loading-text">Menghubungkan ke Google Database...</p>
+        </div>
+
+        <div class="table-responsive" id="adminTable" style="display: none;">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Kepala Keluarga / Penghuni Utama</th>
+                        <th>Status Hunian</th>
+                        <th>No. WhatsApp</th>
+                        <th>Berkas KTP</th>
+                    </tr>
+                </thead>
+                <tbody id="sensusTableBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="detailModalOverlay" class="modal-overlay">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3 class="modal-title">Detail Berkas Hunian</h3>
+                <div class="modal-actions">
+                    <button class="btn-icon-pdf" onclick="eksporKePdfEksternal()"><i class="fas fa-file-pdf"></i> Simpan PDF</button>
+                    <button class="btn-close" onclick="tutupModalDetail()"><i class="fas fa-xmark"></i></button>
+                </div>
+            </div>
+            
+            <div class="modal-body" id="pdfPrintArea">
+                <div class="pdf-header">
+                    <h2>ARSIP SENSUS WARGA RT 04</h2>
+                    <p>Dokumen Registrasi Hunian & Administrasi Sekretariat RT</p>
+                </div>
+                
+                <div class="pdf-meta-grid" id="modalMetaInfo"></div>
+
+                <h4 class="table-title">Daftar Anggota / Penghuni Rumah:</h4>
+                <table class="inner-table" id="modalWargaTable">
+                    <thead id="modalWargaTableHeader"></thead>
+                    <tbody id="modalWargaTableBody"></tbody>
+                </table>
+                
+                <div class="pdf-footer">
+                    <p>* Dokumen ini digenerate otomatis melalui Panel Admin Sensus RT 04</p>
+                    <p>Tanggal Cetak: <span id="pdfTanggalCetak"></span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
