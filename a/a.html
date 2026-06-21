@@ -11,7 +11,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=600;700;800&family=Roboto:wght=400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
     
-    <!-- html2pdf.js Library untuk simpan PDF secara lokal -->
+    <!-- html2pdf.js Library untuk simpan PDF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
     <style>
@@ -22,22 +22,26 @@
             --primary: #FF6B35;
             --primary-light: rgba(255, 107, 53, 0.08);
             --teal: #0D9488;
-            --teal-light: rgba(13, 148, 136, 0.1);
             --text-main: #0F172A;
             --text-muted: #64748B;
             --radius-lg: 16px;
             --radius-md: 8px;
+            --accent-warn: #EF4444;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Roboto', sans-serif; }
         body { background: var(--bg-admin); color: var(--text-main); padding: 20px; font-size: 0.9rem; }
         
-        h1, h2, h3, .btn-filter, .modal-title, th { font-family: 'Plus Jakarta Sans', sans-serif; }
-
-        .admin-container { max-width: 1000px; margin: 0 auto; }
-        
+        h1, h2, h3, h4, .btn-filter, .modal-title, th, .stat-value { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .admin-container { max-width: 1100px; margin: 0 auto; }
         header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
         header h1 { font-size: 1.5rem; font-weight: 800; letter-spacing: -0.5px; }
+
+        /* KARTU STATISTIK */
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px; }
+        .stat-card { background: #fff; padding: 16px; border: 1px solid var(--border); border-radius: var(--radius-lg); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.01); }
+        .stat-label { font-size: 0.75rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+        .stat-value { font-size: 1.6rem; font-weight: 800; margin-top: 4px; color: var(--text-main); }
 
         /* FILTER TABS */
         .filter-wrapper { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
@@ -49,6 +53,10 @@
         .btn-filter.active { background: var(--primary); color: #fff; border-color: var(--primary); }
         .btn-filter:hover:not(.active) { background: #F1F5F9; }
 
+        /* LOADING & ERROR */
+        #loadingState { padding: 40px; text-align: center; background: #fff; border-radius: var(--radius-lg); border: 1px solid var(--border); }
+        #loadingState i { font-size: 2rem; color: var(--primary); margin-bottom: 8px; }
+
         /* TABLE STYLING */
         .table-responsive { background: #fff; border-radius: var(--radius-lg); border: 1px solid var(--border); overflow-x: auto; box-shadow: 0 4px 12px rgba(0,0,0,0.02); }
         table { width: 100%; border-collapse: collapse; text-align: left; }
@@ -58,10 +66,13 @@
         .clickable-name { color: var(--primary); font-weight: 700; cursor: pointer; text-decoration: none; }
         .clickable-name:hover { text-decoration: underline; }
 
-        /* LINK KTP STYLING */
-        .link-ktp { color: var(--teal); text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; font-size: 0.85rem; }
-        .link-ktp:hover { text-decoration: underline; }
-        .text-dash { color: var(--text-muted); font-size: 0.9rem; }
+        .btn-foto { color: var(--teal); text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; font-size: 0.85rem; }
+        .btn-foto:hover { text-decoration: underline; }
+
+        /* BADGES */
+        .badge { display: inline-block; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 700; }
+        .badge-code { background: #F1F5F9; color: #475569; }
+        .badge-hub { background: var(--primary-light); color: var(--primary); }
 
         /* MODAL POP UP */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.5); backdrop-filter: blur(4px); z-index: 9999; justify-content: center; align-items: center; padding: 16px; }
@@ -76,13 +87,14 @@
 
         .modal-body { padding: 20px; }
         
+        /* GRID METADATA DI POPUP */
         .pdf-meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; background: #F8FAFC; padding: 12px; border-radius: 8px; border: 1px solid var(--border); }
         .meta-item { font-size: 0.85rem; }
         .meta-item span { font-weight: 700; color: var(--text-muted); }
 
         .inner-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        .inner-table th { background: #EDF2F7; color: var(--text-main); }
-        .inner-table td { font-size: 0.85rem; padding: 10px 12px; }
+        .inner-table th { background: #EDF2F7; color: var(--text-main); border-bottom: 1px solid var(--border); }
+        .inner-table td { font-size: 0.85rem; padding: 10px 12px; border-bottom: 1px solid var(--border); }
     </style>
 </head>
 <body>
@@ -91,37 +103,63 @@
         <header>
             <div>
                 <h1>Data Sensus Warga RT 04</h1>
-                <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 4px;">Manajemen status hunian dan administrasi</p>
+                <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 4px;">Manajemen status hunian terintegrasi Google Sheets</p>
             </div>
         </header>
 
-        <!-- FITUR FILTER STATUS HUNIAN -->
+        <!-- PANEL STATISTIK -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-label">Total Jiwa</div>
+                <div class="stat-value" id="cnt_totalJiwa">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Total KK</div>
+                <div class="stat-value" id="cnt_totalKk">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Warga Tetap</div>
+                <div class="stat-value" id="cnt_wargaTetap">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Warga Kos/Kontrak</div>
+                <div class="stat-value" id="cnt_wargaKos">0</div>
+            </div>
+        </div>
+
         <div class="filter-wrapper">
-            <button class="btn-filter active" onclick="filterStatus('All', this)">Semua Data</button>
+            <button class="btn-filter active" onclick="filterStatus('All', this)">Semua Rumah</button>
             <button class="btn-filter" onclick="filterStatus('Milik Sendiri', this)">Milik Sendiri</button>
-            <button class="btn-filter" onclick="filterStatus('Sewa / Kontrak', this)">Sewa / Kontrak</button>
+            <button class="btn-filter" onclick="filterStatus('Kontrak', this)">Kontrak</button>
             <button class="btn-filter" onclick="filterStatus('Kos', this)">Kos</button>
         </div>
 
-        <!-- MAIN DATA TABLE -->
-        <div class="table-responsive">
+        <!-- LOADING AREA -->
+        <div id="loadingState">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p style="margin-top: 10px; font-weight: 500; color: var(--text-muted)">Menghubungkan ke Google Database...</p>
+        </div>
+
+        <!-- TABEL DATA UTAMA -->
+        <div class="table-responsive" id="adminTable" style="display: none;">
             <table>
                 <thead>
                     <tr>
-                        <th>Nama Kepala Keluarga / Penghuni Utama</th>
+                        <th>Kode</th>
                         <th>No. KK</th>
+                        <th>Kepala Keluarga / Penghuni Utama</th>
                         <th>No. Rumah</th>
-                        <th>Berkas KTP (Khusus Kos/Sewa)</th>
+                        <th>Status Hunian</th>
+                        <th>Sistem Jimpitan</th>
+                        <th>Berkas KTP</th>
                     </tr>
                 </thead>
-                <tbody id="adminTableBody">
-                    <!-- Data dimasukkan secara dinamis via JavaScript -->
-                </tbody>
+                <tbody id="sensusTableBody"></tbody>
             </table>
         </div>
     </div>
 
-    <!-- MODAL POP UP DETAIL & EXPORT PDF -->
+    <!-- MODAL POP UP DETAIL -->
     <div id="detailModalOverlay" class="modal-overlay">
         <div class="modal-box">
             <div class="modal-header">
@@ -137,15 +175,15 @@
                     <p style="font-size: 0.8rem; color: var(--text-muted);">Wilayah Administratif RT 04 / RW 00</p>
                 </div>
                 
+                <!-- Metadata Lengkap + Nama Kepala Keluarga Teratas -->
                 <div class="pdf-meta-grid" id="modalMetaInfo"></div>
 
-                <h4 style="margin-bottom: 8px;">Daftar Anggota / Penghuni Tinggal:</h4>
+                <h4 style="margin-bottom: 8px;">Daftar Anggota / Penghuni Rumah:</h4>
                 <table class="inner-table">
                     <thead>
                         <tr>
                             <th>Nama Lengkap</th>
                             <th>NIK</th>
-                            <th>L/P</th>
                             <th>Hubungan</th>
                         </tr>
                     </thead>
@@ -156,132 +194,183 @@
     </div>
 
     <script>
-        // Simulasi database dari form sensus sebelumnya (termasuk penyimpanan string base64 foto KTP)
-        const SENSUS_DATABASE = [
-            {
-                kode: "04-129481",
-                noKk: "3402111234567890",
-                modeJimpitan: "Harian",
-                statusRumah: "Milik Sendiri",
-                noRumah: "No. 12",
-                namaPemilikKos: "-",
-                waUtama: "08123456789",
-                alamat: "RT 04 Dongkelan",
-                anggota: [
-                    { nama: "Budi Santoso", nik: "3402111234567890", jk: "Laki-laki", hubungan: "Kepala Keluarga", ktpBase64: "" }
-                ]
-            },
-            {
-                kode: "04-884921",
-                noKk: "3402225566778899",
-                modeJimpitan: "Bulanan",
-                statusRumah: "Sewa / Kontrak",
-                noRumah: "No. 45B",
-                namaPemilikKos: "-",
-                waUtama: "085722334455",
-                alamat: "RT 04 Giwangan",
-                anggota: [
-                    { nama: "Ahmad Subarjo", nik: "3402225566778899", jk: "Laki-laki", hubungan: "Diri Sendiri / Penghuni Utama", ktpBase64: "data:image/png;base64,..." }
-                ]
-            },
-            {
-                kode: "04-332194",
-                noKk: "-",
-                modeJimpitan: "Bebas Jimpitan",
-                statusRumah: "Kos",
-                noRumah: "No. 02 (Kamar 5)",
-                namaPemilikKos: "Ibu Haji Maryam",
-                waUtama: "089988776655",
-                alamat: "RT 04 Dongkelan",
-                anggota: [
-                    { nama: "Dimas Saputra", nik: "3201998877665544", jk: "Laki-laki", hubungan: "Diri Sendiri / Penghuni Utama", ktpBase64: "data:image/png;base64,..." }
-                ]
-            }
-        ];
+        const GOOGLE_SCRIPT_API_URL = "https://script.google.com/macros/s/AKfycby-DpvqtWpu8FEVeudZYPms_0kc7jJyQ60BwiVJ9NlIxKcBzMbse9GcbBpjnorz94_wHg/exec";
+        
+        let RAW_DATA_WARGA = []; // Menyimpan baris mentah dari server
+        let KELOMPOK_RUMAH_MAP = {}; // Menyimpan data yang sudah digroup per No Rumah/KK
+        let currentFilter = "All";
+        let selectedHouseCode = null;
 
-        let currentActiveFilter = "All";
-        let selectedSensusActive = null;
+        function hitungKalkulasiStatistik(data) {
+            let totalJiwa = data.length;
+            let kumpulanKkUnik = new Set();
+            let countTetap = 0;
+            let countKosKontrak = 0;
 
-        function renderAdminTable(filter = "All") {
-            const tbody = document.getElementById("adminTableBody");
-            tbody.innerHTML = "";
+            data.forEach(warga => {
+                let kkBersih = warga.noKk ? warga.noKk.toString().replace(/'/g, "").trim() : "";
+                if(kkBersih && kkBersih !== "-") kumpulanKkUnik.add(kkBersih);
 
-            const filteredData = SENSUS_DATABASE.filter(item => {
-                if(filter === "All") return true;
-                return item.statusRumah === filter;
+                let statusRumah = warga.statusRumah ? warga.statusRumah.toString().trim() : "";
+                if (statusRumah === "Milik Sendiri") {
+                    countTetap++;
+                } else if (statusRumah === "Kos" || statusRumah === "Kontrak") {
+                    countKosKontrak++;
+                }
             });
 
-            filteredData.forEach((item, index) => {
-                const namaKepala = item.anggota[0] ? item.anggota[0].nama : "Tidak Terdata";
+            document.getElementById("cnt_totalJiwa").innerText = totalJiwa;
+            document.getElementById("cnt_totalKk").innerText = kumpulanKkUnik.size;
+            document.getElementById("cnt_wargaTetap").innerText = countTetap;
+            document.getElementById("cnt_wargaKos").innerText = countKosKontrak;
+        }
+
+        // FUNGSI UTAMA AMBIL DATA
+        function muatDataSensus() {
+            const loading = document.getElementById("loadingState");
+            const table = document.getElementById("adminTable");
+            const tbody = document.getElementById("sensusTableBody");
+            
+            loading.style.display = "block";
+            table.style.display = "none";
+            tbody.innerHTML = "";
+
+            fetch(GOOGLE_SCRIPT_API_URL)
+            .then(res => res.json())
+            .then(data => {
+                loading.style.display = "none";
+                table.style.display = "block";
                 
-                // Logika Kolom Link KTP (Hanya tampil untuk Sewa / Kos)
-                let kolomKtpHtml = '<span class="text-dash">-</span>';
-                if (item.statusRumah === "Kos" || item.statusRumah === "Sewa / Kontrak") {
-                    // Di sini link dibuat memanggil fungsi view atau membuka window baru berisi data KTP
-                    kolomKtpHtml = `<a href="#" class="link-ktp" onclick="lihatLampiranKtp('${item.kode}')"><i class="fas fa-image"></i> Lihat KTP</a>`;
+                if (data.status === "error" || !data || data.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:var(--text-muted)">Belum ada data sensus masuk.</td></tr>`;
+                    return;
                 }
+
+                RAW_DATA_WARGA = data;
+                hitungKalkulasiStatistik(data);
+                prosesPengelompokanKeluarga(data);
+                renderMainTable("All");
+            })
+            .catch(err => {
+                loading.innerHTML = `<i class="fas fa-exclamation-circle" style="color:var(--accent-warn)"></i><p style="margin-top:10px;">Gagal memuat database: ${err.toString()}</p>`;
+            });
+        }
+
+        // PROSES MENGELOMPOKKAN ANGGOTA KE KEPALA KELUARGANYA
+        function prosesPengelompokanKeluarga(data) {
+            KELOMPOK_RUMAH_MAP = {};
+            
+            data.forEach(warga => {
+                // Kelompokkan unik berdasarkan No Rumah + No KK
+                let groupKey = `${warga.noRumah || 'TanpaNo'}_${warga.noKk || 'TanpaKK'}`;
+                
+                if (!KELOMPOK_RUMAH_MAP[groupKey]) {
+                    KELOMPOK_RUMAH_MAP[groupKey] = {
+                        kode: warga.kode || "-",
+                        noKk: warga.noKk || "-",
+                        noRumah: warga.noRumah || "-",
+                        statusRumah: warga.statusRumah || "-",
+                        modeJimpitan: warga.modeJimpitan || "-",
+                        waUtama: warga.waUtama || "-",
+                        namaPemilikKos: warga.namaPemilikKos || "-",
+                        linkFoto: warga.linkFoto || "-",
+                        kepalaKeluarga: "-", 
+                        anggotaKeluarga: []
+                    };
+                }
+                
+                // Cari siapa kepala keluarganya/penghuni utama
+                let hub = warga.hubungan ? warga.hubungan.toLowerCase() : "";
+                if (hub.includes("kepala") || hub.includes("diri sendiri") || hub.includes("utama") || KELOMPOK_RUMAH_MAP[groupKey].kepalaKeluarga === "-") {
+                    // Kalau ketemu status kepala, atau wadah kepala masih kosong, set dia jadi kepala sementara
+                    if(KELOMPOK_RUMAH_MAP[groupKey].kepalaKeluarga === "-" || hub.includes("kepala")){
+                        KELOMPOK_RUMAH_MAP[groupKey].kepalaKeluarga = warga.namaLengkap;
+                    }
+                }
+                
+                // Masukkan sebagai list anggota untuk dicetak di modal
+                KELOMPOK_RUMAH_MAP[groupKey].anggotaKeluarga.push(warga);
+            });
+        }
+
+        // RENDER TABEL UTAMA PER KEPALA KELUARGA
+        function renderMainTable(filter = "All") {
+            const tbody = document.getElementById("sensusTableBody");
+            tbody.innerHTML = "";
+
+            let barisDitemukan = false;
+
+            Object.keys(KELOMPOK_RUMAH_MAP).forEach(key => {
+                const rumah = KELOMPOK_RUMAH_MAP[key];
+
+                // Cek Filter Tab
+                if (filter !== "All" && rumah.statusRumah !== filter) return;
+                barisDitemukan = true;
+
+                const linkFotoHtml = (rumah.linkFoto && rumah.linkFoto !== "-") 
+                    ? `<a href="${rumah.linkFoto}" target="_blank" class="btn-foto"><i class="fas fa-image"></i> Lihat KTP</a>` 
+                    : `<span style="color:var(--text-muted)">-</span>`;
 
                 const tr = document.createElement("tr");
                 tr.innerHTML = `
+                    <td><span class="badge badge-code">${rumah.kode}</span></td>
+                    <td><b>${rumah.noKk}</b></td>
                     <td>
-                        <span class="clickable-name" onclick="bukaModalDetail(${index}, '${item.kode}')">
-                            ${namaKepala}
+                        <span class="clickable-name" onclick="bukaModalDetail('${key}')">
+                            ${rumah.kepalaKeluarga}
                         </span>
                     </td>
-                    <td>${item.noKk}</td>
-                    <td><b>${item.noRumah}</b></td>
-                    <td>${kolomKtpHtml}</td>
+                    <td><b>No. ${rumah.noRumah}</b></td>
+                    <td><span class="badge" style="background:#F1F5F9;">${rumah.statusRumah}</span></td>
+                    <td>${rumah.modeJimpitan}</td>
+                    <td>${linkFotoHtml}</td>
                 `;
                 tbody.appendChild(tr);
             });
+
+            if(!barisDitemukan) {
+                tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:var(--text-muted)">Tidak ada data hunian terdaftar untuk status ini.</td></tr>`;
+            }
         }
 
         function filterStatus(status, buttonElement) {
-            currentActiveFilter = status;
+            currentFilter = status;
             document.querySelectorAll(".btn-filter").forEach(btn => btn.classList.remove("active"));
             buttonElement.classList.add("active");
-            renderAdminTable(status);
+            renderMainTable(status);
         }
 
-        // Fungsi ketika tombol 'Lihat KTP' diklik
-        function lihatLampiranKtp(kode) {
-            const data = SENSUS_DATABASE.find(item => item.kode === kode);
-            if(!data || !data.anggota[0] || !data.anggota[0].ktpBase64) {
-                alert("Berkas KTP tidak ditemukan atau kosong.");
-                return;
-            }
-            
-            // Membuka gambar di jendela baru (Base64 renderer aman)
-            const imageWindow = window.open();
-            imageWindow.document.write(`<title>Berkas KTP - ${data.anggota[0].nama}</title><body style="margin:0; display:flex; justify-content:center; align-items:center; background:#1e293b;"><img src="${data.anggota[0].ktpBase64}" style="max-width:100%; max-height:100vh; object-fit:contain; box-shadow:0 10px 25px rgba(0,0,0,0.5); border-radius:8px;"></body>`);
-        }
+        // BUKA POP UP & TAMPILKAN NAMA KEPALA KELUARGA DI PALING ATAS METADATA
+        function bukaModalDetail(groupKey) {
+            const rumah = KELOMPOK_RUMAH_MAP[groupKey];
+            if (!rumah) return;
 
-        function bukaModalDetail(index, kode) {
-            const data = SENSUS_DATABASE.find(item => item.kode === kode);
-            if(!data) return;
+            selectedHouseCode = groupKey;
 
-            selectedSensusActive = data;
-
+            // Injeksi nama kepala keluarga paling atas sebelum status hunian
             document.getElementById("modalMetaInfo").innerHTML = `
-                <div class="meta-item"><span>Status Hunian:</span> ${data.statusRumah}</div>
-                <div class="meta-item"><span>No. Rumah / Ruang:</span> ${data.noRumah}</div>
-                <div class="meta-item"><span>No. KK Terdaftar:</span> ${data.noKk}</div>
-                <div class="meta-item"><span>Sistem Jimpitan:</span> ${data.modeJimpitan}</div>
-                <div class="meta-item"><span>Kontak WA Sensus:</span> ${data.waUtama}</div>
-                <div class="meta-item"><span>Pemilik/Pengelola Kos:</span> ${data.namaPemilikKos}</div>
-                <div class="meta-item" style="grid-column: span 2;"><span>Alamat Domisili:</span> ${data.alamat}</div>
+                <div class="meta-item" style="grid-column: span 2; background: #FFF3EB; padding: 10px; border-radius: 6px; margin-bottom: 4px;">
+                    <span style="color: var(--primary);">Nama Kepala Keluarga / Penghuni Utama:</span> 
+                    <strong style="font-size: 1rem; display: block; margin-top: 2px; color: var(--text-main);">${rumah.kepalaKeluarga}</strong>
+                </div>
+                <div class="meta-item"><span>Status Hunian:</span> ${rumah.statusRumah}</div>
+                <div class="meta-item"><span>No. Rumah:</span> No. ${rumah.noRumah}</div>
+                <div class="meta-item"><span>No. KK:</span> ${rumah.noKk}</div>
+                <div class="meta-item"><span>Sistem Jimpitan:</span> ${rumah.modeJimpitan}</div>
+                <div class="meta-item"><span>Kontak WA:</span> ${rumah.waUtama}</div>
+                <div class="meta-item"><span>Pemilik Kos:</span> ${rumah.namaPemilikKos || '-'}</div>
             `;
 
+            // List Seluruh Anggota Keluarga
             const innerTbody = document.getElementById("modalWargaTableBody");
             innerTbody.innerHTML = "";
-            
-            data.anggota.forEach(ang => {
+
+            rumah.anggotaKeluarga.forEach(ang => {
                 const tr = document.createElement("tr");
                 tr.innerHTML = `
-                    <td><b>${ang.nama}</b></td>
-                    <td><code style="font-size:0.8rem; color:var(--text-muted)">${ang.nik}</code></td>
-                    <td>${ang.jk === 'Laki-laki' ? 'L' : 'P'}</td>
-                    <td><span style="font-size:0.8rem; font-weight:600;">${ang.hubungan}</span></td>
+                    <td><b>${ang.namaLengkap}</b></td>
+                    <td><code style="color:var(--text-muted)">${ang.nik || '-'}</code></td>
+                    <td><span class="badge badge-hub">${ang.hubungan || '-'}</span></td>
                 `;
                 innerTbody.appendChild(tr);
             });
@@ -291,13 +380,14 @@
 
         function tutupModalDetail() {
             document.getElementById("detailModalOverlay").style.display = "none";
-            selectedSensusActive = null;
+            selectedHouseCode = null;
         }
 
         function eksporKePdfEksternal() {
-            if(!selectedSensusActive) return;
+            if(!selectedHouseCode) return;
             const element = document.getElementById('pdfPrintArea');
-            const namaFile = `Sensus_RT04_${selectedSensusActive.noRumah.replace(/\s+/g, '_')}.pdf`;
+            const rumah = KELOMPOK_RUMAH_MAP[selectedHouseCode];
+            const namaFile = `Sensus_RT04_Rumah_${rumah.noRumah}.pdf`;
             
             const opsiKonfigurasi = {
                 margin:       15,
@@ -309,9 +399,7 @@
             html2pdf().set(opsiKonfigurasi).from(element).save();
         }
 
-        window.onload = function() {
-            renderAdminTable("All");
-        };
+        window.onload = muatDataSensus;
     </script>
 </body>
 </html>
