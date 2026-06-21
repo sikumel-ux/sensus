@@ -138,8 +138,8 @@
                     <div class="form-group">
                         <label font-weight: 800;">Status Hunian / Tempat Tinggal</label>
                         <select id="status_rumah" class="form-control"  onchange="sinkronisasiKategoriWargaAll()">
-                            <option value="Milik Sendiri">Milik Sendiri / Keluarga</option>
-                            <option value="Sewa / Kontrak">Sewa / Kontrak </option>
+                            <option value="Milik Sendiri">Milik Sendiri/Keluarga/Saudara</option>
+                            <option value="Sewa / Kontrak">Sewa/Kontrak </option>
                             <option value="Kos">Kos</option>
                         </select>
                     </div>
@@ -151,10 +151,10 @@
                             <input type="text" id="no_kk" class="form-control" placeholder="3402xxxxxxxxxxxx" inputmode="numeric" maxlength="16" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
                         </div>
                         <div class="form-group" id="wrapperJimpitan">
-                            <label>Mode Jimpitan</label>
+                            <label>Mode Jimpitan Yg Dikehendaki</label>
                             <select id="mode_jimpitan" class="form-control">
                                 <option value="Harian">Harian</option>
-                                <option value="Bulanan">Bulanan</option>
+                                <option value="Bulanan">Dibayarkan Bulanan</option>
                             </select>
                         </div>
                     </div>
@@ -322,11 +322,11 @@
             if (isFirstRow) {
                 if (statusRumah === "Kos" || statusRumah === "Sewa / Kontrak") {
                     selectElement.innerHTML = `
-                        <option value="Diri Sendiri / Penghuni Utama">Diri Sendiri / Penghuni Utama</option>
+                        <option value="Diri Sendiri / Penghuni Utama">Penghuni Utama</option>
                         <option value="Penghuni / Lainnya">Penghuni / Lainnya</option>
                     `;
                 } else {
-                    selectElement.innerHTML = `<option value="Kepala Keluarga">Kepala Keluarga / Rumah Tangga</option>`;
+                    selectElement.innerHTML = `<option value="Kepala Keluarga">Kepala Keluarga</option>`;
                 }
             } else {
                 if (statusRumah === "Kos" || statusRumah === "Sewa / Kontrak") {
