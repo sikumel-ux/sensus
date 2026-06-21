@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Admin - Sensus RT 04</title>
+    
+    <!-- Google Fonts & Font Awesome -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=600;700;800&family=Roboto:wght=400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    
+    <!-- html2pdf.js Library untuk simpan PDF secara lokal -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <style>
+        :root {
+            --bg-admin: #F8FAFC;
+            --card-bg: #FFFFFF;
+            --border: #E2E8F0;
+            --primary: #FF6B35;
+            --primary-light: rgba(255, 107, 53, 0.08);
+            --teal: #0D9488;
+            --teal-light: rgba(13, 148, 136, 0.1);
+            --text-main: #0F172A;
+            --text-muted: #64748B;
+            --radius-lg: 16px;
+            --radius-md: 8px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Roboto', sans-serif; }
+        body { background: var(--bg-admin); color: var(--text-main); padding: 20px; font-size: 0.9rem; }
+        
+        h1, h2, h3, .btn-filter, .modal-title, th { font-family: 'Plus Jakarta Sans', sans-serif; }
+
+        .admin-container { max-width: 1100px; margin: 0 auto; }
+        
+        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+        header h1 { font-size: 1.5rem; font-weight: 800; letter-spacing: -0.5px; }
+
+        /* FILTER TABS */
+        .filter-wrapper { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+        .btn-filter { 
+            padding: 8px 16px; border: 1px solid var(--border); background: #fff; 
+            border-radius: var(--radius-md); font-weight: 700; font-size: 0.8rem; 
+            cursor: pointer; transition: all 0.2s; color: var(--text-muted);
+        }
+        .btn-filter.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+        .btn-filter:hover:not(.active) { background: #F1F5F9; }
+
+        /* TABLE STYLING */
+        .table-responsive { background: #fff; border-radius: var(--radius-lg); border: 1px solid var(--border); overflow-x: auto; box-shadow: 0 4px 12px rgba(0,0,0,0.02); }
+        table { width: 100%; border-collapse: collapse; text-align: left; }
+        th { background: #F8FAFC; padding: 14px 16px; font-size: 0.75rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid var(--border); }
+        td { padding: 14px 16px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+        
+        .clickable-name { color: var(--primary); font-weight: 700; cursor: pointer; text-decoration: none; }
+        .clickable-name:hover { text-decoration: underline; }
+
+        /* BADGES */
+        .badge { padding: 4px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; display: inline-block; }
+        .badge-milik { background: var(--primary-light); color: var(--primary); }
+        .badge-sewa { background: #FEF3C7; color: #D97706; }
+        .badge-kos { background: var(--teal-light); color: var(--teal); }
+
+        /* MODAL POP UP */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.5); backdrop-filter: blur(4px); z-index: 9999; justify-content: center; align-items: center; padding: 16px; }
+        .modal-box { background: #fff; border-radius: var(--radius-lg); max-width: 700px; width: 100%; max-height: 85vh; overflow-y: auto; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); border: 1px solid var(--border); }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; border-bottom: 1px solid var(--border); }
+        .modal-title { font-size: 1.1rem; font-weight: 800; }
+        .modal-actions { display: flex; align-items: center; gap: 10px; }
+        
+        .btn-icon-pdf { background: #EF4444; color: #fff; border: none; padding: 8px 12px; border-radius: 6px; font-weight: 700; font-size: 0.8rem; cursor: pointer; display: flex; align-items: center; gap: 6px; }
+        .btn-icon-pdf:hover { background: #DC2626; }
+        .btn-close { background: none; border: none; font-size: 1.2rem; cursor: pointer; color: var(--text-muted); }
+
+        .modal-body { padding: 20px; }
+        
+        /* PDF EXPORT LAYOUT STYLE */
+        .pdf-meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; background: #F8FAFC; padding: 12px; border-radius: 8px; border: 1px solid var(--border); }
+        .meta-item { font-size: 0.85rem; }
+        .meta-item span { font-weight: 700; color: var(--text-muted); }
+
+        .inner-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        .inner-table th { background: #EDF2F7; color: var(--text-main); }
+        .inner-table td { font-size: 0.85rem; padding: 10px 12px; }
+    </style>
+</head>
+<body>
+
+    <div class="admin-container">
+        <header>
+            <div>
+                <h1>Data Sensus Warga RT 04</h1>
+                <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 4px;">Manajemen status hunian dan populasi</p>
+            </div>
+        </header>
+
+        <!-- FITUR FILTER STATUS HUNIAN -->
+        <div class="filter-wrapper">
+            <button class="btn-filter active" onclick="filterStatus('All', this)">Semua Data</button>
+            <button class="btn-filter" onclick="filterStatus('Milik Sendiri', this)">Milik Sendiri</button>
+            <button class="btn-filter" onclick="filterStatus('Sewa / Kontrak', this)">Sewa / Kontrak</button>
+            <button class="btn-filter" onclick="filterStatus('Kos', this)">Kos</button>
+        </div>
+
+        <!-- MAIN DATA TABLE -->
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Kepala Keluarga / Penghuni Utama</th>
+                        <th>Status Hunian</th>
+                        <th>No. Rumah</th>
+                        <th>No. KK</th>
+                        <th>Jimpitan</th>
+                        <th>WhatsApp</th>
+                    </tr>
+                </thead>
+                <tbody id="adminTableBody">
+                    <!-- Data dummy atau hasil fetch API dimasukkan ke sini -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- MODAL POP UP DETAIL & EXPORT PDF -->
+    <div id="detailModalOverlay" class="modal-overlay">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3 class="modal-title">Detail Berkas Hunian</h3>
+                <div class="modal-actions">
+                    <!-- ICON PDF UNTUK SIMPAN (BUKAN CETAK) -->
+                    <button class="btn-icon-pdf" onclick="eksporKePdfEksternal()"><i class="fas fa-file-pdf"></i> Simpan PDF</button>
+                    <button class="btn-close" onclick="tutupModalDetail()"><i class="fas fa-xmark"></i></button>
+                </div>
+            </div>
+            <div class="modal-body" id="pdfPrintArea">
+                <!-- Konten cetak PDF diatur dinamis via JS -->
+                <div style="text-align: center; margin-bottom: 16px; border-bottom: 2px dashed var(--border); padding-bottom: 12px;">
+                    <h2 style="font-family:'Plus Jakarta Sans'; font-size: 1.2rem;">DATA SENSUS KELUARGA</h2>
+                    <p style="font-size: 0.8rem; color: var(--text-muted);">Wilayah Administratif RT 04 / RW 00</p>
+                </div>
+                
+                <div class="pdf-meta-grid" id="modalMetaInfo">
+                    <!-- Meta info rumah -->
+                </div>
+
+                <h4 style="margin-bottom: 8px;">Daftar Anggota / Penghuni Tinggal:</h4>
+                <table class="inner-table">
+                    <thead>
+                        <tr>
+                            <th>Nama Lengkap</th>
+                            <th>NIK</th>
+                            <th>L/P</th>
+                            <th>Hubungan</th>
+                        </tr>
+                    </thead>
+                    <tbody id="modalWargaTableBody">
+                        <!-- Daftar Jiwa -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data Dummy Terintegrasi Struktur Form Sebelumnya
+        const SENSUS_DATABASE = [
+            {
+                kode: "04-129481",
+                noKk: "3402111234567890",
+                modeJimpitan: "Harian",
+                statusRumah: "Milik Sendiri",
+                noRumah: "No. 12",
+                namaPemilikKos: "-",
+                waUtama: "08123456789",
+                alamat: "RT 04 Dongkelan",
+                anggota: [
+                    { nama: "Budi Santoso", nik: "3402111234567890", jk: "Laki-laki", hubungan: "Kepala Keluarga" },
+                    { nama: "Siti Aminah", nik: "3402119876543210", jk: "Perempuan", hubungan: "Istri" },
+                    { nama: "Roni Santoso", nik: "3402114561237890", jk: "Laki-laki", hubungan: "Anak" }
+                ]
+            },
+            {
+                kode: "04-884921",
+                noKk: "3402225566778899",
+                modeJimpitan: "Bulanan",
+                statusRumah: "Sewa / Kontrak",
+                noRumah: "No. 45B",
+                namaPemilikKos: "-",
+                waUtama: "085722334455",
+                alamat: "RT 04 Giwangan",
+                anggota: [
+                    { nama: "Ahmad Subarjo", nik: "3402225566778899", jk: "Laki-laki", hubungan: "Diri Sendiri / Penghuni Utama" },
+                    { nama: "Dewi Lestari", nik: "3402226677881122", jk: "Perempuan", hubungan: "Istri" }
+                ]
+            },
+            {
+                kode: "04-332194",
+                noKk: "-",
+                modeJimpitan: "Bebas Jimpitan",
+                statusRumah: "Kos",
+                noRumah: "No. 02 (Kamar 5)",
+                namaPemilikKos: "Ibu Haji Maryam",
+                waUtama: "089988776655",
+                alamat: "RT 04 Dongkelan",
+                anggota: [
+                    { nama: "Dimas Saputra", nik: "3201998877665544", jk: "Laki-laki", hubungan: "Diri Sendiri / Penghuni Utama" }
+                ]
+            }
+        ];
+
+        let currentActiveFilter = "All";
+        let selectedSensusActive = null;
+
+        // Render tabel utama admin
+        function renderAdminTable(filter = "All") {
+            const tbody = document.getElementById("adminTableBody");
+            tbody.innerHTML = "";
+
+            const filteredData = SENSUS_DATABASE.filter(item => {
+                if(filter === "All") return true;
+                return item.statusRumah === filter;
+            });
+
+            filteredData.forEach((item, index) => {
+                // Ambil nama kepala keluarga / urutan pertama penghuni
+                const namaKepala = item.anggota[0] ? item.anggota[0].nama : "Tidak Terdata";
+                
+                // Atur warna badge status
+                let badgeClass = "badge-milik";
+                if(item.statusRumah === "Sewa / Kontrak") badgeClass = "badge-sewa";
+                if(item.statusRumah === "Kos") badgeClass = "badge-kos";
+
+                const tr = document.createElement("tr");
+                tr.innerHTML = `
+                    <td>
+                        <span class="clickable-name" onclick="bukaModalDetail(${index}, '${item.kode}')">
+                            ${namaKepala}
+                        </span>
+                    </td>
+                    <td><span class="badge ${badgeClass}">${item.statusRumah}</span></td>
+                    <td><b>${item.noRumah}</b></td>
+                    <td>${item.noKk}</td>
+                    <td>${item.modeJimpitan}</td>
+                    <td><a href="https://wa.me/${item.waUtama}" target="_blank" style="color:var(--teal); font-weight:600; text-decoration:none;"><i class="fab fa-whatsapp"></i> Hubungi</a></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Jalankan Filter Tab
+        function filterStatus(status, buttonElement) {
+            currentActiveFilter = status;
+            document.querySelectorAll(".btn-filter").forEach(btn => btn.classList.remove("active"));
+            buttonElement.classList.add("active");
+            renderAdminTable(status);
+        }
+
+        // Buka Pop up Modal Berdasarkan Klik Nama
+        function bukaModalDetail(index, kode) {
+            // Cari data asli berdasarkan kode unik sensus
+            const data = SENSUS_DATABASE.find(item => item.kode === kode);
+            if(!data) return;
+
+            selectedSensusActive = data;
+            const namaKepala = data.anggota[0] ? data.anggota[0].nama : "-";
+
+            // Pasang Metadata Rumah
+            document.getElementById("modalMetaInfo").innerHTML = `
+                <div class="meta-item"><span>Status Hunian:</span> ${data.statusRumah}</div>
+                <div class="meta-item"><span>No. Rumah / Ruang:</span> ${data.noRumah}</div>
+                <div class="meta-item"><span>No. KK Terdaftar:</span> ${data.noKk}</div>
+                <div class="meta-item"><span>Sistem Jimpitan:</span> ${data.modeJimpitan}</div>
+                <div class="meta-item"><span>Kontak WA Sensus:</span> ${data.waUtama}</div>
+                <div class="meta-item"><span>Pemilik/Pengelola Kos:</span> ${data.namaPemilikKos}</div>
+                <div class="meta-item" style="grid-column: span 2;"><span>Alamat Domisili:</span> ${data.alamat}</div>
+            `;
+
+            // Pasang List Anggota Jiwa di Pop-up
+            const innerTbody = document.getElementById("modalWargaTableBody");
+            innerTbody.innerHTML = "";
+            
+            data.anggota.forEach(ang => {
+                const tr = document.createElement("tr");
+                tr.innerHTML = `
+                    <td><b>${ang.nama}</b></td>
+                    <td><code style="font-size:0.8rem; color:var(--text-muted)">${ang.nik}</code></td>
+                    <td>${ang.jk === 'Laki-laki' ? 'L' : 'P'}</td>
+                    <td><span style="font-size:0.8rem; font-weight:600;">${ang.hubungan}</span></td>
+                `;
+                innerTbody.appendChild(tr);
+            });
+
+            document.getElementById("detailModalOverlay").style.display = "flex";
+        }
+
+        function tutupModalDetail() {
+            document.getElementById("detailModalOverlay").style.display = "none";
+            selectedSensusActive = null;
+        }
+
+        // FUNGSI SIMPAN PDF (Mengekspor area spesifik modal langsung menjadi file PDF)
+        function eksporKePdfEksternal() {
+            if(!selectedSensusActive) return;
+            
+            const element = document.getElementById('pdfPrintArea');
+            const namaFile = `Sensus_RT04_${selectedSensusActive.noRumah.replace(/\s+/g, '_')}.pdf`;
+            
+            const opsiKonfigurasi = {
+                margin:       15,
+                filename:     namaFile,
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2, useCORS: true },
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+
+            // Menjalankan proses simpan unduhan secara langsung (bukan printing browser)
+            html2pdf().set(opsiKonfigurasi).from(element).save();
+        }
+
+        // Pemuatan Pertama
+        window.onload = function() {
+            renderAdminTable("All");
+        };
+    </script>
+</body>
+</html>
