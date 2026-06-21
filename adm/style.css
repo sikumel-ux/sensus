@@ -1,0 +1,400 @@
+:root {
+    --bg-admin: #F8FAFC;
+    --card-bg: #FFFFFF;
+    --border: #E2E8F0;
+    --primary: #FF6B35;
+    --primary-light: rgba(255, 107, 53, 0.08);
+    --teal: #0D9488;
+    --text-main: #0F172A;
+    --text-muted: #64748B;
+    --radius-lg: 16px;
+    --radius-md: 8px;
+    --accent-warn: #EF4444;
+}
+
+* { 
+    margin: 0; 
+    padding: 0; 
+    box-sizing: border-box; 
+    font-family: 'Roboto', sans-serif; 
+}
+
+body { 
+    background: var(--bg-admin); 
+    color: var(--text-main); 
+    padding: 20px; 
+    font-size: 0.9rem; 
+}
+
+h1, h2, h3, h4, .btn-filter, .modal-title, th, .stat-value { 
+    font-family: 'Plus Jakarta Sans', sans-serif; 
+}
+
+.admin-container { 
+    max-width: 1000px; 
+    margin: 0 auto; 
+}
+
+header { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    margin-bottom: 24px; 
+}
+
+header h1 { 
+    font-size: 1.5rem; 
+    font-weight: 800; 
+    letter-spacing: -0.5px; 
+}
+
+.header-desc {
+    color: var(--text-muted); 
+    font-size: 0.85rem; 
+    margin-top: 4px;
+}
+
+/* KARTU STATISTIK */
+.stats-grid { 
+    display: grid; 
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); 
+    gap: 16px; 
+    margin-bottom: 24px; 
+}
+
+.stat-card { 
+    background: #fff; 
+    padding: 16px; 
+    border: 1px solid var(--border); 
+    border-radius: var(--radius-lg); 
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.01); 
+}
+
+.stat-label { 
+    font-size: 0.75rem; 
+    color: var(--text-muted); 
+    font-weight: 700; 
+    text-transform: uppercase; 
+    letter-spacing: 0.5px; 
+}
+
+.stat-value { 
+    font-size: 1.6rem; 
+    font-weight: 800; 
+    margin-top: 4px; 
+    color: var(--text-main); 
+}
+
+/* FILTER TABS */
+.filter-wrapper { 
+    display: flex; 
+    gap: 8px; 
+    margin-bottom: 16px; 
+    flex-wrap: wrap; 
+}
+
+.btn-filter { 
+    padding: 8px 16px; 
+    border: 1px solid var(--border); 
+    background: #fff; 
+    border-radius: var(--radius-md); 
+    font-weight: 700; 
+    font-size: 0.8rem; 
+    cursor: pointer; 
+    transition: all 0.2s; 
+    color: var(--text-muted);
+}
+
+.btn-filter.active { 
+    background: var(--primary); 
+    color: #fff; 
+    border-color: var(--primary); 
+}
+
+.btn-filter:hover:not(.active) { 
+    background: #F1F5F9; 
+}
+
+/* LOADING */
+#loadingState { 
+    padding: 40px; 
+    text-align: center; 
+    background: #fff; 
+    border-radius: var(--radius-lg); 
+    border: 1px solid var(--border); 
+}
+
+#loadingState i { 
+    font-size: 2rem; 
+    color: var(--primary); 
+    margin-bottom: 8px; 
+}
+
+.loading-text {
+    margin-top: 10px; 
+    font-weight: 500; 
+    color: var(--text-muted);
+}
+
+/* TABLE STYLING */
+.table-responsive { 
+    background: #fff; 
+    border-radius: var(--radius-lg); 
+    border: 1px solid var(--border); 
+    overflow-x: auto; 
+    box-shadow: 0 4px 12px rgba(0,0,0,0.02); 
+}
+
+table { 
+    width: 100%; 
+    border-collapse: collapse; 
+    text-align: left; 
+}
+
+th { 
+    background: #F8FAFC; 
+    padding: 14px 16px; 
+    font-size: 0.75rem; 
+    font-weight: 800; 
+    color: var(--text-muted); 
+    text-transform: uppercase; 
+    letter-spacing: 0.5px; 
+    border-bottom: 1px solid var(--border); 
+}
+
+td { 
+    padding: 14px 16px; 
+    border-bottom: 1px solid var(--border); 
+    vertical-align: middle; 
+}
+
+.clickable-name { 
+    color: var(--primary); 
+    font-weight: 700; 
+    cursor: pointer; 
+    text-decoration: none; 
+}
+
+.clickable-name:hover { 
+    text-decoration: underline; 
+}
+
+.btn-wa { 
+    display: inline-flex; 
+    align-items: center; 
+    gap: 6px; 
+    background: #25D366; 
+    color: white; 
+    padding: 6px 12px; 
+    border-radius: 6px; 
+    text-decoration: none; 
+    font-weight: 700; 
+    font-size: 0.8rem; 
+}
+
+.btn-wa:hover { 
+    background: #20BA5A; 
+}
+
+.btn-foto { 
+    color: var(--teal); 
+    text-decoration: none; 
+    font-weight: 600; 
+    display: inline-flex; 
+    align-items: center; 
+    gap: 4px; 
+    font-size: 0.85rem; 
+}
+
+.btn-foto:hover { 
+    text-decoration: underline; 
+}
+
+.badge { 
+    display: inline-block; 
+    padding: 4px 8px; 
+    border-radius: 4px; 
+    font-size: 0.75rem; 
+    font-weight: 700; 
+}
+
+.badge-hub { 
+    background: var(--primary-light); 
+    color: var(--primary); 
+}
+
+/* MODAL POP UP DETAIL */
+.modal-overlay { 
+    display: none; 
+    position: fixed; 
+    top: 0; 
+    left: 0; 
+    width: 100%; 
+    height: 100%; 
+    background: rgba(15, 23, 42, 0.5); 
+    backdrop-filter: blur(4px); 
+    z-index: 9999; 
+    justify-content: center; 
+    align-items: center; 
+    padding: 16px; 
+}
+
+.modal-box { 
+    background: #fff; 
+    border-radius: var(--radius-lg); 
+    max-width: 880px; 
+    width: 100%; 
+    max-height: 85vh; 
+    overflow-y: auto; 
+    box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); 
+    border: 1px solid var(--border); 
+}
+
+.modal-header { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    padding: 16px 20px; 
+    border-bottom: 1px solid var(--border); 
+}
+
+.modal-title { 
+    font-size: 1.1rem; 
+    font-weight: 800; 
+}
+
+.modal-actions { 
+    display: flex; 
+    align-items: center; 
+    gap: 10px; 
+}
+
+.btn-icon-pdf { 
+    background: #EF4444; 
+    color: #fff; 
+    border: none; 
+    padding: 8px 12px; 
+    border-radius: 6px; 
+    font-weight: 700; 
+    font-size: 0.8rem; 
+    cursor: pointer; 
+    display: flex; 
+    align-items: center; 
+    gap: 6px; 
+}
+
+.btn-icon-pdf:hover { 
+    background: #DC2626; 
+}
+
+.btn-close { 
+    background: none; 
+    border: none; 
+    font-size: 1.2rem; 
+    cursor: pointer; 
+    color: var(--text-muted); 
+}
+
+.modal-body { 
+    padding: 20px; 
+}
+
+.pdf-header {
+    text-align: center; 
+    margin-bottom: 20px; 
+    border-bottom: 2px dashed var(--border); 
+    padding-bottom: 12px;
+}
+
+.pdf-header h2 {
+    font-family:'Plus Jakarta Sans'; 
+    font-size: 1.3rem; 
+    color: var(--text-main); 
+    letter-spacing: 0.5px;
+}
+
+.pdf-header p {
+    font-size: 0.85rem; 
+    color: var(--text-muted); 
+    margin-top: 2px;
+}
+
+.pdf-meta-grid { 
+    display: grid; 
+    grid-template-columns: 1fr 1fr; 
+    gap: 12px; 
+    margin-bottom: 20px; 
+    background: #F8FAFC; 
+    padding: 14px; 
+    border-radius: 8px; 
+    border: 1px solid var(--border); 
+}
+
+.meta-item { 
+    font-size: 0.85rem; 
+    line-height: 1.4; 
+}
+
+.meta-item span { 
+    font-weight: 700; 
+    color: var(--text-muted); 
+    display: block; 
+    font-size: 0.75rem; 
+    text-transform: uppercase; 
+    letter-spacing: 0.3px; 
+    margin-bottom: 2px; 
+}
+
+.meta-item strong { 
+    color: var(--text-main); 
+    font-size: 0.9rem; 
+}
+
+.table-title {
+    margin-bottom: 8px; 
+    color: var(--text-main); 
+    font-size: 0.95rem;
+}
+
+.inner-table { 
+    width: 100%; 
+    border-collapse: collapse; 
+    margin-top: 10px; 
+}
+
+.inner-table th { 
+    background: #EDF2F7; 
+    color: var(--text-main); 
+    border-bottom: 1px solid var(--border); 
+    font-size: 0.75rem; 
+    padding: 10px; 
+}
+
+.inner-table td { 
+    font-size: 0.85rem; 
+    padding: 10px; 
+    border-bottom: 1px solid var(--border); 
+}
+
+.pdf-footer {
+    margin-top: 35px; 
+    border-top: 1px solid var(--border); 
+    padding-top: 10px; 
+    font-size: 0.75rem; 
+    color: var(--text-muted); 
+    display: flex; 
+    justify-content: space-between;
+}
+
+/* CSS Cetak PDF 7 Kolom */
+.pdf-mode th { 
+    font-size: 0.65rem !important; 
+    padding: 6px 4px !important; 
+    background: #E2E8F0 !important; 
+    color: #0F172A !important; 
+}
+
+.pdf-mode td { 
+    font-size: 0.70rem !important; 
+    padding: 6px 4px !important; 
+}
