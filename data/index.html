@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Admin - Sensus RT 04</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=600;700;800&family=Roboto:wght=400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header class="admin-header">
+        <div class="header-brand">
+            <div class="admin-logo"><i class="fas fa-user-shield"></i></div>
+            <div>
+                <h1>Panel Admin RT 04</h1>
+                <p>Data Management & Sensus Warga</p>
+            </div>
+        </div>
+        <button class="btn-refresh" onclick="muatUlangDataSensus()"><i class="fas fa-sync-alt" id="refreshIcon"></i> Refresh Data</button>
+    </header>
+
+    <div class="admin-container">
+        
+        <section class="stats-grid">
+            <div class="stat-card" onclick="setFilterStatus('Semua')">
+                <div class="stat-icon icon-all"><i class="fas fa-users"></i></div>
+                <div class="stat-info">
+                    <h3 id="count_total">-</h3>
+                    <p>Total Rumah Masuk</p>
+                </div>
+            </div>
+            <div class="stat-card" onclick="setFilterStatus('Milik Sendiri')">
+                <div class="stat-icon icon-tetap"><i class="fas fa-home"></i></div>
+                <div class="stat-info">
+                    <h3 id="count_tetap">-</h3>
+                    <p>Warga Tetap</p>
+                </div>
+            </div>
+            <div class="stat-card" onclick="setFilterStatus('Sewa / Kontrak')">
+                <div class="stat-icon icon-kontrak"><i class="fas fa-file-contract"></i></div>
+                <div class="stat-info">
+                    <h3 id="count_kontrak">-</h3>
+                    <p>Rumah Kontrak</p>
+                </div>
+            </div>
+            <div class="stat-card" onclick="setFilterStatus('Kos')">
+                <div class="stat-icon icon-kos"><i class="fas fa-door-open"></i></div>
+                <div class="stat-info">
+                    <h3 id="count_kos">-</h3>
+                    <p>Anak Kos / Pondokan</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="control-card">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="adminSearchInput" placeholder="Cari berdasarkan No Rumah, Nama Kepala, No KK, atau NIK..." oninput="prosesFilterDanPencarian()">
+            </div>
+            <div class="filter-tabs">
+                <button class="tab-btn active" id="tab_Semua" onclick="setFilterStatus('Semua')">Semua Data</button>
+                <button class="tab-btn" id="tab_MilikSendiri" onclick="setFilterStatus('Milik Sendiri')">Milik Sendiri</button>
+                <button class="tab-btn" id="tab_SewaKontrak" onclick="setFilterStatus('Sewa / Kontrak')">Kontrak</button>
+                <button class="tab-btn" id="tab_Kos" onclick="setFilterStatus('Kos')">Kos</button>
+            </div>
+        </section>
+
+        <main class="table-responsive-card">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Kode Reg</th>
+                        <th>No. Rumah</th>
+                        <th>Status Hunian</th>
+                        <th>Kepala Keluarga / Utama</th>
+                        <th>Kontak WA</th>
+                        <th>Jumlah Jiwa</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="sensusTableBody">
+                    <tr>
+                        <td colspan="7" class="td-status-info"><i class="fas fa-spinner fa-spin"></i> Menghubungkan ke server data...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </main>
+    </div>
+
+    <div id="detailModalOverlay" class="modal-overlay">
+        <div class="modal-box">
+            <div class="modal-header">
+                <div>
+                    <h2 id="modalTitleReg">Detail Sensus: 04-xxxxxx</h2>
+                    <p id="modalSubInfo">Alamat Rumah</p>
+                </div>
+                <button class="btn-close-modal" onclick="tutupDetailModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="meta-info-grid">
+                    <div class="meta-item"><strong>No. KK:</strong> <span id="m_no_kk">-</span></div>
+                    <div class="meta-item"><strong>Mode Jimpitan:</strong> <span id="m_jimpitan">-</span></div>
+                    <div class="meta-item"><strong>Pemilik / Pengelola Kos:</strong> <span id="m_pemilik_kos">-</span></div>
+                    <div class="meta-item"><strong>No. Rumah & Detail Alamat:</strong> <span id="m_alamat">-</span></div>
+                </div>
+
+                <h3 class="section-sub-title"><i class="fas fa-user-friends"></i> Daftar Penghuni / Anggota Jiwa</h3>
+                <div class="table-responsive-card" style="box-shadow:none; border: 1px solid #E2E8F0; margin-top:10px;">
+                    <table class="admin-table sub-table">
+                        <thead>
+                            <tr>
+                                <th>Nama Lengkap</th>
+                                <th>NIK</th>
+                                <th>TTL</th>
+                                <th>JK</th>
+                                <th>Agama</th>
+                                <th>Pekerjaan</th>
+                                <th>Hubungan</th>
+                                <th>Berkas KTP/KK</th>
+                            </tr>
+                        </thead>
+                        <tbody id="modalAnggotaTableBody">
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
