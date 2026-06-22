@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulir Pendataan Warga RT</title>
+    <style>
+        /* Base Colors & Reset */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #1a1714; /* Background Utama Dark */
+            color: #e0e0e0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            background-color: #24201c;
+            width: 100%;
+            max-width: 650px;
+            padding: 30px;
+            border-radius: 8px;
+            border: 1px solid #332c26;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+
+        h2 {
+            text-align: center;
+            color: #f5a623;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            font-size: 1.5rem;
+            letter-spacing: 1px;
+        }
+
+        .subtitle {
+            text-align: center;
+            font-size: 0.9rem;
+            color: #a01010;
+            margin-bottom: 25px;
+            font-weight: 600;
+        }
+
+        fieldset {
+            border: 1px solid #443b33;
+            border-radius: 6px;
+            padding: 20px;
+            margin-bottom: 20px;
+            background-color: #2b2520;
+        }
+
+        legend {
+            font-weight: bold;
+            padding: 0 10px;
+            color: #f5a623;
+            font-size: 0.95rem;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group:last-child {
+            margin-bottom: 0;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 0.9rem;
+            color: #cccccc;
+        }
+
+        input[type="text"],
+        input[type="tel"],
+        select {
+            width: 100%;
+            padding: 10px;
+            background-color: #1a1714;
+            border: 1px solid #443b33;
+            border-radius: 4px;
+            color: #ffffff;
+            font-size: 0.95rem;
+            transition: border-color 0.2s;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #f5a623;
+        }
+
+        /* Status Selection Options */
+        .status-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .radio-label {
+            display: flex;
+            align-items: center;
+            background-color: #1a1714;
+            padding: 12px;
+            border: 1px solid #443b33;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+        }
+
+        .radio-label:hover {
+            border-color: #f5a623;
+        }
+
+        input[type="radio"] {
+            margin-right: 12px;
+            accent-color: #f5a623;
+            transform: scale(1.1);
+        }
+
+        /* Dynamic Status Subsections */
+        .status-section {
+            display: none;
+            background-color: #1a1714;
+            border: 1px dashed #f5a623;
+            padding: 15px;
+            border-radius: 4px;
+            margin-top: 15px;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .note-section {
+            background-color: #331c1c;
+            border-left: 4px solid #a01010;
+            padding: 12px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            color: #ddcccc;
+            margin-bottom: 25px;
+            line-height: 1.4;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #f5a623;
+            color: #1a1714;
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        button:hover {
+            background-color: #e09216;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Formulir Pendataan Warga</h2>
+    <div class="subtitle">Rukun Tetangga (RT)</div>
+
+    <form id="formWarga" onsubmit="handleSubmit(event)">
+        
+        <fieldset>
+            <legend>I. DATA IDENTITAS POKOK (Wajib Diisi)</legend>
+            
+            <div class="form-group">
+                <label for="nama_lengkap">Nama Lengkap</label>
+                <input type="text" id="nama_lengkap" name="nama_lengkap" required placeholder="Sesuai KTP">
+            </div>
+
+            <div class="form-group">
+                <label for="nik">NIK (Nomor KTP)</label>
+                <input type="text" id="nik" name="nik" required placeholder="16 Digit Nomor KTP" maxlength="16" pattern="[0-9]{16}">
+            </div>
+
+            <div class="form-group">
+                <label for="ttl">Tempat & Tanggal Lahir</label>
+                <input type="text" id="ttl" name="ttl" required placeholder="Contoh: Yogyakarta, 17 Agustus 1995">
+            </div>
+
+            <div class="form-group">
+                <label for="alamat_asal">Alamat Asal (Sesuai KTP)</label>
+                <input type="text" id="alamat_asal" name="alamat_asal" required placeholder="Alamat lengkap asal">
+            </div>
+
+            <div class="form-group">
+                <label for="no_hp">No. HP / WhatsApp Aktif</label>
+                <input type="tel" id="no_hp" name="no_hp" required placeholder="Contoh: 081234567xxx">
+            </div>
+        </fieldset>
+
+        <fieldset>
+            <legend>II. STATUS TINGGAL & DATA TAMBAHAN</legend>
+            <p style="font-size: 0.85rem; color: #aaa; margin-bottom: 12px;">Pilih salah satu status tinggal saat ini:</p>
+            
+            <div class="status-options">
+                <label class="radio-label">
+                    <input type="radio" name="status_tinggal" value="tetap" onclick="showStatusSection('tetap')" required> Warga Tetap
+                </label>
+                <label class="radio-label">
+                    <input type="radio" name="status_tinggal" value="kontrak" onclick="showStatusSection('kontrak')"> Kontrak / Sewa (Satu Rumah)
+                </label>
+                <label class="radio-label">
+                    <input type="radio" name="status_tinggal" value="mess" onclick="showStatusSection('mess')"> Mess / Asrama (Pekerja Toko)
+                </label>
+                <label class="radio-label">
+                    <input type="radio" name="status_tinggal" value="kos" onclick="showStatusSection('kos')"> Kos (Perorangan)
+                </label>
+            </div>
+
+            <div id="sec_tetap" class="status-section">
+                <div class="form-group">
+                    <label for="kk_tetap">Nomor Kartu Keluarga (KK)</label>
+                    <input type="text" id="kk_tetap" name="kk_tetap" placeholder="16 Digit Nomor KK" maxlength="16" pattern="[0-9]{16}">
+                </div>
+                <div class="form-group">
+                    <label for="kepemilikan_rumah">Status Rumah</label>
+                    <select id="kepemilikan_rumah" name="kepemilikan_rumah">
+                        <option value="">-- Pilih Status --</option>
+                        <option value="Milik Sendiri">Milik Sendiri</option>
+                        <option value="Rumah Orang Tua / Keluarga">Rumah Orang Tua / Keluarga</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="sec_kontrak" class="status-section">
+                <div class="form-group">
+                    <label for="kk_kontrak">Nomor Kartu Keluarga (KK)</label>
+                    <input type="text" id="kk_kontrak" name="kk_kontrak" placeholder="16 Digit Nomor KK" maxlength="16" pattern="[0-9]{16}">
+                </div>
+                <div class="form-group">
+                    <label for="pemilik_kontrak">Nama Pemilik Rumah/Kontrakan</label>
+                    <input type="text" id="pemilik_kontrak" name="pemilik_kontrak" placeholder="Nama pemilik">
+                </div>
+                <div class="form-group">
+                    <label for="hp_pemilik_kontrak">No. HP Pemilik Rumah</label>
+                    <input type="tel" id="hp_pemilik_kontrak" name="hp_pemilik_kontrak" placeholder="No. HP pemilik">
+                </div>
+            </div>
+
+            <div id="sec_mess" class="status-section">
+                <div class="form-group">
+                    <label for="nama_toko">Nama Toko Tempat Bekerja</label>
+                    <input type="text" id="nama_toko" name="nama_toko" placeholder="Nama toko/usaha">
+                </div>
+                <div class="form-group">
+                    <label for="hp_bos">No. HP Pemilik Toko (Bos)</label>
+                    <input type="tel" id="hp_bos" name="hp_bos" placeholder="No. HP bos toko">
+                </div>
+                <div class="form-group">
+                    <label for="lokasi_mess">Lokasi Mess / No. Kamar</label>
+                    <input type="text" id="lokasi_mess" name="lokasi_mess" placeholder="Contoh: Blok B / Kamar 03">
+                </div>
+            </div>
+
+            <div id="sec_kos" class="status-section">
+                <div class="form-group">
+                    <label for="pemilik_kos">Nama Pemilik / Pengelola Kos</label>
+                    <input type="text" id="pemilik_kos" name="pemilik_kos" placeholder="Nama pengelola kos">
+                </div>
+                <div class="form-group">
+                    <label for="hp_pemilik_kos">No. HP Pemilik / Pengelola Kos</label>
+                    <input type="tel" id="hp_pemilik_kos" name="hp_pemilik_kos" placeholder="No. HP pengelola kos">
+                </div>
+                <div class="form-group">
+                    <label for="no_kamar_kos">Nomor Kamar Kos</label>
+                    <input type="text" id="no_kamar_kos" name="no_kamar_kos" placeholder="Contoh: Kamar 12">
+                </div>
+            </div>
+        </fieldset>
+
+        <div class="note-section">
+            <strong>PENTING:</strong> Wajib mengumpulkan Fotokopi KTP (dan Fotokopi KK bagi Warga Tetap/Kontrak) kepada Pengurus RT setelah mengisi formulir ini.
+        </div>
+
+        <button type="submit">Kirim Data Warga</button>
+    </form>
+</div>
+
+<script>
+    // Fungsi untuk memunculkan sub-form berdasarkan status pilihan
+    function showStatusSection(selectedStatus) {
+        const sections = document.querySelectorAll('.status-section');
+        sections.forEach(section => {
+            section.style.display = 'none';
+            const inputs = section.querySelectorAll('input, select');
+            inputs.forEach(input => {
+                input.removeAttribute('required');
+            });
+        });
+
+        const targetSection = document.getElementById('sec_' + selectedStatus);
+        if (targetSection) {
+            targetSection.style.display = 'block';
+            
+            const inputs = targetSection.querySelectorAll('input, select');
+            inputs.forEach(input => {
+                // Beri penanda input wajib khusus saat bagian mess / kos aktif
+                if (input.name === 'nama_toko' || input.name === 'hp_bos') {
+                    input.setAttribute('required', 'true');
+                }
+                if (input.name === 'pemilik_kos' || input.name === 'hp_pemilik_kos') {
+                    input.setAttribute('required', 'true');
+                }
+            });
+        }
+    }
+
+    // Aksi tombol submit (Bisa disambungkan ke Firebase / Formspree / Google Sheets API nanti)
+    function handleSubmit(event) {
+        event.preventDefault();
+        alert('Data berhasil disimpan! Jangan lupa kumpulkan fotokopi berkas ke Pengurus RT.');
+        document.getElementById('formWarga').reset();
+        showStatusSection('');
+    }
+</script>
+
+</body>
+</html>
