@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Sensus RT 04</title>
+    
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="theme-color" content="#FF6B35">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=600;700;800&family=Roboto:wght=400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #FF6B35;
+            --primary-hover: #E0531F;
+            --primary-light: #FFF1EB;
+            --primary-gradient: linear-gradient(135deg, #E0531F 0%, #FF6B35 60%, #FF8557 100%);
+            --bg-app: #F4F6F9;
+            --card-bg: #FFFFFF;
+            --border: #E4E7EC;
+            --teal: #0D9488;
+            --teal-light: rgba(13, 148, 136, 0.08);
+            --accent-warn: #EF4444;
+            --accent-warn-light: rgba(239, 68, 68, 0.08);
+            --text-main: #1D2939;
+            --text-muted: #667085;
+            --radius-main: 24px;
+            --radius-sub: 16px;
+            --radius-input: 14px;
+            --transition: all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Roboto', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-app);
+            color: var(--text-main);
+            font-size: 0.9rem;
+            line-height: 1.5;
+            padding: 16px 16px 32px 16px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 480px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .app-header {
+            text-align: center;
+            padding: 12px 0 4px 0;
+        }
+        .app-header .header-logo {
+            width: 48px; height: 48px; background: var(--primary-light); 
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-size: 1.3rem; margin: 0 auto 8px auto; color: var(--primary);
+        }
+        .app-header h1 { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.25rem; font-weight: 800; }
+        .app-header p { color: var(--text-muted); font-size: 0.78rem; margin-top: 2px; font-weight: 500; }
+
+        .app-card {
+            background: var(--card-bg);
+            border-radius: var(--radius-main);
+            padding: 24px 20px;
+            border: 1px solid var(--border);
+            box-shadow: 0px 4px 18px rgba(29, 41, 57, 0.02);
+        }
+
+        .card-title-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .step-icon {
+            background-color: var(--primary-light);
+            color: var(--primary);
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-weight: 800;
+            font-size: 0.85rem;
+        }
+
+        .card-title-group h3 {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: #101828;
+        }
+
+        .info-note {
+            background-color: #FFF5F1;
+            border-left: 4px solid var(--primary);
+            padding: 12px 14px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 0.8rem;
+            color: #101828;
+            line-height: 1.4;
+            font-weight: 500;
+        }
+
+        .form-grid { display: flex; flex-direction: column; gap: 12px; }
+        .form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .form-group { display: flex; flex-direction: column; gap: 6px; }
+        .form-group.full-width { grid-column: span 2; }
+
+        label {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #475467;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-input);
+            font-size: 0.95rem;
+            color: var(--text-main);
+            background-color: #FFFFFF;
+            outline: none;
+            transition: var(--transition);
+            -webkit-appearance: none;
+        }
+        .form-control::placeholder { color: #98A2B3; font-size: 0.9rem; }
+        .form-control:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-light); }
+
+        .select-wrapper { position: relative; }
+        .select-wrapper::after {
+            content: '\f078'; font-family: 'Font Awesome 6 Free'; font-weight: 900; font-size: 0.75rem;
+            position: absolute; right: 16px; top: 50%; transform: translateY(-50%); color: var(--text-muted); pointer-events: none;
+        }
+
+        .warga-item-box {
+            position: relative;
+            background: #F8FAFC;
+            border: 1px dashed var(--border);
+            padding: 16px;
+            border-radius: var(--radius-sub);
+            margin-bottom: 16px;
+        }
+        .btn-delete-row {
+            position: absolute; right: 12px; top: 12px; background: var(--accent-warn-light);
+            color: var(--accent-warn); border: none; padding: 4px 10px; border-radius: 6px;
+            font-size: 0.72rem; font-weight: 700; cursor: pointer; z-index: 10;
+        }
+
+        .file-zone {
+            border: 1.5px dashed #FFBEA3; background: #FFF9F5; padding: 14px;
+            text-align: center; border-radius: var(--radius-input); cursor: pointer; transition: var(--transition);
+        }
+        .file-zone.has-file { border-color: var(--teal); background: var(--teal-light); }
+        .file-zone i { font-size: 1.2rem; color: var(--primary); margin-bottom: 2px; }
+        .file-zone.has-file i { color: var(--teal); }
+        .file-zone p { font-size: 0.8rem; font-weight: 700; color: var(--text-main); }
+
+        .error-hint { color: var(--accent-warn); font-size: 0.72rem; font-weight: 700; display: none; margin-top: 2px; }
+
+        .btn-action {
+            width: 100%; padding: 14px; border: none; border-radius: var(--radius-sub);
+            font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.95rem; font-weight: 700;
+            display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; transition: var(--transition);
+        }
+        .btn-primary {
+            background: var(--primary-gradient); color: white;
+            box-shadow: 0px 4px 14px rgba(255, 107, 53, 0.2);
+        }
+        .btn-primary:disabled { background: #CBD5E1; color: #94A3B8; box-shadow: none; cursor: not-allowed; }
+        .btn-outline {
+            background: transparent; color: var(--primary); border: 1.5px dashed var(--primary);
+            margin-top: 8px;
+        }
+
+        .agreement-card {
+            background: var(--card-bg); border-radius: var(--radius-sub); padding: 16px;
+            border: 1px solid var(--border); display: flex; align-items: flex-start; gap: 12px; margin-bottom: 4px;
+        }
+        .agreement-card input[type="checkbox"] {
+            width: 20px; height: 20px; border-radius: 6px; border: 1.5px solid var(--border);
+            accent-color: var(--primary); cursor: pointer; margin-top: 2px; flex-shrink: 0;
+        }
+        .agreement-card label {
+            font-family: 'Roboto', sans-serif; font-size: 0.85rem; text-transform: none;
+            letter-spacing: normal; color: #344054; font-weight: 500; line-height: 1.4; cursor: pointer;
+        }
+
+        .custom-alert-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.4); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+            z-index: 9999; justify-content: center; align-items: center; padding: 16px;
+        }
+        .alert-box {
+            background: #fff; border-radius: var(--radius-main); padding: 24px 20px;
+            max-width: 380px; width: 100%; text-align: center; border: 1px solid var(--border);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+        }
+        .btn-modal-close {
+            color: white; border: none; padding: 14px; border-radius: var(--radius-sub);
+            font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 700; cursor: pointer; width: 100%; margin-top: 12px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        
+        <header class="app-header">
+            <div class="header-logo"><i class="fas fa-users-viewfinder"></i></div>
+            <h1>Sensus RT 04</h1>
+            <p>Formulir Pengumpulan Data Warga Resmi</p>
+        </header>
+
+        <form id="mainSensusForm" onsubmit="prosesKolektifKirimData(event)">
+            
+            <div class="app-card">
+                <div class="card-title-group">
+                    <div class="step-icon">1</div>
+                    <h3>Data Properti & Administrasi</h3>
+                </div>
+                
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Status Hunian / Tempat Tinggal</label>
+                        <div class="select-wrapper">
+                            <select id="status_rumah" class="form-control" onchange="sinkronisasiKategoriWargaAll()">
+                                <option value="Milik Sendiri">Milik Sendiri/Keluarga/Saudara</option>
+                                <option value="Sewa / Kontrak">Sewa/Kontrak</option>
+                                <option value="Kos">Kos</option>
+                                <option value="Mess / Asrama">Mess / Asrama</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row-2" id="rowAdministrasiKk">
+                        <div class="form-group" id="wrapperKk">
+                            <label>Nomor Kartu Keluarga</label>
+                            <input type="text" id="no_kk" class="form-control" placeholder="16 Digit Anggota" inputmode="numeric" maxlength="16" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+                        </div>
+                        <div class="form-group" id="wrapperJimpitan">
+                            <label>Pilihan Model Jimpitan</label>
+                            <div class="select-wrapper">
+                                <select id="mode_jimpitan" class="form-control">
+                                    <option value="Harian">Dibayarkan Harian</option>
+                                    <option value="Bulanan">Dibayarkan Selapanan</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="wrapperKepalaKeluargaUtama">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Nama Kepala Keluarga</label>
+                                <input type="text" id="nama_kepala_tetap" class="form-control" placeholder="Nama lengkap sesuai KTP">
+                            </div>
+                            <div class="form-group">
+                                <label style="color:var(--primary)">Upload Kartu Keluarga (Wajib)</label>
+                                <div class="file-zone" id="fileZone_Kepala" onclick="document.getElementById('file_kepala').click()">
+                                    <i class="fas fa-id-card-clip"></i>
+                                    <p id="fileNameLabel_Kepala">Pilih Foto Kartu Keluarga</p>
+                                    <input type="file" id="file_kepala" accept="image/*" style="display:none;" onchange="konversiKtpUtamaBase64(this)">
+                                    <input type="hidden" id="hiddenBase64_Kepala">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group" id="wrapperPemilikKos" style="display: none;">
+                        <label style="color: var(--teal);">Nama Pemilik / Pengelola Kos</label>
+                        <input type="text" id="nama_pemilik_kos" class="form-control" placeholder="Tulis nama pemilik kos">
+                    </div>
+
+                    <div id="wrapperMessAsrama" style="display: none;">
+                        <div class="form-row-2">
+                            <div class="form-group">
+                                <label style="color: var(--primary);">Nama Toko Bekerja</label>
+                                <input type="text" id="nama_toko_mess" class="form-control" placeholder="Contoh: Toko Berkah">
+                            </div>
+                            <div class="form-group">
+                                <label style="color: var(--primary);">No. HP Pemilik Toko</label>
+                                <input type="text" id="hp_bos_mess" class="form-control" placeholder="0812345xxx" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-row-2">
+                        <div class="form-group">
+                            <label>Nomor Rumah / Gedung</label>
+                            <input type="text" id="no_rumah" class="form-control" placeholder="Contoh: No. 12" required>
+                        </div>
+                        <div class="form-group">
+                            <label>No WhatsApp Anda</label>
+                            <input type="text" id="wa_utama" class="form-control" placeholder="Contoh: 0812345xxx" oninput="this.value = this.value.replace(/[^0-9]/g, '');" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Alamat Sesuai KTP</label>
+                        <input type="text" id="alamat_rumah" class="form-control" placeholder="Contoh: RT 04 Dongkelan" required>
+                    </div>
+                </div>
+            </div>
+
+            <div class="app-card">
+                <div class="card-title-group">
+                    <div class="step-icon">2</div>
+                    <h3>Daftar Anggota Jiwa / Penghuni</h3>
+                </div>
+                
+                <div id="infoNoteStatus" class="info-note">
+                    <i class="fas fa-info-circle"></i> Memasukkan seluruh anggota keluarga atau penghuni yang tinggal di rumah ini.
+                </div>
+
+                <div id="wargaListContainer"></div>
+
+                <button type="button" id="btnTambahAnggota" class="btn-action btn-outline" onclick="tambahWargaRow()">
+                    <i class="fas fa-user-plus"></i> Tambah Anggota / Penghuni
+                </button>
+            </div>
+
+            <div class="agreement-card">
+                <input type="checkbox" id="chkPernyataan" required>
+                <label for="chkPernyataan">Saya menyatakan bahwa data yang diisi di atas sudah sesuai dengan keadaan yang sebenarnya.</label>
+            </div>
+
+            <button type="submit" id="btnSubmitFinal" class="btn-action btn-primary">
+                <i class="fas fa-cloud-arrow-up"></i> Kirimkan
+            </button>
+        </form>
+    </div>
+
+    <div id="customAlertOverlay" class="custom-alert-overlay">
+        <div class="alert-box" id="alertBoxContent"></div>
+    </div>
+
+    <script>
+        const GOOGLE_SCRIPT_API_URL = "https://script.google.com/macros/s/AKfycby-DpvqtWpu8FEVeudZYPms_0kc7jJyQ60BwiVJ9NlIxKcBzMbse9GcbBpjnorz94_wHg/exec";
+        const REDIRECT_THANK_YOU_URL = "thanks/terimakasih.html"; 
+        let rowCount = 0;
+
+        function sinkronisasiKategoriWargaAll() {
+            const statusRumah = document.getElementById("status_rumah").value;
+            const wrapperKos = document.getElementById("wrapperPemilikKos");
+            const inputPemilik = document.getElementById("nama_pemilik_kos");
+            const wrapperMess = document.getElementById("wrapperMessAsrama");
+            const inputTokoMess = document.getElementById("nama_toko_mess");
+            const inputBosMess = document.getElementById("hp_bos_mess");
+            const rowAdminKk = document.getElementById("rowAdministrasiKk");
+            const inputKk = document.getElementById("no_kk");
+            const infoNote = document.getElementById("infoNoteStatus");
+            const wrapperKpHed = document.getElementById("wrapperKepalaKeluargaUtama");
+            const inputKpHedNama = document.getElementById("nama_kepala_tetap");
+            const inputKpHedFile = document.getElementById("file_kepala");
+
+            if (statusRumah === "Kos") {
+                rowAdminKk.style.display = "none";
+                inputKk.removeAttribute("required");
+                inputKk.value = "";
+                wrapperKos.style.display = "block";
+                inputPemilik.setAttribute("required", "required");
+                wrapperMess.style.display = "none";
+                inputTokoMess.removeAttribute("required"); inputBosMess.removeAttribute("required");
+                inputTokoMess.value = ""; inputBosMess.value = "";
+                wrapperKpHed.style.display = "none";
+                inputKpHedNama.removeAttribute("required"); inputKpHedFile.removeAttribute("required");
+                
+                infoNote.innerHTML = `<i class="fas fa-info-circle" style="color: var(--primary);"></i> <strong>Sensus Kos:</strong> Seluruh penghuni kos yang didaftarkan wajib melampirkan berkas KTP asli.`;
+            } else if (statusRumah === "Mess / Asrama") {
+                rowAdminKk.style.display = "none";
+                inputKk.removeAttribute("required");
+                inputKk.value = "";
+                wrapperKos.style.display = "none";
+                inputPemilik.removeAttribute("required"); inputPemilik.value = "";
+                wrapperMess.style.display = "block";
+                inputTokoMess.setAttribute("required", "required");
+                inputBosMess.setAttribute("required", "required");
+                wrapperKpHed.style.display = "none";
+                inputKpHedNama.removeAttribute("required"); inputKpHedFile.removeAttribute("required");
+                
+                infoNote.innerHTML = `<i class="fas fa-info-circle" style="color: var(--primary);"></i> <strong>Sensus Mess/Asrama:</strong> Seluruh pekerja toko yang tinggal di mess wajib mengunggah foto KTP asli.`;
+            } else if (statusRumah === "Sewa / Kontrak") {
+                rowAdminKk.style.display = "grid";
+                inputKk.setAttribute("required", "required");
+                wrapperKos.style.display = "none";
+                inputPemilik.removeAttribute("required"); inputPemilik.value = "";
+                wrapperMess.style.display = "none";
+                inputTokoMess.removeAttribute("required"); inputBosMess.removeAttribute("required");
+                inputTokoMess.value = ""; inputBosMess.value = "";
+                wrapperKpHed.style.display = "none";
+                inputKpHedNama.removeAttribute("required"); inputKpHedFile.removeAttribute("required");
+
+                infoNote.innerHTML = `<i class="fas fa-info-circle" style="color: var(--primary);"></i> <strong>Sensus Kontrak:</strong> Seluruh orang yang tinggal di rumah kontrakan wajib upload berkas KTP.`;
+            } else {
+                rowAdminKk.style.display = "grid";
+                inputKk.setAttribute("required", "required");
+                wrapperKos.style.display = "none";
+                inputPemilik.removeAttribute("required"); inputPemilik.value = "";
+                wrapperMess.style.display = "none";
+                inputTokoMess.removeAttribute("required"); inputBosMess.removeAttribute("required");
+                inputTokoMess.value = ""; inputBosMess.value = "";
+                wrapperKpHed.style.display = "block";
+                inputKpHedNama.setAttribute("required", "required");
+                inputKpHedFile.setAttribute("required", "required");
+
+                infoNote.innerHTML = `<i class="fas fa-info-circle" style="color: var(--primary);"></i> <strong>Sensus Warga Tetap:</strong> Hanya Kepala Keluarga yang wajib upload KTP. Anggota keluarga inti tidak perlu.`;
+            }
+            renumberAndRefreshDropdowns();
+        }
+
+        function renumberAndRefreshDropdowns() {
+            const boxes = document.querySelectorAll(".warga-item-box");
+            const statusRumah = document.getElementById("status_rumah").value;
+
+            boxes.forEach((box, index) => {
+                const isFirstRow = (index === 0);
+                const selectNode = box.querySelector(".input-status");
+                const currentId = selectNode.id.split("_")[1];
+                
+                updateDropdownOpsiHubungan(selectNode, isFirstRow, statusRumah);
+                evaluasiKewajibanKtpRow(selectNode, currentId);
+            });
+        }
+
+        function updateDropdownOpsiHubungan(selectElement, isFirstRow, statusRumah) {
+            const valSebelumnya = selectElement.value;
+            
+            if (statusRumah === "Mess / Asrama") {
+                selectElement.innerHTML = `<option value="Karyawan">Karyawan</option>`;
+                selectElement.value = "Karyawan";
+                return;
+            }
+            
+            if (isFirstRow) {
+                if (statusRumah === "Kos" || statusRumah === "Sewa / Kontrak") {
+                    selectElement.innerHTML = `
+                        <option value="Diri Sendiri / Penghuni Utama">Penghuni Utama</option>
+                        <option value="Penghuni / Lainnya">Penghuni / Lainnya</option>
+                    `;
+                } else {
+                    selectElement.innerHTML = `<option value="Kepala Keluarga">Kepala Keluarga</option>`;
+                }
+            } else {
+                if (statusRumah === "Kos" || statusRumah === "Sewa / Kontrak") {
+                    selectElement.innerHTML = `
+                        <option value="Teman Kamar / Kontrakan">Teman Kamar / Kontrakan</option>
+                        <option value="Istri">Istri</option>
+                        <option value="Anak">Anak</option>
+                        <option value="Penghuni / Lainnya">Penghuni / Lainnya</option>
+                    `;
+                } else {
+                    selectElement.innerHTML = `
+                        <option value="Istri">Istri</option>
+                        <option value="Anak">Anak</option>
+                        <option value="Cucu">Cucu</option>
+                        <option value="Mertua">Mertua</option>
+                        <option value="ART/Sopir">ART / Sopir</option>
+                        <option value="Penghuni / Lainnya">Penghuni / Lainnya</option>
+                    `;
+                }
+                if (selectElement.querySelector(`option[value="${valSebelumnya}"]`)) {
+                    selectElement.value = valSebelumnya;
+                }
+            }
+        }
+
+        function konversiKtpUtamaBase64(input) {
+            const zone = document.getElementById("fileZone_Kepala");
+            const lbl = document.getElementById("fileNameLabel_Kepala");
+            const hidden = document.getElementById("hiddenBase64_Kepala");
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    hidden.value = e.target.result;
+                    zone.classList.add("has-file");
+                    lbl.innerText = `✓ KTP Kepala Keluarga Siap`;
+                };
+                reader.readAsDataURL(input.files[0]);
+            } else {
+                hidden.value = ""; zone.classList.remove("has-file"); lbl.innerText = "Pilih Foto Kartu Keluarga";
+            }
+        }
+
+        function tambahWargaRow() {
+            rowCount++;
+            const container = document.getElementById("wargaListContainer");
+            const row = document.createElement("div");
+            row.className = "warga-item-box";
+            row.id = `wargaRow_${rowCount}`;
+            
+            row.innerHTML = `
+                <button type="button" class="btn-delete-row" onclick="hapusWargaRow(${rowCount})">Hapus</button>
+                <div class="form-grid">
+                    <div class="form-row-2">
+                        <div class="form-group"><label>Nama Lengkap</label><input type="text" class="form-control input-nama" required></div>
+                        <div class="form-group">
+                            <label>NIK (16 Digit)</label>
+                            <input type="text" class="form-control input-nik" inputmode="numeric" maxlength="16" oninput="this.value = this.value.replace(/[^0-9]/g, ''); cekPanjangNikLive(this, ${rowCount});" required>
+                            <div id="errorNik_${rowCount}" class="error-hint">NIK wajib 16 angka!</div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Tempat Tanggal Lahir</label>
+                        <input type="text" class="form-control input-ttl" placeholder="Contoh: Bantul, 17 Agustus 1997" required>
+                    </div>
+
+                    <div class="form-row-2">
+                        <div class="form-group">
+                            <label>Jenis Kelamin</label>
+                            <div class="select-wrapper">
+                                <select class="form-control input-jk">
+                                    <option value="Laki-laki">Laki-laki</option>
+                                    <option value="Perempuan">Perempuan</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Agama</label>
+                            <div class="select-wrapper">
+                                <select class="form-control input-agama">
+                                    <option value="Islam">Islam</option><option value="Kristen">Kristen</option><option value="Katolik">Katolik</option><option value="Hindu">Hindu</option><option value="Budha">Budha</option><option value="Konghucu">Konghucu</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-row-2">
+                        <div class="form-group"><label>Pekerjaan</label><input type="text" class="form-control input-pekerjaan" required></div>
+                        <div class="form-group">
+                            <label>Status Perkawinan</label>
+                            <div class="select-wrapper">
+                                <select class="form-control input-kawin">
+                                    <option value="Belum Kawin">Belum Kawin</option>
+                                    <option value="Kawin">Kawin</option>
+                                    <option value="Cerai Hidup">Cerai Hidup</option>
+                                    <option value="Cerai Mati">Cerai Mati</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-row-2">
+                        <div class="form-group">
+                            <label>Status Alamat KTP</label>
+                            <div class="select-wrapper">
+                                <select class="form-control input-status-ktp">
+                                    <option value="RT 04">Warga RT 04</option>
+                                    <option value="Di Luar RT 04">Di Luar RT 04</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Domisili Tinggal Sekarang</label>
+                            <div class="select-wrapper">
+                                <select class="form-control input-domisili">
+                                    <option value="RT 04">Menetap di RT 04</option>
+                                    <option value="Di Luar RT 04">Di Luar RT 04</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-row-2">
+                        <div class="form-group" style="grid-column: span 2;">
+                            <label>Hubungan / Status</label>
+                            <div class="select-wrapper">
+                                <select class="form-control input-status" id="statusHub_${rowCount}" onchange="evaluasiKewajibanKtpRow(this, ${rowCount})"></select>
+                            </div>
+                        </div>
+                    </div>
