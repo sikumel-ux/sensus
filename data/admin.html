@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Admin - Sensus RT 04</title>
+    
+    <!-- Google Fonts: Plus Jakarta Sans & Roboto -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=600;700;800&family=Roboto:wght=400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-app: #F8FAFC;
+            --card-bg: #FFFFFF;
+            --border: #E2E8F0;
+            --primary: #FF6B35;
+            --primary-light: rgba(255, 107, 53, 0.08);
+            --primary-gradient: linear-gradient(135deg, #E0531F 0%, #FF6B35 60%, #FF8557 100%);
+            --teal: #0D9488;
+            --teal-light: rgba(13, 148, 136, 0.1);
+            --accent-warn: #EF4444;
+            --accent-warn-light: rgba(239, 68, 68, 0.1);
+            --text-main: #0F172A;
+            --text-muted: #64748B;
+            --radius-lg: 20px;
+            --radius-md: 12px;
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+            font-family: 'Roboto', sans-serif; 
+        }
+        
+        body { 
+            background-color: var(--bg-app); 
+            color: var(--text-main); 
+            min-height: 100vh; 
+            font-size: 0.88rem; 
+        }
+
+        h1, h2, h3, h4, .btn-action, .card-title, .sidebar h2 { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+        }
+
+        /* Layout Structure */
+        .admin-layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styling */
+        .sidebar {
+            width: 260px;
+            background: var(--card-bg);
+            border-right: 1px solid var(--border);
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+        .sidebar-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .sidebar-brand .logo-icon {
+            background: var(--primary-light);
+            color: var(--primary);
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            border: 1px solid rgba(255, 107, 53, 0.2);
+        }
+        .sidebar-brand h2 {
+            font-size: 1.15rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+        .sidebar-menu {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .menu-item a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-weight: 500;
+            border-radius: var(--radius-md);
+            transition: var(--transition);
+        }
+        .menu-item.active a, .menu-item a:hover {
+            background: var(--primary-light);
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        /* Main Content Styling */
+        .main-content {
+            flex: 1;
+            padding: 30px;
+            max-width: calc(100% - 260px);
+        }
+        .content-header {
+            display: flex;
+            justify-content: border-between;
+            align-items: center;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .content-title h1 {
+            font-size: 1.6rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+        .content-title p {
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            margin-top: 2px;
+        }
+
+        /* Statistics Row */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 25px;
+        }
+        .stat-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.01);
+        }
+        .stat-details h3 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin-top: 4px;
+        }
+        .stat-details p {
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            font-weight: 700;
+            color: var(--text-muted);
+            letter-spacing: 0.5px;
+        }
+        .stat-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+        .stat-icon.primary { background: var(--primary-light); color: var(--primary); }
+        .stat-icon.teal { background: var(--teal-light); color: var(--teal); }
+
+        /* Controls Block */
+        .table-controls {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-top-left-radius: var(--radius-md);
+            border-top-right-radius: var(--radius-md);
+            padding: 16px;
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+            border-bottom: none;
+        }
+        .search-wrapper {
+            position: relative;
+            flex: 1;
+            min-width: 200px;
+        }
+        .search-wrapper i {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+        }
+        .search-control {
+            width: 100%;
+            padding: 10px 14px 10px 38px;
+            border: 1.5px solid var(--border);
+            border-radius: 8px;
+            outline: none;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+        .search-control:focus {
+            border-color: var(--primary);
+        }
+        .filter-control {
+            padding: 10px 14px;
+            border: 1.5px solid var(--border);
+            border-radius: 8px;
+            outline: none;
+            background: #fff;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text-main);
+            cursor: pointer;
+        }
+
+        /* Table Design */
+        .table-responsive {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-bottom-left-radius: var(--radius-md);
+            border-bottom-right-radius: var(--radius-md);
+            overflow-x: auto;
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.02);
+        }
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            min-width: 800px;
+        }
+        .admin-table th {
+            background: #F8FAFC;
+            padding: 14px 18px;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 800;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid var(--border);
+        }
+        .admin-table td {
+            padding: 14px 18px;
+            border-bottom: 1px solid var(--border);
+            font-weight: 500;
+            vertical-align: middle;
+        }
+        .admin-table tr:last-child td {
+            border-bottom: none;
+        }
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.72rem;
+            font-weight: 700;
+        }
+        .badge.milik-sendiri { background: var(--primary-light); color: var(--primary); }
+        .badge.kontrak { background: rgba(59, 130, 246, 0.1); color: #3B82F6; }
+        .badge.kos { background: var(--teal-light); color: var(--teal); }
+        .badge.mess { background: rgba(139, 92, 246, 0.1); color: #8B5CF6; }
+
+        .btn-table-action {
+            background: #F1F5F9;
+            color: var(--text-main);
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: var(--transition);
+        }
+        .btn-table-action:hover {
+            background: var(--primary);
+            color: #fff;
+        }
+
+        /* Detail Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.4);
+            backdrop-filter: blur(8px);
+            z-index: 10000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .modal-card {
+            background: #fff;
+            border-radius: var(--radius-lg);
+            width: 100%;
+            max-width: 650px;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid var(--border);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+        }
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .modal-header h3 {
+            font-size: 1.1rem;
+            font-weight: 800;
+        }
+        .btn-close-modal {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            color: var(--text-muted);
+        }
+        .modal-body {
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .detail-section-title {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            letter-spacing: 0.5px;
+            margin-bottom: 10px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 4px;
+        }
+        .detail-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+        .detail-item label {
+            font-size: 0.68rem;
+            font-weight: 800;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+        .detail-item p {
+            font-weight: 600;
+            margin-top: 2px;
+        }
+        .nested-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.8rem;
+            margin-top: 6px;
+        }
+        .nested-table th {
+            background: #F8FAFC;
+            padding: 8px 12px;
+            font-weight: 700;
+            color: var(--text-muted);
+            border: 1px solid var(--border);
+        }
+        .nested-table td {
+            padding: 8px 12px;
+            border: 1px solid var(--border);
+        }
+        .img-preview-box {
+            max-width: 100%;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 6px;
+            background: #F8FAFC;
+            text-align: center;
+            margin-top: 4px;
+        }
+        .img-preview-box img {
+            max-width: 100%;
+            max-height: 250px;
+            border-radius: 4px;
+        }
+
+        /* Mobile Responsive adjustment */
+        @media (max-width: 768px) {
+            .admin-layout { flex-direction: column; }
+            .sidebar { width: 100%; border-right: none; border-bottom: 1px solid var(--border); padding: 20px; gap: 15px; }
+            .main-content { max-width: 100%; padding: 20px; }
+            .detail-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="admin-layout">
+        
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <div class="logo-icon"><i class="fas fa-shield-halved"></i></div>
+                <div>
+                    <h2>Panel Admin</h2>
+                    <p style="font-size: 0.72rem; color: var(--text-muted); font-weight: 500;">Sensus RT 04 Dongkelan</p>
+                </div>
+            </div>
+            <ul class="sidebar-menu">
+                <li class="menu-item active">
+                    <a href="#"><i class="fas fa-table-list"></i> Data Sensus</a>
+                </li>
+            </ul>
+        </aside>
+
+        <!-- MAIN CONTENT AREA -->
+        <main class="main-content">
+            
+            <header class="content-header">
+                <div class="content-title">
+                    <h1>Data Registrasi Sensus</h1>
+                    <p>Manajemen dan verifikasi database laporan sensus berkas warga</p>
+                </div>
+            </header>
+
+            <!-- STATS ROW -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-details">
+                        <p>Total Rumah</p>
+                        <h3 id="statTotalRumah">0</h3>
+                    </div>
+                    <div class="stat-icon primary"><i class="fas fa-house-user"></i></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-details">
+                        <p>Total Jiwa/Warga</p>
+                        <h3 id="statTotalJiwa">0</h3>
+                    </div>
+                    <div class="stat-icon teal"><i class="fas fa-users"></i></div>
+                </div>
+            </div>
+
+            <!-- TABLE CONTROLS -->
+            <div class="table-controls">
+                <div class="search-wrapper">
+                    <i class="fas fa-magnifying-glass"></i>
+                    <input type="text" id="adminSearchInput" class="search-control" placeholder="Cari berdasarkan No. KK, Nama, Alamat..." oninput="filterDataSensusTable()">
+                </div>
+                <select id="filterStatusRumah" class="filter-control" onchange="filterDataSensusTable()">
+                    <option value="ALL">Semua Status Hunian</option>
+                    <option value="Milik Sendiri">Milik Sendiri</option>
+                    <option value="Sewa / Kontrak">Sewa / Kontrak</option>
+                    <option value="Kos">Kos</option>
+                    <option value="Mess / Asrama">Mess / Asrama</option>
+                </select>
+                <button class="filter-control" style="background: var(--bg-app); border-color: var(--border);" onclick="muatUlangDataSensus()"><i class="fas fa-rotate"></i> Refresh</button>
+            </div>
+
+            <!-- DATA TABLE -->
+            <div class="table-responsive">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Kode</th>
+                            <th>Status Hunian</th>
+                            <th>No. Rumah</th>
+                            <th>No. KK / Pengelola</th>
+                            <th>Penghuni Utama</th>
+                            <th>Jumlah Jiwa</th>
+                            <th style="text-align: center;">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbodySensusData">
+                        <tr>
+                            <td colspan="7" style="text-align: center; color: var(--text-muted); padding: 30px;">
+                                <i class="fas fa-spinner fa-spin" style="font-size: 1.5rem; color: var(--primary); margin-bottom: 8px;"></i>
+                                <p>Sedang menyinkronkan data dari Google Sheets...</p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- DETAIL DATA MODAL -->
+    <div id="detailModalOverlay" class="modal-overlay">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>Detail Lengkap Laporan Sensus</h3>
+                <button class="btn-close-modal" onclick="tutupDetailModal()"><i class="fas fa-xmark"></i></button>
+            </div>
+            <div class="modal-body" id="modalDetailBody">
+                <!-- Content will be injected through JS -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Menggunakan URL Apps Script yang sama dengan file form warga Anda
+        const GOOGLE_SCRIPT_API_URL = "https://script.google.com/macros/s/AKfycby-DpvqtWpu8FEVeudZYPms_0kc7jJyQ60BwiVJ9NlIxKcBzMbse9GcbBpjnorz94_wHg/exec";
+        
+        let localSensusDatabase = [];
+
+        function muatUlangDataSensus() {
+            const tbody = document.getElementById("tbodySensusData");
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="7" style="text-align: center; color: var(--text-muted); padding: 30px;">
+                        <i class="fas fa-spinner fa-spin" style="font-size: 1.5rem; color: var(--primary); margin-bottom: 8px;"></i>
+                        <p>Mengunduh database sensus terbaru...</p>
+                    </td>
+                </tr>`;
+
+            fetch(GOOGLE_SCRIPT_API_URL)
+            .then(res => res.json())
+            .then(data => {
+                localSensusDatabase = data;
+                updateStatistikDashboard(data);
+                renderDataSensusKeTable(data);
+            })
+            .catch(err => {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" style="text-align: center; color: var(--accent-warn); padding: 30px;">
+                            <i class="fas fa-triangle-exclamation" style="font-size: 1.5rem; margin-bottom: 8px;"></i>
+                            <p>Gagal memuat data: ${err.toString()}</p>
+                        </td>
+                    </tr>`;
+            });
+        }
+
+        function updateStatistikDashboard(data) {
+            document.getElementById("statTotalRumah").innerText = data.length;
+            let totalJiwa = 0;
+            data.forEach(item => {
+                if(item.anggota && Array.isArray(item.anggota)) {
+                    totalJiwa += item.anggota.length;
+                }
+            });
+            document.getElementById("statTotalJiwa").innerText = totalJiwa;
+        }
+
+        function getStatusBadgeClass(status) {
+            if(status === "Milik Sendiri") return "badge milik-sendiri";
+            if(status === "Sewa / Kontrak") return "badge kontrak";
+            if(status === "Kos") return "badge kos";
+            if(status === "Mess / Asrama") return "badge mess";
+            return "badge";
+        }
+
+        function renderDataSensusKeTable(data) {
+            const tbody = document.getElementById("tbodySensusData");
+            if(data.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:var(--text-muted); padding:20px;">Tidak ada rekaman data warga ditemukan.</td></tr>`;
+                return;
+            }
+
+            let htmlRows = "";
+            data.forEach((item, idx) => {
+                let badgeClass = getStatusBadgeClass(item.statusRumah);
+                let infoIdentitasKk = item.noKk || "-";
+                
+                if(item.statusRumah === "Kos") {
+                    infoIdentitasKk = `<span style="color:var(--teal); font-weight:600;"><i class="fas fa-user-tie"></i> Kos: ${item.namaPemilikKos || '-'}</span>`;
+                } else if(item.statusRumah === "Mess / Asrama") {
+                    infoIdentitasKk = `<span style="color:#8B5CF6; font-weight:600;"><i class="fas fa-shop"></i> Toko: ${item.namaTokoMess || '-'}</span>`;
+                }
+
+                let namaPenghuniUtama = "-";
+                if(item.anggota && item.anggota[0]) {
+                    namaPenghuniUtama = item.anggota[0].nama;
+                }
+                let totalAnggota = (item.anggota && Array.isArray(item.anggota)) ? item.anggota.length : 0;
+
+                htmlRows += `
+                    <tr>
+                        <td><strong style="color:var(--primary); font-family:'Plus Jakarta Sans';">${item.kode || '-'}</strong></td>
+                        <td><span class="${badgeClass}">${item.statusRumah}</span></td>
+                        <td><strong>${item.noRumah || '-'}</strong></td>
+                        <td>${infoIdentitasKk}</td>
+                        <td>${namaPenghuniUtama}</td>
+                        <td><i class="fas fa-user-group" style="color:var(--text-muted); font-size:0.75rem;"></i> ${totalAnggota} Jiwa</td>
+                        <td style="text-align: center;">
+                            <button class="btn-table-action" onclick="bukaDetailSensusModal(${idx})">
+                                <i class="fas fa-eye"></i> Detail
+                            </button>
+                        </td>
+                    </tr>`;
+            });
+            tbody.innerHTML = htmlRows;
+        }
+
+        function filterDataSensusTable() {
+            const kataKunci = document.getElementById("adminSearchInput").value.toLowerCase().trim();
+            const filterStatus = document.getElementById("filterStatusRumah").value;
+
+            let dataTerfilter = localSensusDatabase.filter(item => {
+                // Filter dropdown status rumah
+                if(filterStatus !== "ALL" && item.statusRumah !== filterStatus) {
+                    return false;
+                }
+
+                // Filter text input pencarian
+                let matchesSearch = false;
+                if((item.kode && item.kode.toLowerCase().includes(kataKunci)) ||
+                   (item.noKk && item.noKk.toLowerCase().includes(kataKunci)) ||
+                   (item.noRumah && item.noRumah.toLowerCase().includes(kataKunci)) ||
+                   (item.alamat && item.alamat.toLowerCase().includes(kataKunci)) ||
+                   (item.namaPemilikKos && item.namaPemilikKos.toLowerCase().includes(kataKunci)) ||
+                   (item.namaTokoMess && item.namaTokoMess.toLowerCase().includes(kataKunci))) {
+                    matchesSearch = true;
+                }
+
+                if(item.anggota && Array.isArray(item.anggota)) {
+                    let matchAnggota = item.anggota.some(a => 
+                        (a.nama && a.nama.toLowerCase().includes(kataKunci)) || 
+                        (a.nik && a.nik.toLowerCase().includes(kataKunci))
+                    );
+                    if(matchAnggota) matchesSearch = true;
+                }
+
+                return matchesSearch;
+            });
+
+            renderDataSensusKeTable(dataTerfilter);
+        }
+
+        function bukaDetailSensusModal(index) {
+            const dataItem = localSensusDatabase[index];
+            if(!dataItem) return;
+
+            const modalBody = document.getElementById("modalDetailBody");
+            
+            let extraPropertiHtml = "";
+            if(dataItem.statusRumah === "Kos") {
+                extraPropertiHtml = `
+                    <div class="detail-item">
+                        <label>Nama Pemilik / Pengelola Kos</label>
+                        <p style="color:var(--teal)">${dataItem.namaPemilikKos || '-'}</p>
+                    </div>`;
+            } else if(dataItem.statusRumah === "Mess / Asrama") {
+                extraPropertiHtml = `
+                    <div class="detail-item">
+                        <label>Nama Toko Tempat Bekerja</label>
+                        <p style="color:#8B5CF6">${dataItem.namaTokoMess || '-'}</p>
+                    </div>
+                    <div class="detail-item">
+                        <label>No. HP Pemilik Toko (Bos)</label>
+                        <p>${dataItem.hpBosMess || '-'}</p>
+                    </div>`;
+            }
+
+            let tabelAnggotaRows = "";
+            if(dataItem.anggota && Array.isArray(dataItem.anggota)) {
+                dataItem.anggota.forEach((a, i) => {
+                    tabelAnggotaRows += `
+                        <tr>
+                            <td style="text-align:center;">${i+1}</td>
+                            <td><strong>${a.nama || '-'}</strong><br><small style="color:var(--text-muted)">NIK: ${a.nik || '-'}</small></td>
+                            <td>${a.ttl || '-'}</td>
+                            <td>${a.jk || '-'}</td>
+                            <td>${a.agama || '-'}</td>
+                            <td>${a.pekerjaan || '-'}</td>
+                            <td><span class="badge milik-sendiri" style="font-size:0.65rem;">${a.hubungan || '-'}</span></td>
+                        </tr>`;
+                });
+            } else {
+                tabelAnggotaRows = `<tr><td colspan="7" style="text-align:center; color:var(--text-muted)">Tidak ada data anggota jiwa.</td></tr>`;
+            }
+
+            let previewKtpUtamaHtml = "";
+            if(dataItem.anggota && dataItem.anggota[0] && dataItem.anggota[0].ktpBase64) {
+                previewKtpUtamaHtml = `
+                    <div class="img-preview-box">
+                        <img src="${dataItem.anggota[0].ktpBase64}" alt="Lampiran Berkas">
+                    </div>`;
+            } else {
+                previewKtpUtamaHtml = `<p style="color:var(--text-muted); font-size:0.8rem; font-style:italic;">Tidak ada berkas/KTP terlampir.</p>`;
+            }
+
+            modalBody.innerHTML = `
+                <div>
+                    <h4 class="detail-section-title">Informasi Utama Hunian</h4>
+                    <div class="detail-grid">
+                        <div class="detail-item"><label>Kode Registrasi</label><p style="color:var(--primary); font-size:1.1rem; font-weight:800;">${dataItem.kode || '-'}</p></div>
+                        <div class="detail-item"><label>Status Hunian</label><p><span class="${getStatusBadgeClass(dataItem.statusRumah)}">${dataItem.statusRumah}</span></p></div>
+                        <div class="detail-item"><label>Nomor KK</label><p>${dataItem.noKk || '-'}</p></div>
+                        <div class="detail-item"><label>Mode Jimpitan</label><p>${dataItem.modeJimpitan || '-'}</p></div>
+                        <div class="detail-item"><label>Nomor Rumah / Gedung</label><p>${dataItem.noRumah || '-'}</p></div>
+                        <div class="detail-item"><label>No. WhatsApp</label><p><a href="https://wa.me/${dataItem.waUtama}" target="_blank" style="color:var(--teal); text-decoration:none;"><i class="fab fa-whatsapp"></i> ${dataItem.waUtama || '-'}</a></p></div>
+                        <div class="detail-item" style="grid-column: span 2;"><label>Alamat Rumah Detail</label><p>${dataItem.alamat || '-'}</p></div>
+                        ${extraPropertiHtml}
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="detail-section-title">Daftar Penghuni Jiwa (${dataItem.anggota ? dataItem.anggota.length : 0} Jiwa)</h4>
+                    <div style="overflow-x:auto;">
+                        <table class="nested-table">
+                            <thead>
+                                <tr>
+                                    <th style="width:40px;">No</th>
+                                    <th>Nama / NIK</th>
+                                    <th>TTL</th>
+                                    <th>JK</th>
+                                    <th>Agama</th>
+                                    <th>Pekerjaan</th>
+                                    <th>Status Hubungan</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${tabelAnggotaRows}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="detail-section-title">Lampiran Berkas Utama / KTP</h4>
+                    ${previewKtpUtamaHtml}
+                </div>`;
+
+            document.getElementById("detailModalOverlay").style.display = "flex";
+        }
+
+        function tutupDetailModal() {
+            document.getElementById("detailModalOverlay").style.display = "none";
+        }
+
+        window.onload = function() {
+            muatUlangDataSensus();
+        };
+    </script>
+</body>
+</html>
