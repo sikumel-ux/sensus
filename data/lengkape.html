@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Sensus Pendataan RT 04</title>
+    
+    <!-- PWA Meta Tags -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="theme-color" content="#FF6B35">
+    
+    <!-- Google Fonts & FontAwesome -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=600;700;800&family=Roboto:wght=400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #FF6B35;
+            --primary-hover: #E0531F;
+            --primary-light: #FFF1EB;
+            --bg-app: #F4F6F9;
+            --card-bg: #FFFFFF;
+            --border: #E4E7EC;
+            --text-main: #1D2939;
+            --text-muted: #667085;
+            --radius-main: 24px;
+            --radius-sub: 16px;
+            --radius-input: 14px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Roboto', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-app);
+            color: var(--text-main);
+            font-size: 0.95rem;
+            line-height: 1.5;
+            padding: 16px 16px 32px 16px;
+            display: flex;
+            justify-content: center;
+        }
+
+        /* Pembatas maksimal agar di HP pas, di desktop tidak melebar */
+        .app-container {
+            width: 100%;
+            max-width: 480px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        /* Card Utama seperti di Gambar */
+        .main-card {
+            background: var(--card-bg);
+            border-radius: var(--radius-main);
+            padding: 24px 20px;
+            border: 1px solid var(--border);
+            box-shadow: 0px 4px 18px rgba(29, 41, 57, 0.03);
+        }
+
+        /* Header Section dengan Badge Bulat Orange */
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .badge-number {
+            background-color: var(--primary-light);
+            color: var(--primary);
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-weight: 800;
+            font-size: 0.85rem;
+        }
+
+        .section-title {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #101828;
+        }
+
+        /* Alert Sensus Warga Tetap */
+        .alert-box {
+            background-color: #FFF5F1;
+            border-left: 4px solid var(--primary);
+            padding: 12px 14px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            gap: 8px;
+        }
+
+        .alert-box p {
+            font-size: 0.8rem;
+            color: #101828;
+            line-height: 1.4;
+            font-weight: 500;
+        }
+
+        .alert-box strong {
+            font-weight: 700;
+        }
+
+        /* Form Layout Grid (2 Kolom berdampingan sesuai gambar) */
+        .form-grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-bottom: 12px;
+        }
+
+        .form-group.full-width {
+            grid-column: span 2;
+        }
+
+        label {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #475467;
+        }
+
+        input[type="text"], select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-input);
+            font-size: 0.95rem;
+            color: var(--text-main);
+            background-color: #FFFFFF;
+            outline: none;
+            transition: border-color 0.2s ease;
+            -webkit-appearance: none;
+        }
+
+        input::placeholder {
+            color: #98A2B3;
+            font-size: 0.9rem;
+        }
+
+        input:focus, select:focus {
+            border-color: var(--primary);
+        }
+
+        /* Dropdown custom arrow */
+        .select-wrapper {
+            position: relative;
+        }
+        .select-wrapper::after {
+            content: '\f078';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            font-size: 0.75rem;
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            pointer-events: none;
+        }
+
+        /* Wrapper baris penghuni */
+        .warga-item {
+            position: relative;
+            padding-bottom: 12px;
+            margin-bottom: 12px;
+        }
+
+        .warga-item-header {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 4px;
+        }
+
+        .btn-hapus {
+            background: #FEE2E2;
+            color: #EF4444;
+            border: none;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        /* Tombol Tambah Anggota Putus-putus */
+        .btn-add-dashed {
+            width: 100%;
+            background: transparent;
+            border: 1.5px dashed var(--primary);
+            border-radius: var(--radius-sub);
+            padding: 14px;
+            color: var(--primary);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            cursor: pointer;
+            margin-top: 8px;
+        }
+
+        /* Checkbox Pernyataan di Bagian Bawah */
+        .agreement-card {
+            background: var(--card-bg);
+            border-radius: var(--radius-sub);
+            padding: 16px;
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .agreement-card input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            border-radius: 6px;
+            border: 1.5px solid var(--border);
+            accent-color: var(--primary);
+            cursor: pointer;
+            margin-top: 2px;
+            flex-shrink: 0;
+        }
+
+        .agreement-card label {
+            font-family: 'Roboto', sans-serif;
+            font-size: 0.85rem;
+            text-transform: none;
+            letter-spacing: normal;
+            color: #344054;
+            font-weight: 500;
+            line-height: 1.4;
+            cursor: pointer;
+        }
+
+        /* Tombol Kirim Utama Orange Gradasi Halus */
+        .btn-submit {
+            width: 100%;
+            background: linear-gradient(135deg, #FF6B35, #FF8254);
+            color: white;
+            border: none;
+            border-radius: var(--radius-sub);
+            padding: 16px;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            cursor: pointer;
+            box-shadow: 0px 4px 12px rgba(255, 107, 53, 0.2);
+            transition: all 0.2s ease;
+        }
+
+        .btn-submit:active {
+            transform: scale(0.98);
+        }
+
+        /* Upload Box Style di dalam Grid jika diperlukan */
+        .upload-wrapper-box {
+            grid-column: span 2;
+            background: #FFF9F5;
+            border: 1.5px dashed #FFBEA3;
+            border-radius: var(--radius-input);
+            padding: 12px;
+            text-align: center;
+            position: relative;
+            cursor: pointer;
+        }
+        .upload-wrapper-box i { color: var(--primary); font-size: 1.2rem; margin-bottom: 2px; }
+        .upload-wrapper-box p { font-size: 0.8rem; font-weight: 700; }
+        .upload-wrapper-box input[type="file"] { position: absolute; top:0; left:0; width:100%; height:100%; opacity:0; }
+
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+
+        <!-- KARTU UTAMA SENSUS -->
+        <main class="main-card">
+            
+            <div class="section-header">
+                <div class="badge-number">2</div>
+                <h2 class="section-title">Daftar Anggota Jiwa / Penghuni</h2>
+            </div>
+
+            <div class="alert-box">
+                <p><i class="fas fa-circle-info" style="color: var(--primary);"></i> <strong>Sensus Warga Tetap:</strong> Hanya Kepala Keluarga yang wajib upload KTP. Anggota keluarga inti tidak perlu.</p>
+            </div>
+
+            <form id="sensusForm">
+                <!-- Container list tumpuk dinamis -->
+                <div id="wargaListContainer">
+                    <!-- Data di-inject via JavaScript -->
+                </div>
+
+                <!-- Tombol Tambah Putus-putus Orange -->
+                <button type="button" class="btn-add-dashed" onclick="tambahWargaBaru()">
+                    <i class="fas fa-user-plus"></i> Tambah Anggota / Penghuni
+                </button>
+            </main>
+
+            <!-- KARTU CHECKBOX PERNYATAAN -->
+            <div class="agreement-card">
+                <input type="checkbox" id="pernyataanValid" required>
+                <label for="pernyataanValid">Saya menyatakan bahwa data yang diisi di atas sudah sesuai dengan keadaan yang sebenarnya.</label>
+            </div>
+
+            <!-- TOMBOL KIRIMKAN -->
+            <button type="submit" class="btn-submit">
+                <i class="fas fa-cloud-arrow-up"></i> Kirimkan
+            </button>
+        </form>
+
+    </div>
+
+    <script>
+        let wargaIdx = 0;
+
+        function tambahWargaBaru() {
+            wargaIdx++;
+            const container = document.getElementById('wargaListContainer');
+
+            const itemHtml = `
+                <div class="warga-item" id="wargaItem_${wargaIdx}">
+                    ${wargaIdx > 1 ? `
+                    <div class="warga-item-header">
+                        <button type="button" class="btn-hapus" onclick="hapusWarga(${wargaIdx})">Hapus</button>
+                    </div>` : ''}
+
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label>Nama Lengkap</label>
+                            <input type="text" name="nama[]" required>
+                        </div>
+                        <div class="form-group">
+                            <label>NIK (16 Digit)</label>
+                            <input type="text" name="nik[]" inputmode="numeric" maxlength="16" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label>Tempat Tanggal Lahir</label>
+                        <input type="text" name="ttl[]" placeholder="Contoh: Bantul, 17 Agustus 1997" required>
+                    </div>
+
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label>Jenis Kelamin</label>
+                            <div class="select-wrapper">
+                                <select name="jk[]" required>
+                                    <option value="Laki-laki">Laki-laki</option>
+                                    <option value="Perempuan">Perempuan</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Agama</label>
+                            <div class="select-wrapper">
+                                <select name="agama[]" required>
+                                    <option value="Islam">Islam</option>
+                                    <option value="Kristen">Kristen</option>
+                                    <option value="Katolik">Katolik</option>
+                                    <option value="Hindu">Hindu</option>
+                                    <option value="Budha">Budha</option>
+                                    <option value="Khonghucu">Khonghucu</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label>Pekerjaan</label>
+                            <input type="text" name="pekerjaan[]" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Hubungan / Status</label>
+                            <div class="select-wrapper">
+                                <select name="hubungan[]" required>
+                                    <option value="Kepala Keluarga">Kepala Keluarga</option>
+                                    <option value="Istri">Istri</option>
+                                    <option value="Anak">Anak</option>
+                                    <option value="Orang Tua">Orang Tua</option>
+                                    <option value="Lainnya">Lainnya</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            container.insertAdjacentHTML('beforeend', itemHtml);
+        }
+
+        function hapusWarga(id) {
+            const el = document.getElementById(`wargaItem_${id}`);
+            if (el) el.remove();
+        }
+
+        // Inisialisasi baris pertama saat halaman di-load
+        window.onload = function() {
+            tambahWargaBaru();
+        };
+
+        document.getElementById('sensusForm').onsubmit = function(e) {
+            e.preventDefault();
+            alert('Data siap dikirim dengan format PWA!');
+        };
+    </script>
+</body>
+</html>
