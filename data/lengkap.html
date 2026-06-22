@@ -30,7 +30,7 @@
         }
 
         .container {
-            max-width: 900px;
+            max-width: 950px;
             margin: 0 auto;
             background: var(--bg-card);
             padding: 30px;
@@ -59,10 +59,11 @@
             font-weight: 600;
         }
 
+        /* Grid System 2 Kolom */
         .grid-2 {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 15px;
+            gap: 15px 25px; /* Jarak vertikal dan horizontal antar input */
         }
 
         @media (max-width: 768px) {
@@ -75,11 +76,23 @@
             margin-bottom: 15px;
         }
 
+        /* Form group yang memakan 2 kolom penuh jika dibutuhkan */
+        .form-group-full {
+            grid-column: span 2;
+        }
+
+        @media (max-width: 768px) {
+            .form-group-full {
+                grid-column: span 1;
+            }
+        }
+
         label {
             display: block;
             font-weight: 600;
-            margin-bottom: 5px;
+            margin-bottom: 6px;
             font-size: 0.9rem;
+            color: #333;
         }
 
         input[type="text"],
@@ -87,13 +100,13 @@
         select,
         textarea {
             width: 100%;
-            padding: 10px;
+            padding: 11px 14px;
             border: 1px solid var(--border);
             border-radius: 6px;
             font-size: 0.95rem;
             background-color: #FFF;
             color: var(--text-main);
-            transition: border-color 0.2s;
+            transition: all 0.2s ease;
         }
 
         input:focus, select:focus, textarea:focus {
@@ -102,21 +115,21 @@
             box-shadow: 0 0 0 3px rgba(255, 107, 0, 0.15);
         }
 
-        /* Styling upload file */
         input[type="file"] {
             display: block;
             width: 100%;
             font-size: 0.9rem;
             color: var(--text-muted);
+            padding: 8px 0;
         }
 
-        /* Bagian Anggota Jiwa / Tabel Dinamis */
+        /* Wadah Khusus Data Jiwa */
         .warga-item {
             background: #F9FAFB;
             border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 15px;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 20px;
             position: relative;
         }
 
@@ -124,12 +137,21 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
             font-weight: 600;
-            color: var(--text-main);
+            color: #495057;
             background: #E9ECEF;
-            padding: 5px 10px;
-            border-radius: 4px;
+            padding: 8px 15px;
+            border-radius: 6px;
+        }
+
+        /* Styling upload box agar kontras & keren */
+        .upload-ktp-box {
+            background: #FFF3CD;
+            border: 1px dashed #FFC107;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 10px;
         }
 
         .btn {
@@ -164,7 +186,7 @@
         .btn-danger {
             background-color: #DC3545;
             color: #FFF;
-            padding: 4px 10px;
+            padding: 5px 12px;
             font-size: 0.85rem;
             border-radius: 4px;
         }
@@ -277,7 +299,7 @@
 
         <!-- BAGIAN 2: DATA ANGGOTA JIWA (DINAMIS) -->
         <div class="section-title">II. Elemen Data Anggota Jiwa (Sesuai Kartu Keluarga)</div>
-        <p class="subtitle" style="margin-top:-10px;">Jika sekeluarga/berkelompok, tambahkan anggota sesuai jumlah jiwa di hunian ini.</p>
+        <p class="subtitle" style="margin-top:-10px;">Data disusun rapi berdampingan dalam dua baris kolom untuk memudahkan pengisian.</p>
 
         <div id="containerWarga">
             <!-- Data Jiwa akan dimuat di sini secara dinamis via JS -->
@@ -333,7 +355,7 @@
             toggleRequired('hpPemilikToko', true);
         }
 
-        // Sesuaikan aturan form input jiwa yang sudah ada di bawah
+        // Sesuaikan aturan form input KTP di bagian elemen jiwa bawah
         perbaruiAturanInputJiwa();
     }
 
@@ -370,7 +392,7 @@
         if (el) el.required = isRequired;
     }
 
-    // Menambahkan blok data jiwa ke dalam form
+    // Menambahkan blok data jiwa ke dalam form (Layout Grid 2 Kolom Berdampingan)
     function tambahWargaForm() {
         wargaCount++;
         const container = document.getElementById('containerWarga');
@@ -382,6 +404,7 @@
                     ${wargaCount > 1 ? `<button type="button" class="btn btn-danger" onclick="hapusWargaForm(${wargaCount})">Hapus</button>` : ''}
                 </div>
                 
+                <!-- Memanfaatkan Grid 2 Kolom Berdampingan -->
                 <div class="grid-2">
                     <div class="form-group">
                         <label>Nama Lengkap (Sesuai KTP) *</label>
@@ -391,9 +414,7 @@
                         <label>NIK / No. KTP (16 Digit) *</label>
                         <input type="text" name="nik[]" required placeholder="NIK 16 Digit" maxlength="16">
                     </div>
-                </div>
 
-                <div class="grid-2">
                     <div class="form-group">
                         <label>Jenis Kelamin *</label>
                         <select name="jk[]" required>
@@ -405,9 +426,7 @@
                         <label>Tempat Lahir *</label>
                         <input type="text" name="tempat_lahir[]" required placeholder="Kota Lahir">
                     </div>
-                </div>
 
-                <div class="grid-2">
                     <div class="form-group">
                         <label>Tanggal Lahir *</label>
                         <input type="date" name="tanggal_lahir[]" required>
@@ -424,9 +443,7 @@
                             <option value="Lainnya">Lainnya</option>
                         </select>
                     </div>
-                </div>
 
-                <div class="grid-2">
                     <div class="form-group">
                         <label>Pendidikan Terakhir *</label>
                         <select name="pendidikan[]" required>
@@ -443,9 +460,7 @@
                         <label>Jenis Pekerjaan *</label>
                         <input type="text" name="pekerjaan[]" required placeholder="Contoh: Karyawan Swasta, Mahasiswa, Buruh">
                     </div>
-                </div>
 
-                <div class="grid-2">
                     <div class="form-group">
                         <label>Status Perkawinan *</label>
                         <select name="status_kawin[]" required>
@@ -466,12 +481,12 @@
                             <option value="Famili Lain">Famili Lain / Lainnya</option>
                         </select>
                     </div>
-                </div>
 
-                <!-- Bagian Upload KTP Dinamis (Wajib/Tidak diatur lewat fungsi JS) -->
-                <div class="form-group label-ktp-box">
-                    <label class="label-ktp">Upload Foto KTP / KIA *</label>
-                    <input type="file" name="foto_ktp[]" accept="image/*" class="input-ktp">
+                    <!-- Tempat Upload KTP Dinamis (Akan dimunculkan penuh/span 2 kolom jika aktif) -->
+                    <div class="form-group form-group-full upload-ktp-box id-grup-upload hidden">
+                        <label class="label-ktp">Upload Foto KTP / KIA *</label>
+                        <input type="file" name="foto_ktp[]" accept="image/*" class="input-ktp">
+                    </div>
                 </div>
             </div>
         `;
@@ -487,62 +502,56 @@
         }
     }
 
-    // Mengatur hak & kewajiban isian berdasarkan status tempat tinggal saat ini
+    // Mengatur kemunculan box upload KTP secara total berdasarkan Status Hunian
     function perbaruiAturanInputJiwa() {
         const status = document.getElementById('statusHunian').value;
         const items = document.querySelectorAll('.warga-item');
 
-        items.forEach((item, index) => {
+        items.forEach((item) => {
             const selectHubungan = item.querySelector('.select-hubungan');
-            const labelKtp = item.querySelector('.label-ktp');
+            const wadahUpload = item.querySelector('.id-grup-upload');
             const inputKtp = item.querySelector('.input-ktp');
 
-            if (status === 'Mess') {
-                // Karyawan toko tinggal di mess otomatis terkunci ke opsi "Karyawan"
-                selectHubungan.value = 'Karyawan';
-                selectHubungan.disabled = true;
-                
-                // Wajib Upload KTP
-                labelKtp.innerText = "Upload Foto KTP (Wajib bagi Karyawan) *";
-                inputKtp.required = true;
-            } else if (status === 'Kos' || status === 'Sewa') {
+            // JIKA MILIK SENDIRI ATAU BLANK: Sembunyikan form upload KTP secara total
+            if (status === 'Milik Sendiri' || status === '') {
+                wadahUpload.classList.add('hidden');
+                inputKtp.required = false;
+                inputKtp.value = ""; // reset data file
+
                 if (selectHubungan.value === 'Karyawan') {
-                    selectHubungan.value = 'Kepala Keluarga'; // reset value jika berubah dari mess
+                    selectHubungan.value = 'Kepala Keluarga';
                 }
                 selectHubungan.disabled = false;
-
-                // Wajib upload KTP untuk SEMUA penghuni kontrak & kos (sendiri maupun sekeluarga)
-                labelKtp.innerText = "Upload Foto KTP / KIA (Wajib) *";
+            } 
+            // JIKA KONTRAK, KOS, ATAU MESS: Wajib memunculkan kolom upload KTP
+            else {
+                wadahUpload.classList.remove('hidden');
                 inputKtp.required = true;
-            } else {
-                // Status: Milik Sendiri (Warga Tetap)
-                selectHubungan.disabled = false;
-                
-                if (index === 0) {
-                    // Hanya baris pertama (Kepala Keluarga) yang wajib melampirkan identitas KK/KTP
-                    labelKtp.innerText = "Upload Foto Kartu Keluarga / KTP Kepala Keluarga *";
-                    inputKtp.required = true;
+
+                if (status === 'Mess') {
+                    selectHubungan.value = 'Karyawan';
+                    selectHubungan.disabled = true;
                 } else {
-                    // Anggota keluarga inti di bawahnya tidak wajib satu per satu
-                    labelKtp.innerText = "Upload Foto KTP (Opsional untuk Anggota Keluarga)";
-                    inputKtp.required = false;
+                    if (selectHubungan.value === 'Karyawan') {
+                        selectHubungan.value = 'Kepala Keluarga';
+                    }
+                    selectHubungan.disabled = false;
                 }
             }
         });
     }
 
-    // Logika saat tombol Kirim ditekan
     function handleSubmit(event) {
         event.preventDefault();
         
-        // Sebelum kirim, pastikan disabled select (pada mess) ikut terbaca nilainya
+        // Memastikan input disabled tetap ikut ter-submit datanya
         document.querySelectorAll('.select-hubungan').forEach(select => select.disabled = false);
         
-        alert("Data berhasil divalidasi oleh sistem, bro! Siap dikirim ke database.");
-        console.log("Form submitted!");
+        alert("Mantap, bro! Semua data berhasil divalidasi dan siap dikirim!");
+        console.log("Form successfully submitted!");
     }
 
-    // Jalankan satu form kosong saat pertama kali halaman dimuat
+    // Load data satu jiwa pertama secara otomatis saat load awal
     window.onload = function() {
         tambahWargaForm();
     };
