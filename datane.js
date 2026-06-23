@@ -32,7 +32,7 @@ function sinkronisasiKategoriWargaAll() {
         
         wrapperWaUtama.style.display = "flex";
         inputWaUtama.setAttribute("required", "required");
-        labelWaUtama.innerText = "No WhatsApp Pengisi";
+        labelWaUtama.innerText = "No. WhatsApp";
 
         infoNote.innerHTML = `<i class="fas fa-info-circle" style="color: var(--teal);"></i> <strong>Sensus Kos:</strong> Seluruh penghuni kos wajib melampirkan berkas KTP asli & mengisi tujuan menetap. Bebas uang jimpitan.`;
     } else if (statusRumah === "Mess / Asrama") {
@@ -64,7 +64,7 @@ function sinkronisasiKategoriWargaAll() {
         
         wrapperWaUtama.style.display = "flex";
         inputWaUtama.setAttribute("required", "required");
-        labelWaUtama.innerText = "No WhatsApp Pengisi";
+        labelWaUtama.innerText = "No. WhatsApp";
 
         infoNote.innerHTML = `<i class="fas fa-info-circle" style="color: var(--primary);"></i> <strong>Sensus Kontrak:</strong> Seluruh orang yang tinggal di rumah kontrakan wajib upload berkas KTP.`;
     } else {
@@ -81,7 +81,7 @@ function sinkronisasiKategoriWargaAll() {
         
         wrapperWaUtama.style.display = "flex";
         inputWaUtama.setAttribute("required", "required");
-        labelWaUtama.innerText = "No WhatsApp Kepala Keluarga";
+        labelWaUtama.innerText = "No. WhatsApp";
 
         infoNote.innerHTML = `<i class="fas fa-info-circle" style="color: var(--primary);"></i> <strong>Sensus Warga Tetap:</strong> Warga tetap murni pengisian data teks saja, tidak perlu mengunggah berkas KTP/KK.`;
     }
