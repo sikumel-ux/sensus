@@ -11,7 +11,7 @@
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=600;700;800&family=Roboto:wght=400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
     <link rel="stylesheet" href="datane.css">
 </head>
@@ -22,7 +22,7 @@
         <header class="app-header">
             <div class="header-logo"><i class="fas fa-users-viewfinder"></i></div>
             <h1>Sensus RT 04</h1>
-            <p>Formulir Pengumpulan Data Warga RT 04</p>
+            <p>Formulir Pengumpulan Data Warga Resmi</p>
         </header>
 
         <form id="mainSensusForm" onsubmit="prosesKolektifKirimData(event)">
@@ -48,11 +48,11 @@
 
                     <div class="form-row-2" id="rowAdministrasiKk">
                         <div class="form-group" id="wrapperKk">
-                            <label>No. Kartu Keluarga</label>
+                            <label>Nomor Kartu Keluarga</label>
                             <input type="text" id="no_kk" class="form-control" placeholder="16 Digit Anggota" inputmode="numeric" maxlength="16" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
                         </div>
                         <div class="form-group" id="wrapperJimpitan">
-                            <label>Model Jimpitan</label>
+                            <label>Pilihan Model Jimpitan</label>
                             <div class="select-wrapper">
                                 <select id="mode_jimpitan" class="form-control">
                                     <option value="Harian">Dibayarkan Harian</option>
@@ -74,26 +74,18 @@
                         <input type="text" id="nama_pemilik_kos" class="form-control" placeholder="Tulis nama pemilik kos">
                     </div>
 
-                    <div id="wrapperMessAsrama" style="display: none;">
-                        <div class="form-row-2">
-                            <div class="form-group">
-                                <label style="color: var(--primary);">Nama Toko Bekerja</label>
-                                <input type="text" id="nama_toko_mess" class="form-control" placeholder="Contoh: RinduMart">
-                            </div>
-                            <div class="form-group">
-                                <label style="color: var(--primary);">No. HP Pemilik Toko</label>
-                                <input type="text" id="hp_bos_mess" class="form-control" placeholder="0812345xxx" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
-                            </div>
-                        </div>
+                    <div class="form-group" id="wrapperMessAsrama" style="display: none;">
+                        <label style="color: var(--primary);">Nama Toko Bekerja</label>
+                        <input type="text" id="nama_toko_mess" class="form-control" placeholder="Contoh: Toko Berkah">
                     </div>
 
                     <div class="form-row-2">
                         <div class="form-group">
-                            <label>No. Rumah</label>
+                            <label>Nomor Rumah / Gedung</label>
                             <input type="text" id="no_rumah" class="form-control" placeholder="Contoh: No. 12" required>
                         </div>
                         <div class="form-group" id="wrapperWaUtama">
-                            <label id="labelWaUtama">No WhatsApp Anda</label>
+                            <label id="labelWaUtama">No WhatsApp Pengisi</label>
                             <input type="text" id="wa_utama" class="form-control" placeholder="Contoh: 0812345xxx" oninput="this.value = this.value.replace(/[^0-9]/g, '');" required>
                         </div>
                     </div>
