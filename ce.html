@@ -17,15 +17,17 @@
 
 <header class="hero">
 
-<div class="hero-content">
+    <div class="hero-content">
 
-<h1>🏘️ Pendataan Warga RT</h1>
+        <div class="hero-icon">🏘️</div>
 
-<p>
-Pendataan berdasarkan Kartu Keluarga
-</p>
+        <h1>Pendataan Warga RT</h1>
 
-</div>
+        <p>
+            Pendataan berdasarkan Kartu Keluarga
+        </p>
+
+    </div>
 
 </header>
 
@@ -33,123 +35,451 @@ Pendataan berdasarkan Kartu Keluarga
 
 <form id="wargaForm">
 
-<!-- DATA KK -->
+    <!-- DATA KK -->
 
-<section class="card">
+    <section class="card">
 
-<h2>📋 Data Kartu Keluarga</h2>
+        <h2>📋 Data Kartu Keluarga</h2>
 
-<div class="grid">
+        <div class="grid">
 
-<div class="field">
-<label>No KK</label>
-<input type="text">
-</div>
+            <div class="field">
+                <label>Nomor KK</label>
+                <input
+                    type="text"
+                    name="no_kk"
+                    maxlength="16"
+                    placeholder="Masukkan Nomor KK">
+            </div>
 
-<div class="field">
-<label>Kepala Keluarga</label>
-<input type="text">
-</div>
+            <div class="field">
+                <label>Nama Kepala Keluarga</label>
+                <input
+                    type="text"
+                    name="kepala_keluarga"
+                    placeholder="Nama Kepala Keluarga">
+            </div>
 
-<div class="field full">
-<label>Alamat</label>
-<textarea></textarea>
-</div>
+            <div class="field full">
+                <label>Alamat Lengkap</label>
+                <textarea
+                    name="alamat"
+                    placeholder="Alamat lengkap"></textarea>
+            </div>
 
-<div class="field">
-<label>RT</label>
-<input type="number">
-</div>
+        </div>
 
-<div class="field">
-<label>RW</label>
-<input type="number">
-</div>
+        <div class="grid-small">
 
-<div class="field">
-<label>No HP</label>
-<input type="tel">
-</div>
+            <div class="field">
+                <label>RT</label>
+                <input
+                    type="number"
+                    name="rt">
+            </div>
 
-</div>
+            <div class="field">
+                <label>RW</label>
+                <input
+                    type="number"
+                    name="rw">
+            </div>
 
-</section>
+            <div class="field">
+                <label>Kode Pos</label>
+                <input
+                    type="number"
+                    name="kode_pos">
+            </div>
 
-<!-- STATUS HUNIAN -->
+        </div>
 
-<section class="card">
+        <div class="grid">
 
-<h2>🏠 Status Hunian</h2>
+            <div class="field">
+                <label>No HP</label>
+                <input
+                    type="tel"
+                    name="hp">
+            </div>
 
-<div class="grid">
+            <div class="field">
+                <label>Status Warga</label>
 
-<div class="field">
-<label>Status</label>
+                <select name="status_warga">
 
-<select id="statusHunian">
+                    <option value="">
+                        Pilih Status
+                    </option>
 
-<option>Milik Sendiri</option>
-<option>Keluarga / Orang Tua</option>
-<option>Kontrak</option>
-<option>Kos</option>
-<option>Mess Toko / Perusahaan</option>
-<option>Tinggal Dengan Majikan</option>
-<option>Menumpang</option>
+                    <option>
+                        Tetap
+                    </option>
 
-</select>
+                    <option>
+                        Pendatang
+                    </option>
 
-</div>
+                </select>
 
-</div>
+            </div>
 
-<div id="detailHunian"></div>
+        </div>
 
-</section>
+    </section>
 
-<!-- ANGGOTA -->
+    <!-- STATUS HUNIAN -->
 
-<section class="card">
+    <section class="card">
 
-<div class="title-row">
+        <h2>🏠 Status Hunian</h2>
 
-<h2>👨‍👩‍👧‍👦 Anggota Keluarga</h2>
+        <div class="grid">
 
-<button
-type="button"
-class="add-btn"
-id="addMember">
+            <div class="field">
 
-+ Tambah
+                <label>Status Hunian</label>
 
-</button>
+                <select id="statusHunian">
 
-</div>
+                    <option value="">
+                        Pilih Status
+                    </option>
 
-<div id="members"></div>
+                    <option>
+                        Milik Sendiri
+                    </option>
 
-</section>
+                    <option>
+                        Keluarga / Orang Tua
+                    </option>
 
-<!-- KETERANGAN -->
+                    <option>
+                        Kontrak
+                    </option>
 
-<section class="card">
+                    <option>
+                        Kos
+                    </option>
 
-<h2>📝 Keterangan</h2>
+                    <option>
+                        Mess Toko / Perusahaan
+                    </option>
 
-<textarea></textarea>
+                    <option>
+                        Tinggal Dengan Majikan
+                    </option>
 
-</section>
+                    <option>
+                        Menumpang
+                    </option>
 
-<button
-type="submit"
-class="save-btn">
+                </select>
 
-💾 Simpan Data
+            </div>
 
-</button>
+            <div class="field">
+
+                <label>Tanggal Mulai Tinggal</label>
+
+                <input type="date">
+
+            </div>
+
+        </div>
+
+        <div id="detailHunian"></div>
+
+    </section>
+
+    <!-- DATA ANGGOTA -->
+
+    <section class="card">
+
+        <div class="section-header">
+
+            <h2>👨‍👩‍👧‍👦 Anggota Keluarga</h2>
+
+            <button
+                type="button"
+                id="addMember"
+                class="btn-add">
+
+                + Tambah
+
+            </button>
+
+        </div>
+
+        <div id="members"></div>
+
+    </section>
+
+    <!-- DOKUMEN -->
+
+    <section class="card">
+
+        <h2>📷 Dokumen</h2>
+
+        <div class="grid">
+
+            <div class="field">
+
+                <label>Foto Kartu Keluarga</label>
+
+                <input
+                    type="file"
+                    accept="image/*">
+
+            </div>
+
+            <div class="field">
+
+                <label>Foto KTP Kepala Keluarga</label>
+
+                <input
+                    type="file"
+                    accept="image/*">
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- KONTAK DARURAT -->
+
+    <section class="card">
+
+        <h2>📞 Kontak Darurat</h2>
+
+        <div class="grid">
+
+            <div class="field">
+
+                <label>Nama Kontak</label>
+
+                <input
+                    type="text">
+
+            </div>
+
+            <div class="field">
+
+                <label>No HP Kontak</label>
+
+                <input
+                    type="tel">
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- KETERANGAN -->
+
+    <section class="card">
+
+        <h2>📝 Keterangan</h2>
+
+        <textarea
+            placeholder="Tambahkan keterangan bila diperlukan"></textarea>
+
+    </section>
+
+    <!-- TOMBOL -->
+
+    <section class="action-area">
+
+        <button
+            type="submit"
+            class="btn-save">
+
+            💾 Simpan Data
+
+        </button>
+
+    </section>
 
 </form>
 
 </main>
+
+<!-- TEMPLATE ANGGOTA -->
+
+<template id="memberTemplate">
+
+<div class="member-card">
+
+    <div class="member-top">
+
+        <h3>
+            👤 Anggota Keluarga
+        </h3>
+
+        <button
+            type="button"
+            class="btn-delete">
+
+            Hapus
+
+        </button>
+
+    </div>
+
+    <div class="grid">
+
+        <div class="field">
+
+            <label>Nama Lengkap</label>
+
+            <input
+                type="text"
+                placeholder="Nama lengkap">
+
+        </div>
+
+        <div class="field">
+
+            <label>NIK</label>
+
+            <input
+                type="text"
+                maxlength="16"
+                placeholder="16 digit NIK">
+
+        </div>
+
+        <div class="field">
+
+            <label>Hubungan Dalam Keluarga</label>
+
+            <select>
+
+                <option>
+                    Kepala Keluarga
+                </option>
+
+                <option>
+                    Istri
+                </option>
+
+                <option>
+                    Anak
+                </option>
+
+                <option>
+                    Orang Tua
+                </option>
+
+                <option>
+                    Menantu
+                </option>
+
+                <option>
+                    Cucu
+                </option>
+
+                <option>
+                    Famili Lain
+                </option>
+
+            </select>
+
+        </div>
+
+        <div class="field">
+
+            <label>Jenis Kelamin</label>
+
+            <select>
+
+                <option>
+                    Laki-Laki
+                </option>
+
+                <option>
+                    Perempuan
+                </option>
+
+            </select>
+
+        </div>
+
+        <div class="field">
+
+            <label>Tempat Lahir</label>
+
+            <input
+                type="text">
+
+        </div>
+
+        <div class="field">
+
+            <label>Tanggal Lahir</label>
+
+            <input
+                type="date">
+
+        </div>
+
+        <div class="field">
+
+            <label>Agama</label>
+
+            <select>
+
+                <option>Islam</option>
+                <option>Kristen</option>
+                <option>Katolik</option>
+                <option>Hindu</option>
+                <option>Buddha</option>
+                <option>Konghucu</option>
+
+            </select>
+
+        </div>
+
+        <div class="field">
+
+            <label>Pekerjaan</label>
+
+            <input
+                type="text">
+
+        </div>
+
+        <div class="field">
+
+            <label>Status Perkawinan</label>
+
+            <select>
+
+                <option>Belum Kawin</option>
+                <option>Kawin</option>
+                <option>Cerai Hidup</option>
+                <option>Cerai Mati</option>
+
+            </select>
+
+        </div>
+
+        <div class="field">
+
+            <label>No HP</label>
+
+            <input
+                type="tel">
+
+        </div>
+
+    </div>
+
+</div>
+
+</template>
 
 <script src="ce.js"></script>
 
