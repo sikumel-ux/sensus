@@ -1,154 +1,474 @@
-const members =
-document.getElementById(
-"members"
-);
+/* ==========================
+   APP.JS
+========================== */
 
-const addMember =
-document.getElementById(
-"addMember"
-);
+const form = document.getElementById("wargaForm");
 
-let count = 0;
+const membersContainer =
+document.getElementById("members");
 
-function createMember(){
+const memberTemplate =
+document.getElementById("memberTemplate");
 
-count++;
+const addMemberBtn =
+document.getElementById("addMember");
 
-const div =
-document.createElement("div");
+const statusHunian =
+document.getElementById("statusHunian");
 
-div.className =
-"member";
+const detailHunian =
+document.getElementById("detailHunian");
 
-div.innerHTML = `
+const STORAGE_KEY =
+"pendataan_warga_draft";
 
-<h3>
-👤 Anggota #${count}
-</h3>
+/* ==========================
+   TAMBAH ANGGOTA
+========================== */
 
-<div class="grid">
+function addMember(data = {}) {
 
-<div class="field">
-<label>Nama</label>
-<input type="text">
-</div>
+    const clone =
+    memberTemplate.content
+    .cloneNode(true);
 
-<div class="field">
-<label>NIK</label>
-<input type="text">
-</div>
+    const card =
+    clone.querySelector(
+        ".member-card"
+    );
 
-<div class="field">
-<label>Hubungan</label>
+    const inputs =
+    card.querySelectorAll(
+        "input,select"
+    );
 
-<select>
-<option>Kepala Keluarga</option>
-<option>Istri</option>
-<option>Anak</option>
-<option>Orang Tua</option>
-<option>Menantu</option>
-<option>Cucu</option>
-</select>
+    let i = 0;
 
-</div>
+    inputs.forEach(input => {
 
-<div class="field">
-<label>Pekerjaan</label>
-<input type="text">
-</div>
+        if(data.values){
 
-</div>
+            input.value =
+            data.values[i] || "";
 
-`;
+        }
 
-members.appendChild(div);
+        i++;
+
+    });
+
+    const deleteBtn =
+    card.querySelector(
+        ".btn-delete"
+    );
+
+    deleteBtn.addEventListener(
+        "click",
+        () => {
+
+            card.remove();
+
+            saveDraft();
+
+        }
+    );
+
+    inputs.forEach(el => {
+
+        el.addEventListener(
+            "input",
+            saveDraft
+        );
+
+        el.addEventListener(
+            "change",
+            saveDraft
+        );
+
+    });
+
+    membersContainer.appendChild(
+        card
+    );
+
+    saveDraft();
 
 }
 
-addMember.addEventListener(
-"click",
-createMember
+addMemberBtn.addEventListener(
+    "click",
+    () => addMember()
 );
 
-createMember();
+/* ==========================
+   DETAIL HUNIAN
+========================== */
 
-const status =
-document.getElementById(
-"statusHunian"
+function renderDetailHunian() {
+
+    const value =
+    statusHunian.value;
+
+    let html = "";
+
+    if(
+        value ===
+        "Mess Toko / Perusahaan"
+    ){
+
+        html = `
+
+        <div class="card">
+
+            <h3>
+            🏢 Data Mess
+            </h3>
+
+            <div class="grid">
+
+                <div class="field">
+
+                    <label>
+                    Nama Toko
+                    </label>
+
+                    <input
+                    type="text"
+                    name="nama_toko">
+
+                </div>
+
+                <div class="field">
+
+                    <label>
+                    Penanggung Jawab
+                    </label>
+
+                    <input
+                    type="text"
+                    name="penanggung_jawab">
+
+                </div>
+
+                <div class="field">
+
+                    <label>
+                    No HP PJ
+                    </label>
+
+                    <input
+                    type="tel"
+                    name="hp_pj">
+
+                </div>
+
+            </div>
+
+        </div>
+
+        `;
+
+    }
+
+    if(
+        value ===
+        "Tinggal Dengan Majikan"
+    ){
+
+        html = `
+
+        <div class="card">
+
+            <h3>
+            👔 Data Majikan
+            </h3>
+
+            <div class="grid">
+
+                <div class="field">
+
+                    <label>
+                    Jenis Pekerjaan
+                    </label>
+
+                    <select
+                    name="jenis_pekerjaan">
+
+                        <option>
+                        ART
+                        </option>
+
+                        <option>
+                        Sopir
+                        </option>
+
+                        <option>
+                        Satpam
+                        </option>
+
+                        <option>
+                        Babysitter
+                        </option>
+
+                        <option>
+                        Penjaga Rumah
+                        </option>
+
+                        <option>
+                        Lainnya
+                        </option>
+
+                    </select>
+
+                </div>
+
+                <div class="field">
+
+                    <label>
+                    Nama Majikan
+                    </label>
+
+                    <input
+                    type="text"
+                    name="majikan">
+
+                </div>
+
+                <div class="field">
+
+                    <label>
+                    No HP Majikan
+                    </label>
+
+                    <input
+                    type="tel"
+                    name="hp_majikan">
+
+                </div>
+
+            </div>
+
+        </div>
+
+        `;
+
+    }
+
+    detailHunian.innerHTML =
+    html;
+
+    saveDraft();
+
+}
+
+statusHunian.addEventListener(
+    "change",
+    renderDetailHunian
 );
 
-const detail =
-document.getElementById(
-"detailHunian"
+/* ==========================
+   SIMPAN DRAFT
+========================== */
+
+function saveDraft(){
+
+    const data = {};
+
+    const formFields =
+    document.querySelectorAll(
+        "input, textarea, select"
+    );
+
+    formFields.forEach(
+        (field,index)=>{
+
+            data[
+                "field_" + index
+            ] = field.value;
+
+        }
+    );
+
+    localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify(data)
+    );
+
+}
+
+/* ==========================
+   LOAD DRAFT
+========================== */
+
+function loadDraft(){
+
+    const saved =
+    localStorage.getItem(
+        STORAGE_KEY
+    );
+
+    if(!saved) return;
+
+    const data =
+    JSON.parse(saved);
+
+    const fields =
+    document.querySelectorAll(
+        "input, textarea, select"
+    );
+
+    fields.forEach(
+        (field,index)=>{
+
+            const key =
+            "field_" + index;
+
+            if(data[key]){
+
+                field.value =
+                data[key];
+
+            }
+
+        }
+    );
+
+}
+
+/* ==========================
+   SIMPAN OTOMATIS
+========================== */
+
+document.addEventListener(
+    "input",
+    saveDraft
 );
 
-status.addEventListener(
-"change",
-function(){
+document.addEventListener(
+    "change",
+    saveDraft
+);
 
-let html = "";
+/* ==========================
+   SUBMIT FORM
+========================== */
+
+form.addEventListener(
+    "submit",
+    function(e){
+
+        e.preventDefault();
+
+        const result = {};
+
+        const fields =
+        document.querySelectorAll(
+            "input, textarea, select"
+        );
+
+        fields.forEach(
+            field => {
+
+                const key =
+                field.name ||
+                field.placeholder ||
+                field.type;
+
+                result[key] =
+                field.value;
+
+            }
+        );
+
+        console.log(result);
+
+        alert(
+            "Data berhasil disimpan."
+        );
+
+        saveDraft();
+
+    }
+);
+
+/* ==========================
+   CEK NIK
+========================== */
+
+document.addEventListener(
+    "input",
+    function(e){
+
+        const el =
+        e.target;
+
+        if(
+            el.placeholder ===
+            "16 digit NIK"
+        ){
+
+            el.value =
+            el.value.replace(
+                /[^0-9]/g,
+                ""
+            );
+
+        }
+
+    }
+);
+
+/* ==========================
+   INISIALISASI
+========================== */
+
+window.addEventListener(
+    "load",
+    () => {
+
+        addMember();
+
+        loadDraft();
+
+        renderDetailHunian();
+
+    }
+);
+
+/* ==========================
+   SERVICE WORKER
+========================== */
 
 if(
-this.value ===
-"Mess Toko / Perusahaan"
+    "serviceWorker"
+    in navigator
 ){
 
-html = `
+    window.addEventListener(
+        "load",
+        () => {
 
-<div class="grid">
+            navigator
+            .serviceWorker
+            .register(
+                "sw.js"
+            )
+            .then(() => {
 
-<div class="field">
-<label>Nama Toko</label>
-<input type="text">
-</div>
+                console.log(
+                "SW Registered"
+                );
 
-<div class="field">
-<label>Penanggung Jawab</label>
-<input type="text">
-</div>
+            })
+            .catch(err => {
 
-</div>
+                console.error(
+                err
+                );
 
-`;
+            });
 
-}
-
-if(
-this.value ===
-"Tinggal Dengan Majikan"
-){
-
-html = `
-
-<div class="grid">
-
-<div class="field">
-<label>Jenis</label>
-
-<select>
-
-<option>ART</option>
-<option>Sopir</option>
-<option>Satpam</option>
-<option>Babysitter</option>
-<option>Lainnya</option>
-
-</select>
-
-</div>
-
-<div class="field">
-<label>Nama Majikan</label>
-<input type="text">
-</div>
-
-</div>
-
-`;
+        }
+    );
 
 }
-
-detail.innerHTML = html;
-
-}
-);
