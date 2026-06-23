@@ -8,7 +8,6 @@ function sinkronisasiKategoriWargaAll() {
     const inputPemilik = document.getElementById("nama_pemilik_kos");
     const wrapperMess = document.getElementById("wrapperMessAsrama");
     const inputTokoMess = document.getElementById("nama_toko_mess");
-    const inputBosMess = document.getElementById("hp_bos_mess");
     const rowAdminKk = document.getElementById("rowAdministrasiKk");
     const wrapperKk = document.getElementById("wrapperKk");
     const wrapperJimpitan = document.getElementById("wrapperJimpitan");
@@ -17,46 +16,34 @@ function sinkronisasiKategoriWargaAll() {
     const wrapperKpHed = document.getElementById("wrapperKepalaKeluargaUtama");
     const inputKpHedNama = document.getElementById("nama_kepala_tetap");
     
-    const inputWaUtama = document.getElementById("wa_utama");
     const labelWaUtama = document.getElementById("labelWaUtama");
 
     if (statusRumah === "Kos") {
         rowAdminKk.style.display = "none";
-        inputKk.removeAttribute("required");
-        inputKk.value = "";
+        inputKk.removeAttribute("required"); inputKk.value = "";
         wrapperKos.style.display = "block";
         inputPemilik.setAttribute("required", "required");
         wrapperMess.style.display = "none";
-        inputTokoMess.removeAttribute("required"); inputBosMess.removeAttribute("required");
-        inputTokoMess.value = ""; inputBosMess.value = "";
+        inputTokoMess.removeAttribute("required"); inputTokoMess.value = "";
         wrapperKpHed.style.display = "none";
         inputKpHedNama.removeAttribute("required"); inputKpHedNama.value = "";
         
-        // Kembalikan ke pengaturan wajib WhatsApp default
-        inputWaUtama.setAttribute("required", "required");
-        labelWaUtama.innerText = "No WhatsApp Anda";
-        labelWaUtama.style.color = "";
+        labelWaUtama.innerText = "No WhatsApp Pengisi";
 
         infoNote.innerHTML = `<i class="fas fa-info-circle" style="color: var(--teal);"></i> <strong>Sensus Kos:</strong> Seluruh penghuni kos wajib melampirkan berkas KTP asli & mengisi tujuan menetap. Bebas uang jimpitan.`;
     } else if (statusRumah === "Mess / Asrama") {
         rowAdminKk.style.display = "none";
-        inputKk.removeAttribute("required");
-        inputKk.value = "";
+        inputKk.removeAttribute("required"); inputKk.value = "";
         wrapperKos.style.display = "none";
         inputPemilik.removeAttribute("required"); inputPemilik.value = "";
         wrapperMess.style.display = "block";
         inputTokoMess.setAttribute("required", "required");
-        inputBosMess.setAttribute("required", "required");
         wrapperKpHed.style.display = "none";
         inputKpHedNama.removeAttribute("required"); inputKpHedNama.value = "";
         
-        // Kondisi KHUSUS Mess: Tidak wajib minta WhatsApp pengisi, pakai nomor bos di atas saja
-        inputWaUtama.removeAttribute("required");
-        inputWaUtama.value = "";
-        labelWaUtama.innerText = "No WhatsApp Anda (Opsional)";
-        labelWaUtama.style.color = varProp('--text-muted');
+        labelWaUtama.innerText = "No WhatsApp Pengisi";
 
-        infoNote.innerHTML = `<i class="fas fa-info-circle" style="color: var(--primary);"></i> <strong>Sensus Mess/Asrama:</strong> Seluruh pekerja toko wajib mengunggah foto KTP asli. Cukup mencantumkan nomor kontak pemilik toko.`;
+        infoNote.innerHTML = `<i class="fas fa-info-circle" style="color: var(--primary);"></i> <strong>Sensus Mess/Asrama:</strong> Seluruh pekerja toko wajib mengunggah foto KTP asli. Cukup gunakan satu nomor WA perwakilan untuk mengirim berkas kelompok.`;
     } else if (statusRumah === "Sewa / Kontrak") {
         rowAdminKk.style.display = "grid";
         wrapperKk.style.display = "flex";
@@ -65,14 +52,11 @@ function sinkronisasiKategoriWargaAll() {
         wrapperKos.style.display = "none";
         inputPemilik.removeAttribute("required"); inputPemilik.value = "";
         wrapperMess.style.display = "none";
-        inputTokoMess.removeAttribute("required"); inputBosMess.removeAttribute("required");
-        inputTokoMess.value = ""; inputBosMess.value = "";
+        inputTokoMess.removeAttribute("required"); inputTokoMess.value = "";
         wrapperKpHed.style.display = "block";
         inputKpHedNama.setAttribute("required", "required");
         
-        inputWaUtama.setAttribute("required", "required");
-        labelWaUtama.innerText = "No WhatsApp Anda";
-        labelWaUtama.style.color = "";
+        labelWaUtama.innerText = "No WhatsApp Pengisi";
 
         infoNote.innerHTML = `<i class="fas fa-info-circle" style="color: var(--primary);"></i> <strong>Sensus Kontrak:</strong> Seluruh orang yang tinggal di rumah kontrakan wajib upload berkas KTP.`;
     } else {
@@ -83,14 +67,11 @@ function sinkronisasiKategoriWargaAll() {
         wrapperKos.style.display = "none";
         inputPemilik.removeAttribute("required"); inputPemilik.value = "";
         wrapperMess.style.display = "none";
-        inputTokoMess.removeAttribute("required"); inputBosMess.removeAttribute("required");
-        inputTokoMess.value = ""; inputBosMess.value = "";
+        inputTokoMess.removeAttribute("required"); inputTokoMess.value = "";
         wrapperKpHed.style.display = "block";
         inputKpHedNama.setAttribute("required", "required");
         
-        inputWaUtama.setAttribute("required", "required");
-        labelWaUtama.innerText = "No WhatsApp Anda";
-        labelWaUtama.style.color = "";
+        labelWaUtama.innerText = "No WhatsApp Kepala Keluarga";
 
         infoNote.innerHTML = `<i class="fas fa-info-circle" style="color: var(--primary);"></i> <strong>Sensus Warga Tetap:</strong> Warga tetap murni pengisian data teks saja, tidak perlu mengunggah berkas KTP/KK.`;
     }
@@ -105,10 +86,6 @@ function sinkronisasiKategoriWargaAll() {
     });
 
     renumberAndRefreshDropdowns();
-}
-
-function varProp(name) {
-    return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
 }
 
 function renumberAndRefreshDropdowns() {
@@ -150,7 +127,6 @@ function updateDropdownOpsiHubungan(selectElement, isFirstRow, statusRumah) {
                 <option value="Penghuni / Lainnya">Penghuni / Lainnya</option>
             `;
         } else {
-            // "ART/Sopir" sudah dibuang total di sini sesuai instruksi
             selectElement.innerHTML = `
                 <option value="Istri">Istri</option>
                 <option value="Anak">Anak</option>
@@ -225,8 +201,7 @@ function tambahWargaRow() {
             </div>
 
             <div class="form-row-2">
-                <div class="form-group">
-                    <label>Status Alamat KTP</label>
+                <div class="form-group"><label>Status Alamat KTP</label>
                     <div class="select-wrapper">
                         <select class="form-control input-status-ktp">
                             <option value="RT 04">Warga RT 04</option>
@@ -234,8 +209,7 @@ function tambahWargaRow() {
                         </select>
                     </div>
                 </div>
-                <div class="form-group">
-                    <label>Domisili Sekarang</label>
+                <div class="form-group"><label>Domisili Tinggal Sekarang</label>
                     <div class="select-wrapper">
                         <select class="form-control input-domisili">
                             <option value="RT 04">Menetap di RT 04</option>
@@ -329,7 +303,6 @@ function hapusWargaRow(id) {
     if (row) { row.remove(); renumberAndRefreshDropdowns(); } 
 }
 
-
 function prosesKonversiFileToBase64(input, id) {
     const zone = document.getElementById(`fileZone_${id}`);
     const lbl = document.getElementById(`fileNameLabel_${id}`);
@@ -371,7 +344,6 @@ function evaluasiKewajibanKtpRow(select, id) {
         inputDetailKos.value = "";
     }
 
-    // Jika memilih opsi "Penghuni / Lainnya", tampilkan kolom isi teks mandiri
     if (hubungan === "Penghuni / Lainnya") {
         customWrapper.style.display = "block";
         customInput.setAttribute("required", "required");
@@ -382,8 +354,7 @@ function evaluasiKewajibanKtpRow(select, id) {
 
     if(statusRumah === "Milik Sendiri") {
         wrapper.style.display = "none";
-        inputNode.removeAttribute("required");
-        inputNode.value = "";
+        inputNode.removeAttribute("required"); inputNode.value = "";
         document.getElementById(`hiddenBase64_${id}`).value = "";
     } else if(statusRumah === "Kos" || statusRumah === "Sewa / Kontrak" || statusRumah === "Mess / Asrama") {
         wrapper.style.display = "block"; 
@@ -497,15 +468,14 @@ function prosesKolektifKirimData(e) {
 
         const kodeRegistrasi = generateRandomCode();
         const modeJimpitanValue = (statusRumahValue === "Kos" || statusRumahValue === "Mess / Asrama") ? "Bebas Jimpitan" : document.getElementById("mode_jimpitan").value;
-        const waUtamaValue = (statusRumahValue === "Mess / Asrama") ? document.getElementById("hp_bos_mess").value : document.getElementById("wa_utama").value;
 
         const payloadSensus = {
             kode: kodeRegistrasi, noKk: (statusRumahValue === "Kos" || statusRumahValue === "Mess / Asrama") ? "-" : noKkField,
             modeJimpitan: modeJimpitanValue, statusRumah: statusRumahValue, noRumah: document.getElementById("no_rumah").value,
             namaPemilikKos: (statusRumahValue === "Kos") ? document.getElementById("nama_pemilik_kos").value : "-",
             namaTokoMess: (statusRumahValue === "Mess / Asrama") ? document.getElementById("nama_toko_mess").value : "-",
-            hpBosMess: (statusRumahValue === "Mess / Asrama") ? document.getElementById("hp_bos_mess").value : "-",
-            waUtama: waUtamaValue, alamat: document.getElementById("alamat_rumah").value, anggota: payloadAnggota
+            hpBosMess: "-", // Di-set default strip karena input di-remove
+            waUtama: document.getElementById("wa_utama").value, alamat: document.getElementById("alamat_rumah").value, anggota: payloadAnggota
         };
 
         btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Menyimpan...`;
