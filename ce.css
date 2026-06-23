@@ -1,121 +1,225 @@
+/* =================================
+   RESET
+================================= */
+
 :root{
 
---orange:#ff7a00;
---orange2:#ff9f43;
+    --orange:#ff7a00;
+    --orange-dark:#ea580c;
 
---teal:#14b8a6;
---teal2:#0f766e;
+    --teal:#14b8a6;
+    --teal-dark:#0f766e;
 
---bg:#eefaf8;
+    --bg:#eefaf8;
+    --white:#ffffff;
+
+    --text:#1f2937;
+    --text-light:#6b7280;
+
+    --border:#e5e7eb;
+
+    --radius:18px;
 
 }
 
 *{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:"Segoe UI",sans-serif;
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+html{
+    scroll-behavior:smooth;
 }
 
 body{
 
-background:var(--bg);
+    font-family:
+    "Segoe UI",
+    sans-serif;
 
-min-height:100vh;
+    background:var(--bg);
+
+    color:var(--text);
+
+    min-height:100vh;
+
+    overflow-x:hidden;
 
 }
 
+/* =================================
+   HERO
+================================= */
+
 .hero{
 
-background:
-linear-gradient(
-135deg,
-var(--orange),
-var(--teal)
-);
+    background:
+    linear-gradient(
+        135deg,
+        var(--orange),
+        var(--teal)
+    );
 
-padding:40px 20px;
+    color:white;
 
-color:white;
+    padding:
+    40px 20px
+    70px;
 
-border-radius:
-0 0 30px 30px;
+    border-radius:
+    0 0 30px 30px;
+
+    box-shadow:
+    0 10px 25px
+    rgba(0,0,0,.15);
 
 }
 
 .hero-content{
-max-width:900px;
-margin:auto;
+
+    max-width:1100px;
+
+    margin:auto;
+
+    text-align:center;
+
+}
+
+.hero-icon{
+
+    font-size:55px;
+
+    margin-bottom:10px;
+
 }
 
 .hero h1{
 
-font-size:30px;
-margin-bottom:10px;
+    font-size:32px;
+
+    margin-bottom:10px;
 
 }
+
+.hero p{
+
+    opacity:.9;
+
+}
+
+/* =================================
+   CONTAINER
+================================= */
 
 .container{
 
-max-width:1000px;
-margin:auto;
+    max-width:1100px;
 
-padding:20px;
+    margin:
+    -35px auto 30px;
+
+    padding:15px;
 
 }
 
+/* =================================
+   CARD
+================================= */
+
 .card{
 
-background:white;
+    background:white;
 
-border-radius:24px;
+    border-radius:24px;
 
-padding:20px;
+    padding:20px;
 
-margin-bottom:20px;
+    margin-bottom:20px;
 
-box-shadow:
-0 10px 25px
-rgba(0,0,0,.08);
+    box-shadow:
+    0 10px 30px
+    rgba(0,0,0,.08);
 
 }
 
 .card h2{
 
-margin-bottom:20px;
+    color:var(--teal-dark);
 
-color:var(--teal2);
+    margin-bottom:20px;
+
+    font-size:20px;
 
 }
 
+/* =================================
+   GRID
+================================= */
+
 .grid{
 
-display:grid;
+    display:grid;
 
-grid-template-columns:
-repeat(2,1fr);
+    gap:12px;
 
-gap:15px;
+    grid-template-columns:
+    repeat(
+        auto-fit,
+        minmax(
+            160px,
+            1fr
+        )
+    );
+
+}
+
+.grid-small{
+
+    display:grid;
+
+    gap:12px;
+
+    margin-top:12px;
+
+    margin-bottom:12px;
+
+    grid-template-columns:
+    repeat(
+        auto-fit,
+        minmax(
+            100px,
+            1fr
+        )
+    );
 
 }
 
 .field{
 
-display:flex;
-flex-direction:column;
+    display:flex;
 
-}
-
-.field label{
-
-margin-bottom:6px;
-font-weight:600;
+    flex-direction:column;
 
 }
 
 .field.full{
 
-grid-column:1/-1;
+    grid-column:1/-1;
+
+}
+
+/* =================================
+   FORM
+================================= */
+
+label{
+
+    font-weight:600;
+
+    margin-bottom:6px;
+
+    font-size:14px;
 
 }
 
@@ -123,15 +227,20 @@ input,
 select,
 textarea{
 
-width:100%;
+    width:100%;
 
-padding:14px;
+    border:2px solid
+    var(--border);
 
-border-radius:14px;
+    border-radius:14px;
 
-border:2px solid #e5e7eb;
+    padding:14px;
 
-outline:none;
+    font-size:15px;
+
+    background:white;
+
+    transition:.25s;
 
 }
 
@@ -139,97 +248,305 @@ input:focus,
 select:focus,
 textarea:focus{
 
-border-color:
-var(--teal);
+    outline:none;
+
+    border-color:
+    var(--teal);
+
+    box-shadow:
+    0 0 0 4px
+    rgba(
+        20,
+        184,
+        166,
+        .15
+    );
 
 }
 
 textarea{
 
-resize:vertical;
+    min-height:120px;
 
-min-height:100px;
-
-}
-
-.title-row{
-
-display:flex;
-
-justify-content:
-space-between;
-
-align-items:center;
-
-margin-bottom:20px;
+    resize:vertical;
 
 }
 
-.add-btn{
+/* =================================
+   SECTION HEADER
+================================= */
 
-background:
-var(--teal);
+.section-header{
 
-color:white;
+    display:flex;
 
-border:none;
+    justify-content:
+    space-between;
 
-padding:10px 15px;
+    align-items:center;
 
-border-radius:12px;
+    gap:10px;
 
-cursor:pointer;
+    margin-bottom:20px;
 
-}
-
-.member{
-
-background:#f8fafc;
-
-border-radius:18px;
-
-padding:15px;
-
-margin-bottom:15px;
-
-border-left:
-6px solid var(--orange);
+    flex-wrap:wrap;
 
 }
 
-.save-btn{
+/* =================================
+   BUTTON TAMBAH
+================================= */
 
-width:100%;
+.btn-add{
 
-background:
-linear-gradient(
-135deg,
-var(--orange),
-var(--teal)
-);
+    border:none;
 
-border:none;
+    background:
+    linear-gradient(
+        135deg,
+        var(--teal),
+        var(--teal-dark)
+    );
 
-padding:18px;
+    color:white;
 
-border-radius:16px;
+    padding:
+    10px 18px;
 
-font-size:18px;
+    border-radius:12px;
 
-font-weight:bold;
+    cursor:pointer;
 
-color:white;
-
-cursor:pointer;
+    font-weight:600;
 
 }
+
+.btn-add:hover{
+
+    transform:
+    translateY(-2px);
+
+}
+
+/* =================================
+   MEMBER CARD
+================================= */
+
+.member-card{
+
+    background:#f8fafc;
+
+    border-left:
+    6px solid
+    var(--orange);
+
+    border-radius:18px;
+
+    padding:16px;
+
+    margin-bottom:15px;
+
+}
+
+.member-top{
+
+    display:flex;
+
+    justify-content:
+    space-between;
+
+    align-items:center;
+
+    gap:10px;
+
+    margin-bottom:15px;
+
+}
+
+.member-top h3{
+
+    color:
+    var(--orange-dark);
+
+}
+
+.btn-delete{
+
+    border:none;
+
+    background:#ef4444;
+
+    color:white;
+
+    padding:
+    8px 12px;
+
+    border-radius:10px;
+
+    cursor:pointer;
+
+}
+
+/* =================================
+   SAVE BUTTON
+================================= */
+
+.action-area{
+
+    margin-top:20px;
+
+}
+
+.btn-save{
+
+    width:100%;
+
+    border:none;
+
+    padding:18px;
+
+    border-radius:18px;
+
+    font-size:17px;
+
+    font-weight:bold;
+
+    color:white;
+
+    cursor:pointer;
+
+    background:
+    linear-gradient(
+        135deg,
+        var(--orange),
+        var(--teal)
+    );
+
+    box-shadow:
+    0 10px 20px
+    rgba(
+        20,
+        184,
+        166,
+        .25
+    );
+
+}
+
+.btn-save:hover{
+
+    transform:
+    translateY(-2px);
+
+}
+
+/* =================================
+   DETAIL HUNIAN
+================================= */
+
+#detailHunian{
+
+    margin-top:15px;
+
+}
+
+/* =================================
+   FILE INPUT
+================================= */
+
+input[type="file"]{
+
+    padding:10px;
+
+}
+
+/* =================================
+   MOBILE
+================================= */
 
 @media(max-width:768px){
 
-.grid{
+    .hero{
 
-grid-template-columns:1fr;
+        padding:
+        30px 15px
+        60px;
+
+    }
+
+    .hero h1{
+
+        font-size:24px;
+
+    }
+
+    .card{
+
+        padding:16px;
+
+    }
 
 }
+
+@media(max-width:430px){
+
+    .grid{
+
+        grid-template-columns:
+        repeat(
+            auto-fit,
+            minmax(
+                140px,
+                1fr
+            )
+        );
+
+    }
+
+    .grid-small{
+
+        grid-template-columns:
+        repeat(
+            auto-fit,
+            minmax(
+                80px,
+                1fr
+            )
+        );
+
+    }
+
+    input,
+    select,
+    textarea{
+
+        padding:12px;
+
+        font-size:14px;
+
+    }
+
+}
+
+@media(max-width:360px){
+
+    .hero h1{
+
+        font-size:22px;
+
+    }
+
+    .grid{
+
+        grid-template-columns:
+        repeat(
+            auto-fit,
+            minmax(
+                120px,
+                1fr
+            )
+        );
+
+    }
 
 }
