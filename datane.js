@@ -16,6 +16,8 @@ function sinkronisasiKategoriWargaAll() {
     const wrapperKpHed = document.getElementById("wrapperKepalaKeluargaUtama");
     const inputKpHedNama = document.getElementById("nama_kepala_tetap");
     
+    const wrapperWaUtama = document.getElementById("wrapperWaUtama");
+    const inputWaUtama = document.getElementById("wa_utama");
     const labelWaUtama = document.getElementById("labelWaUtama");
 
     if (statusRumah === "Kos") {
@@ -28,6 +30,8 @@ function sinkronisasiKategoriWargaAll() {
         wrapperKpHed.style.display = "none";
         inputKpHedNama.removeAttribute("required"); inputKpHedNama.value = "";
         
+        wrapperWaUtama.style.display = "flex";
+        inputWaUtama.setAttribute("required", "required");
         labelWaUtama.innerText = "No WhatsApp Pengisi";
 
         infoNote.innerHTML = `<i class="fas fa-info-circle" style="color: var(--teal);"></i> <strong>Sensus Kos:</strong> Seluruh penghuni kos wajib melampirkan berkas KTP asli & mengisi tujuan menetap. Bebas uang jimpitan.`;
@@ -41,9 +45,11 @@ function sinkronisasiKategoriWargaAll() {
         wrapperKpHed.style.display = "none";
         inputKpHedNama.removeAttribute("required"); inputKpHedNama.value = "";
         
-        labelWaUtama.innerText = "No WhatsApp Pengisi";
+        wrapperWaUtama.style.display = "none";
+        inputWaUtama.removeAttribute("required"); 
+        inputWaUtama.value = "";
 
-        infoNote.innerHTML = `<i class="fas fa-info-circle" style="color: var(--primary);"></i> <strong>Sensus Mess/Asrama:</strong> Seluruh pekerja toko wajib mengunggah foto KTP asli. Cukup gunakan satu nomor WA perwakilan untuk mengirim berkas kelompok.`;
+        infoNote.innerHTML = `<i class="fas fa-info-circle" style="color: var(--primary);"></i> <strong>Sensus Mess/Asrama:</strong> Seluruh pekerja toko wajib mengunggah foto KTP asli. Pengisian ini tidak memerlukan nomor WhatsApp.`;
     } else if (statusRumah === "Sewa / Kontrak") {
         rowAdminKk.style.display = "grid";
         wrapperKk.style.display = "flex";
@@ -56,6 +62,8 @@ function sinkronisasiKategoriWargaAll() {
         wrapperKpHed.style.display = "block";
         inputKpHedNama.setAttribute("required", "required");
         
+        wrapperWaUtama.style.display = "flex";
+        inputWaUtama.setAttribute("required", "required");
         labelWaUtama.innerText = "No WhatsApp Pengisi";
 
         infoNote.innerHTML = `<i class="fas fa-info-circle" style="color: var(--primary);"></i> <strong>Sensus Kontrak:</strong> Seluruh orang yang tinggal di rumah kontrakan wajib upload berkas KTP.`;
@@ -71,6 +79,8 @@ function sinkronisasiKategoriWargaAll() {
         wrapperKpHed.style.display = "block";
         inputKpHedNama.setAttribute("required", "required");
         
+        wrapperWaUtama.style.display = "flex";
+        inputWaUtama.setAttribute("required", "required");
         labelWaUtama.innerText = "No WhatsApp Kepala Keluarga";
 
         infoNote.innerHTML = `<i class="fas fa-info-circle" style="color: var(--primary);"></i> <strong>Sensus Warga Tetap:</strong> Warga tetap murni pengisian data teks saja, tidak perlu mengunggah berkas KTP/KK.`;
@@ -468,14 +478,15 @@ function prosesKolektifKirimData(e) {
 
         const kodeRegistrasi = generateRandomCode();
         const modeJimpitanValue = (statusRumahValue === "Kos" || statusRumahValue === "Mess / Asrama") ? "Bebas Jimpitan" : document.getElementById("mode_jimpitan").value;
+        const waUtamaValue = (statusRumahValue === "Mess / Asrama") ? "-" : document.getElementById("wa_utama").value;
 
         const payloadSensus = {
             kode: kodeRegistrasi, noKk: (statusRumahValue === "Kos" || statusRumahValue === "Mess / Asrama") ? "-" : noKkField,
             modeJimpitan: modeJimpitanValue, statusRumah: statusRumahValue, noRumah: document.getElementById("no_rumah").value,
             namaPemilikKos: (statusRumahValue === "Kos") ? document.getElementById("nama_pemilik_kos").value : "-",
             namaTokoMess: (statusRumahValue === "Mess / Asrama") ? document.getElementById("nama_toko_mess").value : "-",
-            hpBosMess: "-", // Di-set default strip karena input di-remove
-            waUtama: document.getElementById("wa_utama").value, alamat: document.getElementById("alamat_rumah").value, anggota: payloadAnggota
+            hpBosMess: "-", 
+            waUtama: waUtamaValue, alamat: document.getElementById("alamat_rumah").value, anggota: payloadAnggota
         };
 
         btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Menyimpan...`;
