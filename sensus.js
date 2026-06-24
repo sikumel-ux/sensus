@@ -1,5 +1,5 @@
 const GOOGLE_SCRIPT_API_URL = "https://script.google.com/macros/s/AKfycbzgrBGWquC3AXhjLC_GrzGBWEzX2pgTdHW9bP4fmf3hcb14Z6-Zc6ihj-w6ID3b8MT4Ag/exec";
-const REDIRECT_THANK_YOU_URL = "done/index.html"; 
+const REDIRECT_THANK_YOU_URL = "https://pendataan.sekawan.my.id/done"; 
 let rowCount = 0;
 
 function sinkronisasiKategoriWargaAll() {
