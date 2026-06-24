@@ -219,7 +219,7 @@ function tambahWargaRow() {
                         </select>
                     </div>
                 </div>
-                <div class="form-group"><label>Domisili Tinggal Sekarang</label>
+                <div class="form-group"><label>Domisili Sekarang</label>
                     <div class="select-wrapper">
                         <select class="form-control input-domisili">
                             <option value="RT 04">Menetap di RT 04</option>
