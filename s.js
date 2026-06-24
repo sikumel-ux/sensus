@@ -65,7 +65,7 @@ function sinkronisasiKategoriWargaAll() {
         inputNoRumah.removeAttribute("required"); inputNoRumah.value = "";
         inputWaUtama.removeAttribute("required"); inputWaUtama.value = "";
 
-        infoNote.innerHTML = `<i class="fas fa-info-circle" style="color: var(--primary);"></i> <strong>Sensus Mess:</strong> Seluruh pekerja toko wajib mengunggah foto KTP asli. Pengisian ini tidak memerlukan nomor WhatsApp warga maupun nomor rumah.`;
+        infoNote.innerHTML = `<i class="fas fa-info-circle" style="color: var(--primary);"></i> <strong>Sensus Mess:</strong> Seluruh pekerja toko wajib mengunggah foto KTP asli.`;
     } else if (statusRumah === "Sewa / Kontrak") {
         rowAdminKk.style.display = "grid";
         wrapperKk.style.display = "flex";
@@ -105,7 +105,7 @@ function sinkronisasiKategoriWargaAll() {
         inputWaUtama.setAttribute("required", "required");
         labelWaUtama.innerText = "No. WhatsApp";
 
-        infoNote.innerHTML = `<i class="fas fa-info-circle" style="color: var(--primary);"></i> <strong>Sensus Warga Tetap:</strong> Warga tetap murni pengisian data teks saja, tidak perlu mengunggah berkas KTP/KK.`;
+        infoNote.innerHTML = `<i class="fas fa-info-circle" style="color: var(--primary);"></i> <strong>Sensus Warga Tetap:</strong> Warga tetap tidak perlu mengunggah berkas KTP/KK.`;
     }
 
     const boxes = document.querySelectorAll(".warga-item-box");
@@ -156,7 +156,7 @@ function updateDropdownOpsiHubungan(selectElement, isFirstRow, statusRumah) {
                 <option value="Teman Kamar / Kontrakan">Teman Kamar / Kontrakan</option>
                 <option value="Istri">Istri</option>
                 <option value="Anak">Anak</option>
-                <option value="Penghuni / Lainnya">Penghuni / Lainnya</option>
+                <option value="Penghuni / Lainnya">Lainnya</option>
             `;
         } else {
             selectElement.innerHTML = `
@@ -164,7 +164,7 @@ function updateDropdownOpsiHubungan(selectElement, isFirstRow, statusRumah) {
                 <option value="Anak">Anak</option>
                 <option value="Cucu">Cucu</option>
                 <option value="Mertua">Mertua</option>
-                <option value="Penghuni / Lainnya">Penghuni / Lainnya</option>
+                <option value="Penghuni / Lainnya">Lainnya</option>
             `;
         }
         if (selectElement.querySelector(`option[value="${valSebelumnya}"]`)) {
@@ -241,7 +241,7 @@ function tambahWargaRow() {
                         </select>
                     </div>
                 </div>
-                <div class="form-group"><label>Domisili Tinggal Sekarang</label>
+                <div class="form-group"><label>Domisili Sekarang</label>
                     <div class="select-wrapper">
                         <select class="form-control input-domisili">
                             <option value="RT 04">Menetap di RT 04</option>
@@ -263,13 +263,13 @@ function tambahWargaRow() {
             <div id="wrapperTujuanKos_${rowCount}" style="display:none; border-left: 3px solid var(--teal); padding-left:12px; margin: 4px 0;">
                 <div class="form-grid">
                     <div class="form-group">
-                        <label style="color:var(--teal)">Tujuan Tinggal Di Kos</label>
+                        <label style="color:var(--teal)">Tujuan Tinggal</label>
                         <div class="select-wrapper">
                             <select class="form-control input-tujuan-kos" id="tujuanKosSelect_${rowCount}" onchange="evaluasiDetailTujuanKos(${rowCount})">
                                 <option value="Kuliah">Kuliah</option>
                                 <option value="Kerja">Kerja</option>
                                 <option value="Sekolah">Sekolah</option>
-                                <option value="Lainnya">Lainnya (Sebutkan)</option>
+                                <option value="Lainnya">Lainnya</option>
                             </select>
                         </div>
                     </div>
@@ -281,7 +281,7 @@ function tambahWargaRow() {
             </div>
             
             <div class="form-group" id="customStatusWrapper_${rowCount}" style="display:none;">
-                <label style="color:var(--teal)">Hubungan Spesifik / Tulis Sendiri</label>
+                <label style="color:var(--teal)">Lainnya</label>
                 <input type="text" id="customStatusText_${rowCount}" class="form-control input-custom-status" placeholder="Contoh: Karyawan Swasta, Teman, Sepupu">
             </div>
 
@@ -310,12 +310,12 @@ function evaluasiDetailTujuanKos(id) {
         inputNode.placeholder = "Contoh: Universitas Gadjah Mada";
         inputNode.setAttribute("required", "required");
     } else if (selectVal === "Sekolah") {
-        labelNode.innerText = "Nama Sekolah / Instansi";
+        labelNode.innerText = "Nama Sekolah";
         inputNode.placeholder = "Contoh: SMA Negeri 1 Yogyakarta";
         inputNode.setAttribute("required", "required");
     } else if (selectVal === "Kerja") {
         labelNode.innerText = "Nama Perusahaan / Tempat Kerja";
-        inputNode.placeholder = "Contoh: PT Maju Mapan Sejahtera";
+        inputNode.placeholder = "Contoh: PT Sido Mundur";
         inputNode.setAttribute("required", "required");
     } else {
         labelNode.innerText = "Keterangan Tujuan Lainnya";
