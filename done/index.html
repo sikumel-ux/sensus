@@ -86,7 +86,7 @@
             const rawData = sessionStorage.getItem("sensus_success_data");
             if (!rawData) {
                 // Jika diakses langsung tanpa submit form, tendang balik ke halaman awal
-                window.location.href = "../indexki.html";
+                window.location.href = "../index.html";
                 return;
             }
 
@@ -109,7 +109,7 @@
                     <div class="data-label">WhatsApp Utama</div><div>:</div><div class="data-value">${data.waUtama}</div>
                 </div>
                 <div class="data-row">
-                    <div class="data-label">Aturan Kewajiban</div><div>:</div><div class="data-value">${data.statusRumah === "Kos" ? "Bebas Jimpitan (-)" : "Wajib Jimpitan (" + data.modeJimpitan + ")"}</div>
+                    <div class="data-label">Jimpitan</div><div>:</div><div class="data-value">${data.statusRumah === "Kos" ? "Bebas Jimpitan (-)" : "" + data.modeJimpitan + ""}</div>
                 </div>
                 ${data.statusRumah === "Kos" ? `
                 <div class="data-row">
