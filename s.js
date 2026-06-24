@@ -45,7 +45,7 @@ function sinkronisasiKategoriWargaAll() {
         inputWaUtama.setAttribute("required", "required");
         labelWaUtama.innerText = "No. WhatsApp";
 
-        infoNote.innerHTML = `<i class="fas fa-info-circle" style="color: var(--teal);"></i> <strong>Sensus Kos:</strong> Seluruh penghuni kos wajib melampirkan berkas KTP asli & mengisi tujuan menetap. Bebas uang jimpitan.`;
+        infoNote.innerHTML = `<i class="fas fa-info-circle" style="color: var(--teal);"></i> <strong>Sensus Kos:</strong> Seluruh penghuni kos wajib melampirkan berkas KTP asli & mengisi kolom tujuan menetap.`;
     } else if (statusRumah === "Mess") {
         rowAdminKk.style.display = "none";
         inputKk.removeAttribute("required"); inputKk.value = "";
@@ -65,7 +65,7 @@ function sinkronisasiKategoriWargaAll() {
         inputNoRumah.removeAttribute("required"); inputNoRumah.value = "";
         inputWaUtama.removeAttribute("required"); inputWaUtama.value = "";
 
-        infoNote.innerHTML = `<i class="fas fa-info-circle" style="color: var(--primary);"></i> <strong>Sensus Mess:</strong> Seluruh pekerja toko wajib mengunggah foto KTP asli.`;
+        infoNote.innerHTML = `<i class="fas fa-info-circle" style="color: var(--primary);"></i> <strong>Sensus Mess:</strong> Seluruh pekerja/karyawan toko wajib mengunggah foto KTP asli.`;
     } else if (statusRumah === "Sewa / Kontrak") {
         rowAdminKk.style.display = "grid";
         wrapperKk.style.display = "flex";
@@ -145,7 +145,7 @@ function updateDropdownOpsiHubungan(selectElement, isFirstRow, statusRumah) {
         if (statusRumah === "Kos" || statusRumah === "Sewa / Kontrak") {
             selectElement.innerHTML = `
                 <option value="Diri Sendiri / Penghuni Utama">Penghuni Utama</option>
-                <option value="Penghuni / Lainnya">Penghuni / Lainnya</option>
+                <option value="Penghuni / Lainnya">Lainnya</option>
             `;
         } else {
             selectElement.innerHTML = `<option value="Kepala Keluarga">Kepala Keluarga</option>`;
@@ -282,7 +282,7 @@ function tambahWargaRow() {
             
             <div class="form-group" id="customStatusWrapper_${rowCount}" style="display:none;">
                 <label style="color:var(--teal)">Lainnya</label>
-                <input type="text" id="customStatusText_${rowCount}" class="form-control input-custom-status" placeholder="Contoh: Karyawan Swasta, Teman, Sepupu">
+                <input type="text" id="customStatusText_${rowCount}" class="form-control input-custom-status" placeholder="Contoh: Karyawan, Teman, Sepupu">
             </div>
 
             <div class="form-group" id="uploadWrapper_${rowCount}" style="display:none;">
@@ -346,7 +346,7 @@ function prosesKonversiFileToBase64(input, id) {
         reader.onload = function(e) {
             hiddenInput.value = e.target.result;
             zone.classList.add("has-file");
-            lbl.innerText = `✓ Terkunci: KTP Berhasil`;
+            lbl.innerText = `Terkunci: KTP Berhasil`;
         };
         reader.readAsDataURL(file);
     } else {
