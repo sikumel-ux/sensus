@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Sensus RT 04</title>
+    
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="theme-color" content="#FF6B35">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=600;700;800&family=Roboto:wght=400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <link rel="stylesheet" href="s.css">
+</head>
+<body>
+
+    <div class="app-container">
+        
+        <header class="app-header">
+            <div class="header-logo"><i class="fas fa-users-viewfinder"></i></div>
+            <h1>Sensus RT 04</h1>
+            <p>Formulir Pengumpulan Data Warga Resmi</p>
+        </header>
+
+        <form id="mainSensusForm" onsubmit="prosesKolektifKirimData(event)">
+            
+            <!-- STEP 1: Properti & Administrasi -->
+            <div class="app-card">
+                <div class="card-title-group">
+                    <div class="step-icon">1</div>
+                    <h3>Data Properti & Administrasi</h3>
+                </div>
+                
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Status Hunian / Tempat Tinggal</label>
+                        <div class="select-wrapper">
+                            <select id="status_rumah" class="form-control" onchange="sinkronisasiKategoriWargaAll()">
+                                <option value="Milik Sendiri">Milik Sendiri/Keluarga/Saudara</option>
+                                <option value="Sewa / Kontrak">Sewa/Kontrak</option>
+                                <option value="Kos">Kos</option>
+                                <option value="Mess">Mess</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row-2" id="rowAdministrasiKk">
+                        <div class="form-group" id="wrapperKk">
+                            <label>Nomor Kartu Keluarga</label>
+                            <input type="text" id="no_kk" class="form-control" placeholder="16 Digit Anggota" inputmode="numeric" maxlength="16" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+                        </div>
+                        <div class="form-group" id="wrapperJimpitan">
+                            <label>Pilihan Model Jimpitan</label>
+                            <div class="select-wrapper">
+                                <select id="mode_jimpitan" class="form-control">
+                                    <option value="Harian">Dibayarkan Harian</option>
+                                    <option value="Bulanan">Dibayarkan Selapanan</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="wrapperKepalaKeluargaUtama">
+                        <div class="form-group">
+                            <label>Nama Kepala Keluarga</label>
+                            <input type="text" id="nama_kepala_tetap" class="form-control" placeholder="Nama lengkap sesuai KTP">
+                        </div>
+                    </div>
+
+                    <div class="form-group" id="wrapperPemilikKos" style="display: none;">
+                        <label style="color: var(--teal);">Nama Pemilik / Pengelola Kos</label>
+                        <input type="text" id="nama_pemilik_kos" class="form-control" placeholder="Tulis nama pemilik kos">
+                    </div>
+
+                    <!-- Wrapper Input Khusus Mess -->
+                    <div id="wrapperKhususMess" style="display: none;">
+                        <div class="form-row-2">
+                            <div class="form-group">
+                                <label style="color: var(--primary);">Nama Toko Bekerja</label>
+                                <input type="text" id="nama_toko_mess" class="form-control" placeholder="Contoh: Toko Berkah">
+                            </div>
+                            <div class="form-group">
+                                <label style="color: var(--primary);">Nama Pemilik Toko</label>
+                                <input type="text" id="nama_pemilik_toko_mess" class="form-control" placeholder="Nama bos / pemilik toko">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-row-2" id="rowNoRumahDanWa">
+                        <div class="form-group" id="wrapperNoRumah">
+                            <label>Nomor Rumah / Gedung</label>
+                            <input type="text" id="no_rumah" class="form-control" placeholder="Contoh: No. 12">
+                        </div>
+                        <div class="form-group" id="wrapperWaUtama">
+                            <label id="labelWaUtama">No. WhatsApp</label>
+                            <input type="text" id="wa_utama" class="form-control" placeholder="Contoh: 0812345xxx" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Alamat Sesuai KTP</label>
+                        <input type="text" id="alamat_rumah" class="form-control" placeholder="Contoh: RT 04 Dongkelan" required>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 2: Daftar Anggota Keluarga -->
+            <div class="app-card">
+                <div class="card-title-group">
+                    <div class="step-icon">2</div>
+                    <h3>Daftar Anggota Jiwa / Penghuni</h3>
+                </div>
+                
+                <div id="infoNoteStatus" class="info-note">
+                    <i class="fas fa-info-circle"></i> Memasukkan seluruh anggota keluarga atau penghuni yang tinggal di rumah ini.
+                </div>
+
+                <div id="wargaListContainer"></div>
+
+                <button type="button" id="btnTambahAnggota" class="btn-action btn-outline" onclick="tambahWargaRow()">
+                    <i class="fas fa-user-plus"></i> Tambah Anggota / Penghuni
+                </button>
+            </div>
+
+            <div class="agreement-card">
+                <input type="checkbox" id="chkPernyataan" required>
+                <label for="chkPernyataan">Saya menyatakan bahwa data yang diisi di atas sudah sesuai dengan keadaan yang sebenarnya.</label>
+            </div>
+
+            <button type="submit" id="btnSubmitFinal" class="btn-action btn-primary">
+                <i class="fas fa-cloud-arrow-up"></i> Kirimkan
+            </button>
+        </form>
+    </div>
+
+    <div id="customAlertOverlay" class="custom-alert-overlay">
+        <div class="alert-box" id="alertBoxContent"></div>
+    </div>
+
+    <script src="s.js"></script>
+</body>
+</html>
