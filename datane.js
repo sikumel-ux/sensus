@@ -34,7 +34,7 @@ function sinkronisasiKategoriWargaAll() {
         inputWaUtama.setAttribute("required", "required");
         labelWaUtama.innerText = "No. WhatsApp";
 
-        infoNote.innerHTML = `<i class="fas fa-info-circle" style="color: var(--teal);"></i> <strong>Sensus Kos:</strong> Seluruh penghuni kos wajib melampirkan berkas KTP asli & mengisi tujuan menetap. Bebas uang jimpitan.`;
+        infoNote.innerHTML = `<i class="fas fa-info-circle" style="color: var(--teal);"></i> <strong>Sensus Kos:</strong> Seluruh penghuni kos wajib melampirkan berkas KTP asli & mengisi tujuan menetap.`;
     } else if (statusRumah === "Mess / Asrama") {
         rowAdminKk.style.display = "none";
         inputKk.removeAttribute("required"); inputKk.value = "";
@@ -49,7 +49,7 @@ function sinkronisasiKategoriWargaAll() {
         inputWaUtama.removeAttribute("required"); 
         inputWaUtama.value = "";
 
-        infoNote.innerHTML = `<i class="fas fa-info-circle" style="color: var(--primary);"></i> <strong>Sensus Mess/Asrama:</strong> Seluruh pekerja toko wajib mengunggah foto KTP asli. Pengisian ini tidak memerlukan nomor WhatsApp.`;
+        infoNote.innerHTML = `<i class="fas fa-info-circle" style="color: var(--primary);"></i> <strong>Sensus Mess/Asrama:</strong> Seluruh karyawan toko wajib mengunggah foto KTP asli.`;
     } else if (statusRumah === "Sewa / Kontrak") {
         rowAdminKk.style.display = "grid";
         wrapperKk.style.display = "flex";
@@ -83,7 +83,7 @@ function sinkronisasiKategoriWargaAll() {
         inputWaUtama.setAttribute("required", "required");
         labelWaUtama.innerText = "No. WhatsApp";
 
-        infoNote.innerHTML = `<i class="fas fa-info-circle" style="color: var(--primary);"></i> <strong>Sensus Warga Tetap:</strong> Warga tetap murni pengisian data teks saja, tidak perlu mengunggah berkas KTP/KK.`;
+        infoNote.innerHTML = `<i class="fas fa-info-circle" style="color: var(--primary);"></i> <strong>Mode Warga Tetap:</strong> Warga tetap RT 04 tidak perlu mengunggah foto KTP.`;
     }
 
     const boxes = document.querySelectorAll(".warga-item-box");
