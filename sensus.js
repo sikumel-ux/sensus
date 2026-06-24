@@ -1,4 +1,4 @@
-const GOOGLE_SCRIPT_API_URL = "https://script.google.com/macros/s/AKfycby-DpvqtWpu8FEVeudZYPms_0kc7jJyQ60BwiVJ9NlIxKcBzMbse9GcbBpjnorz94_wHg/exec";
+const GOOGLE_SCRIPT_API_URL = "https://script.google.com/macros/s/AKfycbzgrBGWquC3AXhjLC_GrzGBWEzX2pgTdHW9bP4fmf3hcb14Z6-Zc6ihj-w6ID3b8MT4Ag/exec";
 const REDIRECT_THANK_YOU_URL = "thanks/terimakasih.html"; 
 let rowCount = 0;
 
