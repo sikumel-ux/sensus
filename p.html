@@ -22,7 +22,7 @@
         <header class="app-header">
             <div class="header-logo"><i class="fas fa-users-viewfinder"></i></div>
             <h1>Sensus RT 04</h1>
-            <p>Formulir Pengumpulan Data Warga Resmi</p>
+            <p>Formulir Pengumpulan Data Warga</p>
         </header>
 
         <form id="mainSensusForm" onsubmit="prosesKolektifKirimData(event)">
@@ -48,14 +48,14 @@
 
                     <div class="form-row-2" id="rowAdministrasiKk">
                         <div class="form-group" id="wrapperKk">
-                            <label>Nomor Kartu Keluarga</label>
+                            <label>No. Kartu Keluarga</label>
                             <input type="text" id="no_kk" class="form-control" placeholder="16 Digit Anggota" inputmode="numeric" maxlength="16" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
                         </div>
                         <div class="form-group" id="wrapperJimpitan">
-                            <label>Pilihan Model Jimpitan</label>
+                            <label>Model Jimpitan</label>
                             <div class="select-wrapper">
                                 <select id="mode_jimpitan" class="form-control">
-                                    <option value="Harian">Dibayarkan Harian</option>
+                                    <option value="Harian">Harian</option>
                                     <option value="Bulanan">Dibayarkan Selapanan</option>
                                 </select>
                             </div>
@@ -77,19 +77,19 @@
                     <div id="wrapperKhususMess" style="display: none;">
                         <div class="form-row-2">
                             <div class="form-group">
-                                <label style="color: var(--primary);">Nama Toko Bekerja</label>
-                                <input type="text" id="nama_toko_mess" class="form-control" placeholder="Contoh: Toko Berkah">
+                                <label style="color: var(--primary);">Nama Toko</label>
+                                <input type="text" id="nama_toko_mess" class="form-control" placeholder="Contoh: Toko Maju Mapan">
                             </div>
                             <div class="form-group">
                                 <label style="color: var(--primary);">Nama Pemilik Toko</label>
-                                <input type="text" id="nama_pemilik_toko_mess" class="form-control" placeholder="Nama bos / pemilik toko">
+                                <input type="text" id="nama_pemilik_toko_mess" class="form-control" placeholder="Nama pemilik toko">
                             </div>
                         </div>
                     </div>
 
                     <div class="form-row-2" id="rowNoRumahDanWa">
                         <div class="form-group" id="wrapperNoRumah">
-                            <label>Nomor Rumah / Gedung</label>
+                            <label>Nomor Rumah</label>
                             <input type="text" id="no_rumah" class="form-control" placeholder="Contoh: No. 12">
                         </div>
                         <div class="form-group" id="wrapperWaUtama">
