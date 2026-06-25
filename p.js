@@ -1,5 +1,5 @@
 const GOOGLE_SCRIPT_API_URL = "https://script.google.com/macros/s/AKfycby-DpvqtWpu8FEVeudZYPms_0kc7jJyQ60BwiVJ9NlIxKcBzMbse9GcbBpjnorz94_wHg/exec";
-const REDIRECT_THANK_YOU_URL = "thanks/terimakasih.html"; 
+const REDIRECT_THANK_YOU_URL = "https;//pendataan.sekawan.my.id/done"; 
 let rowCount = 0;
 
 function sinkronisasiKategoriWargaAll() {
@@ -44,7 +44,7 @@ function sinkronisasiKategoriWargaAll() {
         inputWaUtama.setAttribute("required", "required");
         labelWaUtama.innerText = "No. WhatsApp";
 
-        infoNote.innerHTML = `<i class="fas fa-info-circle" style="color: var(--teal);"></i> <strong>Sensus Kos:</strong> Seluruh penghuni kos wajib melampirkan berkas KTP asli & mengisi tujuan menetap. Bebas uang jimpitan.`;
+        infoNote.innerHTML = `<i class="fas fa-info-circle" style="color: var(--teal);"></i> <strong>Sensus Kos:</strong> Seluruh penghuni kos wajib melampirkan berkas KTP asli & mengisi tujuan menetap.`;
     } else if (statusRumah === "Mess") {
         rowAdminKk.style.display = "none";
         inputKk.removeAttribute("required"); inputKk.value = "";
@@ -62,7 +62,7 @@ function sinkronisasiKategoriWargaAll() {
         inputNoRumah.removeAttribute("required"); inputNoRumah.value = "";
         inputWaUtama.removeAttribute("required"); inputWaUtama.value = "";
 
-        infoNote.innerHTML = `<i class="fas fa-info-circle" style="color: var(--primary);"></i> <strong>Sensus Mess:</strong> Seluruh pekerja toko wajib mengunggah foto KTP asli. Pengisian ini tidak memerlukan nomor WhatsApp warga maupun nomor rumah.`;
+        infoNote.innerHTML = `<i class="fas fa-info-circle" style="color: var(--primary);"></i> <strong>Sensus Mess:</strong> Seluruh pekerja toko wajib mengunggah foto KTP asli.`;
     } else if (statusRumah === "Sewa / Kontrak") {
         rowAdminKk.style.display = "grid";
         wrapperKk.style.display = "flex";
@@ -196,7 +196,7 @@ function tambahWargaRow() {
 
             <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;">
                 <div class="form-group">
-                    <label>Jenis Kelamin</label>
+                    <label>L / P</label>
                     <div class="select-wrapper">
                         <select class="form-control input-jk">
                             <option value="Laki-laki">Laki-laki</option>
