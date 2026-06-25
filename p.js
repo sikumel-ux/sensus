@@ -102,7 +102,7 @@ function sinkronisasiKategoriWargaAll() {
         inputWaUtama.setAttribute("required", "required");
         labelWaUtama.innerText = "No. WhatsApp";
 
-        infoNote.innerHTML = `<i class="fas fa-info-circle" style="color: var(--primary);"></i> <strong>Sensus Warga Tetap:</strong> Warga tetap murni pengisian data teks saja, tidak perlu mengunggah berkas KTP/KK.`;
+        infoNote.innerHTML = `<i class="fas fa-info-circle" style="color: var(--primary);"></i> <strong>Sensus Warga Tetap:</strong> Warga tetap tidak perlu mengunggah berkas KTP/KK.`;
     }
 
     const boxes = document.querySelectorAll(".warga-item-box");
