@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Terima Kasih - Sensus RT 04</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2 family=Plus+Jakarta+Sans:wght=600;700;800&family=Roboto:wght=400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <link rel="stylesheet" href="../datane.css"> <style>
+        /* Style Tambahan Khusus Halaman Thank You agar Lebih Keren */
+        .success-icon-box {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .success-icon-box i {
+            font-size: 4.5rem;
+            color: #4CAF50;
+            filter: drop-shadow(0 0 10px rgba(76, 175, 80, 0.3));
+        }
+        .reg-badge {
+            background: #1A1714;
+            border: 2px dashed var(--primary, #FF6B35);
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 1.2rem;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-weight: 700;
+            margin: 15px 0;
+            color: #fff;
+        }
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+            margin-top: 15px;
+            border-radius: 8px;
+            border: 1px solid #333;
+        }
+        .table-summary {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+            text-align: left;
+        }
+        .table-summary th {
+            background-color: #221E1B;
+            color: var(--primary, #FF6B35);
+            padding: 12px;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-weight: 600;
+            border-bottom: 2px solid #333;
+        }
+        .table-summary td {
+            padding: 12px;
+            border-bottom: 1px solid #2A2522;
+            color: #DDD;
+            vertical-align: top;
+        }
+        .table-summary tr:nth-child(even) {
+            background-color: #1E1A17;
+        }
+        .badge-jiwa {
+            background: #2A2522;
+            color: #FFF;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            border: 1px solid #444;
+        }
+        .btn-block {
+            display: block;
+            width: 100%;
+            text-align: center;
+            box-sizing: border-box;
+            margin-top: 20px;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        
+        <header class="app-header" style="margin-bottom: 15px;">
+            <div class="success-icon-box">
+                <i class="fas fa-circle-check"></i>
+            </div>
+            <h1>Data Berhasil Terkirim!</h1>
+            <p>Terima kasih telah berpartisipasi dalam Sensus Warga RT 04</p>
+        </header>
+
+        <div class="app-card">
+            <div class="card-title-group">
+                <i class="fas fa-house-user" style="color: var(--primary); font-size: 1.2rem;"></i>
+                <h3 style="margin: 0; margin-left: 8px;">Ringkasan Data Hunian</h3>
+            </div>
+            
+            <div class="reg-badge">
+                <span style="font-size: 0.85rem; font-weight: 400; color: #AAA; display: block;">KODE REGISTRASI SENSUS</span>
+                <span id="txtKodeReg">-</span>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; font-size: 0.9rem; margin-top: 15px;">
+                <div>
+                    <span style="color:#888; display:block; font-size:0.8rem;">Status Rumah:</span>
+                    <strong id="txtStatusRumah" style="color:#FFF;">-</strong>
+                </div>
+                <div>
+                    <span style="color:#888; display:block; font-size:0.8rem;">Model Jimpitan:</span>
+                    <strong id="txtModeJimpitan" style="color:#FFF;">-</strong>
+                </div>
+                <div id="boxSummaryNoKk">
+                    <span style="color:#888; display:block; font-size:0.8rem;">No. Kartu Keluarga:</span>
+                    <strong id="txtNoKk" style="color:#FFF;">-</strong>
+                </div>
+                <div id="boxSummaryNoRumah">
+                    <span style="color:#888; display:block; font-size:0.8rem;">No. Rumah / Gedung:</span>
+                    <strong id="txtNoRumah" style="color:#FFF;">-</strong>
+                </div>
+                <div id="boxSummaryWa">
+                    <span style="color:#888; display:block; font-size:0.8rem;">No. WhatsApp Utama:</span>
+                    <strong id="txtWaUtama" style="color:#FFF;">-</strong>
+                </div>
+                <div id="boxSummaryKategoriKhusus">
+                    <span id="lblKategoriKhusus" style="color:#888; display:block; font-size:0.8rem;">Pengelola:</span>
+                    <strong id="txtKategoriKhusus" style="color:#FFF;">-</strong>
+                </div>
+                <div style="grid-column: span 2;">
+                    <span style="color:#888; display:block; font-size:0.8rem;">Alamat Sesuai KTP:</span>
+                    <strong id="txtAlamatRumah" style="color:#FFF;">-</strong>
+                </div>
+            </div>
+        </div>
+
+        <div class="app-card">
+            <div class="card-title-group">
+                <i class="fas fa-users" style="color: var(--teal); font-size: 1.2rem;"></i>
+                <h3 style="margin: 0; margin-left: 8px;">Daftar Anggota Jiwa / Penghuni</h3>
+            </div>
+            
+            <p style="font-size: 0.8rem; color: #AAA; margin: 5px 0 10px 0;">
+                Berikut adalah rincian data individu yang berhasil direkam masuk ke dalam database sistem:
+            </p>
+
+            <div class="table-responsive">
+                <table class="table-summary">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Nama Lengkap & NIK</th>
+                            <th>Detail Personal</th>
+                            <th>Status & Domisili</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabelAnggotaJiwaBody">
+                        </tbody>
+                </table>
+            </div>
+        </div>
+
+        <a href="../index.html" class="btn-action btn-primary btn-block" onclick="sessionStorage.clear();">
+            <i class="fas fa-arrow-left-long"></i> Selesai & Kembali ke Form Utama
+        </a>
+
+    </div>
+
+    <script>
+        window.onload = function() {
+            // Ambil data kiriman dari sessionStorage
+            const sessionDataString = sessionStorage.getItem("sensus_success_data");
+            
+            if(!sessionDataString) {
+                alert("Data sensus tidak ditemukan atau session telah kedaluwarsa.");
+                window.location.href = "../index.html";
+                return;
+            }
+
+            const data = JSON.parse(sessionDataString);
+
+            // 1. Petakan Data Administrasi Utama
+            document.getElementById("txtKodeReg").innerText = data.kode || "-";
+            document.getElementById("txtStatusRumah").innerText = data.statusRumah || "-";
+            document.getElementById("txtModeJimpitan").innerText = data.modeJimpitan || "-";
+            document.getElementById("txtNoKk").innerText = data.noKk || "-";
+            document.getElementById("txtNoRumah").innerText = data.noRumah || "-";
+            document.getElementById("txtWaUtama").innerText = data.waUtama || "-";
+            document.getElementById("txtAlamatRumah").innerText = data.alamat || "-";
+
+            // Kondisional Layout Sesuai Tipe Rumah (Kos / Mess)
+            const lblKhusus = document.getElementById("lblKategoriKhusus");
+            const txtKhusus = document.getElementById("txtKategoriKhusus");
+            const boxKhusus = document.getElementById("boxSummaryKategoriKhusus");
+
+            if(data.statusRumah === "Kos") {
+                document.getElementById("boxSummaryNoKk").style.display = "none";
+                boxKhusus.style.display = "block";
+                lblKhusus.innerText = "Nama Pemilik Kos:";
+                txtKhusus.innerText = data.namaPemilikKos || "-";
+            } else if(data.statusRumah === "Mess") {
+                document.getElementById("boxSummaryNoKk").style.display = "none";
+                document.getElementById("boxSummaryNoRumah").style.display = "none";
+                document.getElementById("boxSummaryWa").style.display = "none";
+                boxKhusus.style.display = "block";
+                lblKhusus.innerText = "Toko / Pemilik Mess:";
+                txtKhusus.innerText = `${data.namaTokoMess || "-"} (Bos: ${data.hpBosMess || "-"})`;
+            } else {
+                // Untuk Warga Tetap atau Kontrakan
+                boxKhusus.style.display = "none";
+            }
+
+            // 2. Petakan Seluruh Data Anggota Jiwa / Penghuni ke dalam Tabel
+            const tbody = document.getElementById("tabelAnggotaJiwaBody");
+            tbody.innerHTML = ""; // Bersihkan dummy
+
+            if(data.anggota && data.anggota.length > 0) {
+                data.anggota.forEach((warga, index) => {
+                    const tr = document.createElement("tr");
+                    
+                    // Kondisional text jika ada tujuan kos khusus
+                    let infoTambahanKos = "";
+                    if(data.statusRumah === "Kos" && warga.tujuanKos !== "-") {
+                        infoTambahanKos = `<div style="margin-top:4px; font-size:0.75rem; color:var(--teal);"><i class="fas fa-graduation-cap"></i> ${warga.tujuanKos}: ${warga.tempatKos}</div>`;
+                    }
+
+                    tr.innerHTML = `
+                        <td style="text-align:center; font-weight:bold; color:var(--primary);">${index + 1}</td>
+                        <td>
+                            <strong style="color:#FFF; display:block; font-size:0.95rem;">${warga.nama}</strong>
+                            <span style="font-size:0.8rem; color:#AAA; font-family:monospace;"><i class="fas fa-id-card"></i> ${warga.nik}</span>
+                        </td>
+                        <td style="font-size:0.85rem; line-height:1.4;">
+                            • TTL: <span>${warga.ttl}</span><br>
+                            • Jk/Agama: <span>${warga.jk} / ${warga.agama}</span><br>
+                            • <b>Gol. Darah: <span style="color:var(--primary); font-weight:bold;">${warga.golDarah || "-"}</span></b>
+                        </td>
+                        <td style="font-size:0.8rem; line-height:1.4;">
+                            Hubungan: <span class="badge-jiwa">${warga.hubungan}</span><br>
+                            KTP: <span>${warga.statusKtp}</span><br>
+                            Domisili: <span>${warga.domisili}</span>
+                            ${infoTambahanKos}
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            } else {
+                tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#888;">Tidak ada data anggota keluarga.</td></tr>`;
+            }
+        };
+    </script>
+
+</body>
+</html>
